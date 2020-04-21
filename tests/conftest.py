@@ -35,7 +35,7 @@ def get_keeper_url():
 @pytest.fixture(autouse=True)
 def setup_all():
     Web3Provider.init_web3('http://localhost:8545')
-    ContractHandler.set_artifacts_path(os.path.expanduser('~/.ocean/keeper-contracts/artifacts'))
+    ContractHandler.set_artifacts_path(os.path.expanduser('~/.nevermind/nevermind-contracts/artifacts'))
     Keeper.get_instance()
 
 

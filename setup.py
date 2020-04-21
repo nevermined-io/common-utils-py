@@ -27,7 +27,7 @@ install_requirements = [
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'ocean-keeper',
+    'contracts-lib-py',
     'web3==4.5.0',
     'codacy-coverage',
     'coverage',
