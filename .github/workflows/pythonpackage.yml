@@ -32,12 +32,11 @@ jobs:
         rm -rf "${HOME}/.ocean/keeper-contracts/artifacts"
         bash -x start_nevermind.sh --mongodb --no-brizo --no-commons --no-dashboard --no-faucet --no-events-handler --local-spree-node 2>&1 > start_ocean.log &
         cd ..
-        |
-          for i in $(seq 1 50); do
-            sleep 5
-            [ -f "${HOME}/.ocean/keeper-contracts/artifacts/ready" ] && break
-          done
-          ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
+        for i in $(seq 1 50); do
+          sleep 5
+          [ -f "${HOME}/.ocean/keeper-contracts/artifacts/ready" ] && break
+        done
+        ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
