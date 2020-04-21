@@ -25,19 +25,19 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Configure nevermind-tools
       run: |
-        git clone https://github.com/oceanprotocol/barge
+        git clone https://github.com/keyko-io/nevermind-tools
         cd barge
-        export KEEPER_VERSION=v0.13.1
-        export AQUARIUS_VERSION=v1.0.5
-        rm -rf "${HOME}/.ocean/keeper-contracts/artifacts"
-        bash -x start_ocean.sh --mongodb --no-brizo --no-commons --no-dashboard --no-faucet --no-events-handler --local-spree-node 2>&1 > start_ocean.log &
+        export KEEPER_VERSION=latest
+        export AQUARIUS_VERSION=latest
+        rm -rf "${HOME}/.ocean/nevermind-contracts/artifacts"
+        bash -x start_nevermind.sh --mongodb --no-brizo --no-commons --no-dashboard --no-faucet --no-events-handler --local-spree-node 2>&1 > start_ocean.log &
         cd ..
         |
           for i in $(seq 1 50); do
             sleep 5
-            [ -f "${HOME}/.ocean/keeper-contracts/artifacts/ready" ] && break
+            [ -f "${HOME}/.ocean/nevermind-contracts/artifacts/ready" ] && break
           done
-          ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
+          ls -la "${HOME}/.ocean/nevermind-contracts/artifacts/"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
