@@ -37,10 +37,17 @@ jobs:
           [ -f "${HOME}/.ocean/keeper-contracts/artifacts/ready" ] && break
         done
         ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
+        export PARITY_ADDRESS=0x00bd138abd70e2f00903268f3db08f2d25677c9e
+        export PARITY_PASSWORD=node0
+        export PARITY_KEYFILE=tests/resources/data/publisher_key_file.json
+        export PARITY_ADDRESS1=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
+        export PARITY_PASSWORD1=secret
+        export PARITY_KEYFILE1=tests/resources/data/consumer_key_file.json
+        scripts/wait_for_migration_and_extract_keeper_artifacts.sh
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r requirements_dev.txt
     - name: Test with pytest
       run: |
         pip install pytest
