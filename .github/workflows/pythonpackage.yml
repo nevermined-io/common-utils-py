@@ -26,7 +26,7 @@ jobs:
     - name: Configure nevermind-tools
       run: |
         git clone https://github.com/keyko-io/nevermind-tools
-        cd barge
+        cd nevermind-tools
         export KEEPER_VERSION=latest
         export AQUARIUS_VERSION=latest
         rm -rf "${HOME}/.ocean/nevermind-contracts/artifacts"
