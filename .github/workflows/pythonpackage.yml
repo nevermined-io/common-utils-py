@@ -30,7 +30,7 @@ jobs:
         export KEEPER_VERSION=latest
         export AQUARIUS_VERSION=latest
         rm -rf "${HOME}/.ocean/keeper-contracts/artifacts"
-        bash -x start_nevermind.sh --mongodb --no-brizo --no-commons --no-dashboard --no-faucet --no-events-handler --local-spree-node 2>&1 > start_ocean.log &
+        bash -x start_nevermind.sh --no-pleuston --no-commons --no-events-handler --no-brizo  --no-secret-store --no-faucet --no-dashboard --no-acl-contract --no-agent --latest 2>&1 > start_ocean.log &
         cd ..
         for i in $(seq 1 50); do
           sleep 5
