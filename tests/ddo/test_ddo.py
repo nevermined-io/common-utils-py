@@ -7,7 +7,7 @@
 import json
 
 import pytest
-from ocean_keeper import Keeper
+from contracts_lib_py import Keeper
 
 from common_utils_py.agreements.service_agreement import ServiceTypes, ServiceAgreement
 from common_utils_py.agreements.service_factory import ServiceDescriptor, ServiceFactory

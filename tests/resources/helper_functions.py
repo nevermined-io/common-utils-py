@@ -5,7 +5,7 @@ import json
 import os
 import pathlib
 
-from ocean_keeper.utils import get_account
+from contracts_lib_py.utils import get_account
 
 from common_utils_py.ddo.ddo import DDO
 

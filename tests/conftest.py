@@ -3,9 +3,9 @@
 import os
 
 import pytest
-from ocean_keeper.contract_handler import ContractHandler
-from ocean_keeper.keeper import Keeper
-from ocean_keeper.web3_provider import Web3Provider
+from contracts_lib_py.contract_handler import ContractHandler
+from contracts_lib_py.keeper import Keeper
+from contracts_lib_py.web3_provider import Web3Provider
 from web3 import HTTPProvider, Web3
 
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
@@ -34,8 +34,8 @@ def get_keeper_url():
 
 @pytest.fixture(autouse=True)
 def setup_all():
-    Web3Provider.init_web3('http://localhost:8545')
-    ContractHandler.set_artifacts_path(os.path.expanduser('~/.nevermind/nevermind-contracts/artifacts'))
+    Web3Provider.get_web3('http://localhost:8545')
+    ContractHandler.artifacts_path = os.path.expanduser('~/.nevermind/nevermind-contracts/artifacts')
     Keeper.get_instance()
 
 

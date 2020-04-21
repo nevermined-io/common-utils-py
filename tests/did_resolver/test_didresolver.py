@@ -5,8 +5,8 @@ import logging
 import secrets
 
 import pytest
-from ocean_keeper import Keeper
-from ocean_keeper.exceptions import (
+from contracts_lib_py import Keeper
+from contracts_lib_py.exceptions import (
     OceanDIDNotFound,
 )
 from web3 import Web3
