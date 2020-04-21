@@ -18,4 +18,4 @@ if [ $COMMAND_STATUS -ne 0 ]; then
   exit 1
 fi
 
-docker cp ${nevermind_contracts_docker_id}:/keeper-contracts/artifacts/. ./artifacts/
+docker cp ${nevermind_contracts_docker_id}:/nevermind-contracts/artifacts/. ./artifacts/
