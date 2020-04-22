@@ -27,7 +27,7 @@ jobs:
       run: |
         git clone https://github.com/keyko-io/nevermind-tools
         cd nevermind-tools
-        export KEEPER_VERSION=v0.1.0
+        export KEEPER_VERSION=latest
         export AQUARIUS_VERSION=latest
         rm -rf "${HOME}/.nevermind/nevermind-contracts/artifacts"
         bash -x start_nevermind.sh --no-pleuston --no-commons --no-events-handler --no-brizo  --no-secret-store --no-faucet --no-dashboard --no-acl-contract --no-agent --latest 2>&1 > start_nevermind.log &
