@@ -1,5 +1,5 @@
 COMPUTE_SLA_TEMPLATE = {
-  "type": "compute",
+  "type": "Compute",
   "templateId": "",
   "name": "dataAssetComputeExecutionAgreement",
   "description": "",
@@ -19,15 +19,15 @@ COMPUTE_SLA_TEMPLATE = {
     ],
     "fulfillmentOrder": [
       "lockReward.fulfill",
-      "computeExecution.fulfill",
+      "execCompute.fulfill",
       "escrowReward.fulfill"
     ],
     "conditionDependency": {
       "lockReward": [],
-      "computeExecution": [],
+      "execCompute": [],
       "escrowReward": [
         "lockReward",
-        "computeExecution"
+        "execCompute"
       ]
     },
     "conditions": [
@@ -55,14 +55,14 @@ COMPUTE_SLA_TEMPLATE = {
                     "actorType": "publisher",
                     "handler": {
                         "moduleName": "lockRewardCondition",
-                        "functionName": "fulfillComputeExecutionCondition",
+                        "functionName": "fulfillExecComputeCondition",
                         "version": "0.1"
                     }
                 }
             ]
         },
         {
-            "name": "computeExecution",
+            "name": "execCompute",
             "timelock": 0,
             "timeout": 0,
             "contractName": "ComputeExecutionCondition",
@@ -93,7 +93,7 @@ COMPUTE_SLA_TEMPLATE = {
                     "name": "TimedOut",
                     "actorType": "consumer",
                     "handler": {
-                        "moduleName": "computeExecution",
+                        "moduleName": "execCompute",
                         "functionName": "fulfillEscrowRewardCondition",
                         "version": "0.1"
                     }
@@ -130,7 +130,7 @@ COMPUTE_SLA_TEMPLATE = {
                 {
                     "name": "_releaseCondition",
                     "type": "bytes32",
-                    "value": "{contract.ComputeExecutionCondition.address}"
+                    "value": "{contract.ExecComputeCondition.address}"
                 }
             ],
             "events": [

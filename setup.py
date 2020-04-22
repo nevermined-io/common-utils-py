@@ -27,7 +27,7 @@ install_requirements = [
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'contracts-lib-py',
+    'contracts-lib-py==0.1.0',
     'web3==4.5.0',
     'codacy-coverage',
     'coverage',
@@ -85,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/keyko-io/common-utils-py',
-    version='0.0.1',
+    version='0.1.0',
     zip_safe=False,
 )

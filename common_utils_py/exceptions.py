@@ -1,4 +1,4 @@
-"""Exceptions for common_utils """
+"""Exceptions for common_utils_py."""
 
 
 #  Copyright 2018 Ocean Protocol Foundation

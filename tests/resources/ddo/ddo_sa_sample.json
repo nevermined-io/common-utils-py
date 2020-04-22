@@ -87,7 +87,7 @@
           ],
           "license": "CC-BY",
           "name": "UK Weather information 2011",
-          "price": "10",
+          "price": "1",
           "type": "dataset"
         },
         "additionalInformation": {
@@ -136,7 +136,7 @@
     },
     {
       "type": "access",
-      "index": 3,
+      "index": 1,
       "serviceEndpoint": "http://localhost:8030/api/v1/brizo/services/consume",
       "templateId": "0x1234",
       "attributes": {
@@ -192,7 +192,7 @@
                 {
                   "name": "_amount",
                   "type": "uint256",
-                  "value": "10"
+                  "value": "1"
                 }
               ],
               "events": [
@@ -256,7 +256,7 @@
                 {
                   "name": "_amount",
                   "type": "uint256",
-                  "value": "10"
+                  "value": "1"
                 },
                 {
                   "name": "_receiver",

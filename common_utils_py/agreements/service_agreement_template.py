@@ -1,6 +1,5 @@
 #  Copyright 2018 Ocean Protocol Foundation
 #  SPDX-License-Identifier: Apache-2.0
-import copy
 
 from common_utils_py.agreements.service_agreement_condition import Event, ServiceAgreementCondition
 
@@ -15,7 +14,7 @@ class ServiceAgreementTemplate(object):
         self.creator = creator
         self.template = {}
         if template_json:
-            self.parse_template_json(copy.deepcopy(template_json))
+            self.parse_template_json(template_json)
 
     def parse_template_json(self, template_json):
         """
@@ -23,13 +22,10 @@ class ServiceAgreementTemplate(object):
 
         :param template_json: json dict
         """
-        if 'template' in template_json:
-            template_json = template_json.pop('template')
-
-        self.template = template_json
-
-    def template_id(self, keeper):
-        return keeper.template_manager.create_template_id(self.contract_name)
+        if 'template' in template_json['serviceAgreementTemplate']:
+            self.template = template_json['serviceAgreementTemplate']['template']
+        else:
+            self.template = template_json['serviceAgreementTemplate']
 
     def set_template_id(self, template_id):
         """
@@ -38,9 +34,6 @@ class ServiceAgreementTemplate(object):
         :param template_id: string
         """
         self.template_id = template_id
-
-    def is_template_valid(self, keeper):
-        return self.contract_name in keeper.template_manager.get_known_template_names()
 
     @property
     def fulfillment_order(self):
@@ -74,7 +67,7 @@ class ServiceAgreementTemplate(object):
         """
         List of agreements events.
 
-        :return: list of Event instances
+        :return: list
         """
         return [Event(e) for e in self.template['events']]
 
@@ -83,7 +76,7 @@ class ServiceAgreementTemplate(object):
         """
         List of conditions.
 
-        :return: list of ServiceAgreementCondition instances
+        :return: list
         """
         return [
             ServiceAgreementCondition(cond_json) for cond_json in self.template['conditions']
@@ -93,7 +86,7 @@ class ServiceAgreementTemplate(object):
         """
         Set the conditions of the template.
 
-        :param conditions: list of ServiceAgreementCondition instances.
+        :param conditions: list of conditions.
         """
         self.template['conditions'] = [cond.as_dictionary() for cond in conditions]
 
@@ -109,6 +102,11 @@ class ServiceAgreementTemplate(object):
             )
             for cond, contract in cond_contract_tuples
         }
+        agr_event_key = f'{self.contract_name}.{self.agreement_events[0].name}'
+        event_to_args[agr_event_key] = contract_by_name[
+            self.contract_name].get_event_argument_names(
+            self.agreement_events[0].name
+        )
 
         return event_to_args
 
@@ -119,15 +117,15 @@ class ServiceAgreementTemplate(object):
         :return: dict
         """
         template = {
+            'contractName': self.contract_name,
+            'events': [e.as_dictionary() for e in self.agreement_events],
+            'fulfillmentOrder': self.fulfillment_order,
+            'conditionDependency': self.condition_dependency,
+            'conditions': [cond.as_dictionary() for cond in self.conditions]
+        }
+        return {
+            # 'type': self.DOCUMENT_TYPE,
             'name': self.name,
             'creator': self.creator,
-            'serviceAgreementTemplate': {
-                'contractName': self.contract_name,
-                'events': [e.as_dictionary() for e in self.agreement_events],
-                'fulfillmentOrder': self.fulfillment_order,
-                'conditionDependency': self.condition_dependency,
-                'conditions': [cond.as_dictionary() for cond in self.conditions]
-            }
+            'serviceAgreementTemplate': template
         }
-
-        return template
