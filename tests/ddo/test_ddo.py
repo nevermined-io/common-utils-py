@@ -26,7 +26,7 @@ TEST_SERVICE_URL = 'http://localhost:8005'
 def test_create_ddo(metadata):
     pub_acc = get_publisher_account()
     ddo = DDO()
-    ddo.add_service(ServiceTypes.METADATA, 'http://myaquarius.com', values=metadata, index='0')
+    ddo.add_service(ServiceTypes.METADATA, 'http://mymetadata.com', values=metadata, index='0')
     checksums = dict()
     for service in ddo.services:
         checksums[str(service.index)] = checksum(service.main)

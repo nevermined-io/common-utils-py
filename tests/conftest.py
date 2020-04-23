@@ -9,7 +9,7 @@ from contracts_lib_py.web3_provider import Web3Provider
 from web3 import HTTPProvider, Web3
 
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
-from common_utils_py.aquarius import AquariusProvider
+from common_utils_py.metadata import MetadataProvider
 from common_utils_py.ddo.ddo import DDO
 from common_utils_py.did import DID
 from tests.resources.helper_functions import (
@@ -20,9 +20,9 @@ from tests.resources.helper_functions import (
 )
 
 
-def get_aquarius_url():
-    if os.getenv('AQUARIUS_URL'):
-        return os.getenv('AQUARIUS_URL')
+def get_metadata_url():
+    if os.getenv('METADATA_URL'):
+        return os.getenv('METADATA_URL')
     return 'http://localhost:5000'
 
 
@@ -50,8 +50,8 @@ def consumer_account():
 
 
 @pytest.fixture
-def aquarius():
-    return AquariusProvider.get_aquarius(get_aquarius_url())
+def metadata_instance():
+    return MetadataProvider.get_metadata_provider(get_metadata_url())
 
 
 @pytest.fixture
@@ -80,7 +80,7 @@ def setup_agreements_environment():
     keeper.did_registry.register(
         ddo.asset_id,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
-        url='aquarius:5000',
+        url='metadata:5000',
         account=publisher_acc,
         providers=None
     )
