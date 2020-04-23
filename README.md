@@ -9,5 +9,5 @@ Provides common functions to interact with the ocean system.
 * DID resolver
   * Given a valid did, returns the associated DDO document which define 
     the asset metadata and other services offered for the asset
-* Aquarius
+* Metadata
 * Service Agreements

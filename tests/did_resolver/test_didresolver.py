@@ -27,10 +27,10 @@ def keeper():
 
 
 @e2e_test
-def test_did_resolver_library(publisher_account, aquarius):
+def test_did_resolver_library(publisher_account, metadata_instance):
     did_registry = keeper().did_registry
     checksum_test = Web3.sha3(text='checksum')
-    value_test = aquarius.root_url
+    value_test = metadata_instance.root_url
 
     did_resolver = DIDResolver(keeper().did_registry)
 
@@ -39,7 +39,7 @@ def test_did_resolver_library(publisher_account, aquarius):
     asset1 = DDO(json_filename=sample_ddo_path)
     asset1._did = DID.did({"0": "0x1098098"})
     did_registry.register(asset1.asset_id, checksum_test, url=value_test, account=publisher_account)
-    aquarius.publish_asset_ddo(asset1)
+    metadata_instance.publish_asset_ddo(asset1)
 
     did_resolved = did_resolver.resolve(asset1.did)
     assert did_resolved
@@ -48,7 +48,7 @@ def test_did_resolver_library(publisher_account, aquarius):
     with pytest.raises(ValueError):
         did_resolver.resolve(asset1.asset_id)
 
-    aquarius.retire_asset_ddo(asset1.did)
+    metadata_instance.retire_asset_ddo(asset1.did)
 
 
 @e2e_test
@@ -61,12 +61,12 @@ def test_did_not_found():
 
 
 @e2e_test
-def test_get_resolve_url(aquarius, publisher_account):
+def test_get_resolve_url(metadata_instance, publisher_account):
     register_account = publisher_account
     did_registry = keeper().did_registry
     did = DID.did({"0": "0x1"})
     asset_id = did_to_id(did)
-    value_test = aquarius.root_url
+    value_test = metadata_instance.root_url
     did_resolver = DIDResolver(keeper().did_registry)
     did_registry.register(asset_id, b'test', url=value_test, account=register_account)
     url = did_resolver.get_resolve_url(Web3.toBytes(hexstr=asset_id))

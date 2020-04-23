@@ -4,7 +4,7 @@
 
 import logging
 
-from common_utils_py.aquarius.aquarius_provider import AquariusProvider
+from common_utils_py.metadata.metadata_provider import MetadataProvider
 from common_utils_py.did import did_to_id_bytes
 
 logger = logging.getLogger('keeper')
@@ -41,7 +41,7 @@ class DIDResolver:
         # resolve a DID to a DDO
         url = self.get_resolve_url(did_bytes)
         logger.debug(f'found did {did} -> url={url}')
-        return AquariusProvider.get_aquarius(url).get_asset_ddo(did)
+        return MetadataProvider.get_metadata_provider(url).get_asset_ddo(did)
 
     def get_resolve_url(self, did_bytes):
         """Return a did value and value type from the block chain event record using 'did'.

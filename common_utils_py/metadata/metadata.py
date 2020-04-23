@@ -1,5 +1,5 @@
 """
-Aquarius module.
+Metadata module.
 Help to communicate with the metadata store.
 """
 
@@ -9,32 +9,32 @@ Help to communicate with the metadata store.
 import json
 import logging
 
-from common_utils_py.aquarius.exceptions import AquariusGenericError
+from common_utils_py.metadata.exceptions import MetadataGenericError
 from common_utils_py.ddo.ddo import DDO
 from common_utils_py.http_requests.requests_session import get_requests_session
 
-logger = logging.getLogger('aquarius')
+logger = logging.getLogger('metadata')
 
 
-class Aquarius:
-    """Aquarius wrapper to call different endpoint of aquarius component."""
+class Metadata:
+    """Metadata wrapper to call different endpoint of metadata component."""
 
-    def __init__(self, aquarius_url):
+    def __init__(self, metadata_url):
         """
         The Metadata class is a wrapper on the Metadata Store, which has exposed a REST API.
 
-        :param aquarius_url: Url of the aquarius instance.
+        :param metadata_url: Url of the metadata instance.
         """
-        assert aquarius_url, f'Invalid url "{aquarius_url}"'
+        assert metadata_url, f'Invalid url "{metadata_url}"'
         # :HACK:
-        if '/api/v1/aquarius/assets' in aquarius_url:
-            aquarius_url = aquarius_url[:aquarius_url.find('/api/v1/aquarius/assets')]
+        if '/api/v1/metadata/assets' in metadata_url:
+            metadata_url = metadata_url[:metadata_url.find('/api/v1/metadata/assets')]
 
-        self._base_url = f'{aquarius_url}/api/v1/aquarius/assets'
+        self._base_url = f'{metadata_url}/api/v1/metadata/assets'
         self._headers = {'content-type': 'application/json'}
 
-        logging.debug(f'Metadata Store connected at {aquarius_url}')
-        logging.debug(f'Metadata Store API documentation at {aquarius_url}/api/v1/docs')
+        logging.debug(f'Metadata Store connected at {metadata_url}')
+        logging.debug(f'Metadata Store API documentation at {metadata_url}/api/v1/docs')
         logging.debug(f'Metadata assets at {self._base_url}')
 
         self.requests_session = get_requests_session()
@@ -45,7 +45,7 @@ class Aquarius:
 
     @property
     def url(self):
-        """Base URL of the aquarius instance."""
+        """Base URL of the metadata instance."""
         return f'{self._base_url}/ddo'
 
     def get_service_endpoint(self):
@@ -58,7 +58,7 @@ class Aquarius:
 
     def list_assets(self):
         """
-        List all the assets registered in the aquarius instance.
+        List all the assets registered in the metadata instance.
 
         :return: List of DID string
         """
@@ -122,7 +122,7 @@ class Aquarius:
 
     def list_assets_ddo(self):
         """
-        List all the ddos registered in the aquarius instance.
+        List all the ddos registered in the metadata instance.
 
         :return: List of DDO instance
         """
@@ -130,7 +130,7 @@ class Aquarius:
 
     def publish_asset_ddo(self, ddo):
         """
-        Register asset ddo in aquarius.
+        Register asset ddo in metadata.
 
         :param ddo: DDO instance
         :return: API response (depends on implementation)
@@ -171,9 +171,9 @@ class Aquarius:
 
     def text_search(self, text, sort=None, offset=100, page=1):
         """
-        Search in aquarius using text query.
+        Search in metadata using text query.
 
-        Given the string aquarius will do a full-text query to search in all documents.
+        Given the string metadata will do a full-text query to search in all documents.
 
         Currently implemented are the MongoDB and Elastic Search drivers.
 
@@ -237,7 +237,7 @@ class Aquarius:
 
     def retire_asset_ddo(self, did):
         """
-        Retire asset ddo of Aquarius.
+        Retire asset ddo of metadata.
 
         :param did: Asset DID string
         :return: API response (depends on implementation)
@@ -247,7 +247,7 @@ class Aquarius:
             logging.debug(f'Removed asset DID: {did} from metadata store')
             return response
 
-        raise AquariusGenericError(f'Unable to remove DID: {response}')
+        raise MetadataGenericError(f'Unable to remove DID: {response}')
 
     def retire_all_assets(self):
         """
@@ -259,7 +259,7 @@ class Aquarius:
             logging.debug(f'Removed all the assets successfully')
             return response
 
-        raise AquariusGenericError(f'Unable to remove all the DID: {response}')
+        raise MetadataGenericError(f'Unable to remove all the DID: {response}')
 
     def validate_metadata(self, metadata):
         """
