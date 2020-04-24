@@ -2,10 +2,6 @@
     Public key RSA
 
 """
-
-#  Copyright 2018 Ocean Protocol Foundation
-#  SPDX-License-Identifier: Apache-2.0
-
 from .public_key_base import PUBLIC_KEY_STORE_TYPE_BASE64, PUBLIC_KEY_STORE_TYPE_PEM, PublicKeyBase
 
 AUTHENTICATION_TYPE_RSA = 'RsaVerificationKey2018'

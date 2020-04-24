@@ -2,15 +2,9 @@
     Service Class
     To handle service items in a DDO record
 """
-
-#  Copyright 2018 Ocean Protocol Foundation
-#  SPDX-License-Identifier: Apache-2.0
-
 import json
 import logging
 
-# from ocean_commons.agreements.service_agreement import ServiceAgreement
-# from ocean_commons.agreements.service_types import ServiceTypes
 
 logger = logging.getLogger(__name__)
 

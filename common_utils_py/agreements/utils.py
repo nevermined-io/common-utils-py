@@ -1,8 +1,3 @@
-"""Agreements module."""
-
-#  Copyright 2018 Ocean Protocol Foundation
-#  SPDX-License-Identifier: Apache-2.0
-
 from common_utils_py.agreements.access_sla_template import ACCESS_SLA_TEMPLATE
 from common_utils_py.agreements.compute_sla_template import COMPUTE_SLA_TEMPLATE
 from common_utils_py.agreements.service_types import ServiceTypes
