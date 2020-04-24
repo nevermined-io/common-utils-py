@@ -1,7 +1,4 @@
 """DID Lib to do DID's and DDO's."""
-#  Copyright 2018 Ocean Protocol Foundation
-#  SPDX-License-Identifier: Apache-2.0
-
 import re
 
 from eth_utils import remove_0x_prefix

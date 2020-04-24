@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """The setup script."""
-
-#  Copyright 2018 Ocean Protocol Foundation
-#  SPDX-License-Identifier: Apache-2.0
-
 import os
 from os.path import join
 
@@ -17,7 +13,7 @@ with open('README.md') as readme_file:
 with open('CHANGELOG.md') as history_file:
     history = history_file.read()
 
-# Installed by pip install ocean-utils
+# Installed by pip install common-utils-py
 # or pip install -e .
 install_requirements = [
     'requests==2.21.0',
@@ -27,19 +23,17 @@ install_requirements = [
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'contracts-lib-py==0.1.0',
+    'contracts-lib-py==0.1.1',
     'web3==4.5.0',
-    'codacy-coverage',
     'coverage',
     'docker',
     'mccabe',
     'pylint',
     'pytest',
     'pytest-watch',
-    'tox',
 ]
 
-# Possibly required by developers of ocean-utils:
+# Possibly required by developers of common-utils-py:
 dev_requirements = [
     'bumpversion',
     'pkginfo',
@@ -85,6 +79,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/keyko-io/common-utils-py',
-    version='0.1.1',
+    version='0.1.2',
     zip_safe=False,
 )

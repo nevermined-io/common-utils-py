@@ -1,6 +1,3 @@
-#  Copyright 2018 Ocean Protocol Foundation
-#  SPDX-License-Identifier: Apache-2.0
-
 from eth_utils import add_0x_prefix, remove_0x_prefix
 from web3 import Web3
 
