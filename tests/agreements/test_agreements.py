@@ -3,7 +3,6 @@ from web3 import Web3
 
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
 from tests.resources.helper_functions import (
-    get_ddo_sample,
     log_event
 )
 from tests.resources.tiers import e2e_test
@@ -128,22 +127,20 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
 
 
 @e2e_test
-def test_agreement_hash():
+def test_agreement_hash(ddo_sample):
     """
     This test verifies generating agreement hash using fixed inputs and ddo example.
     This will make it easier to compare the hash generated from different languages.
     """
     w3 = Web3
-    did = "did:op:0bc278fee025464f8012b811d1bce8e22094d0984e4e49139df5d5ff7a028bdf"
+    did = "did:nv:0c184915b07b44c888d468be85a9b28253e80070e5294b1aaed81c2f0264e430"
     template_id = w3.toChecksumAddress("0x00bd138abd70e2f00903268f3db08f2d25677c9e")
     agreement_id = '0xf136d6fadecb48fdb2fc1fb420f5a5d1c32d22d9424e47ab9461556e058fefaa'
-    ddo = get_ddo_sample()
-
     sa = ServiceAgreement.from_service_dict(
-        ddo.get_service(ServiceTypes.ASSET_ACCESS).as_dictionary())
+        ddo_sample.get_service(ServiceTypes.ASSET_ACCESS).as_dictionary())
     sa.service_agreement_template.set_template_id(template_id)
     assert template_id == sa.template_id, ''
-    assert did == ddo.did
+    assert did == ddo_sample.did
     # Don't generate condition ids, use fixed ids so we get consistent hash
     # (access_id, lock_id, escrow_id) = sa.generate_agreement_condition_ids(
     #     agreement_id, ddo.asset_id, consumer, publisher, keeper)
@@ -186,6 +183,6 @@ def test_agreement():
 
     print({signature})
     assert (
-        signature == Web3.toBytes(
-            hexstr="0x67901517c18a3d23e05806fff7f04235cc8ae3b1f82345b8bfb3e4b02b5800c7"
-        )), "The signature is not correct."
+            signature == Web3.toBytes(
+        hexstr="0x67901517c18a3d23e05806fff7f04235cc8ae3b1f82345b8bfb3e4b02b5800c7"
+    )), "The signature is not correct."

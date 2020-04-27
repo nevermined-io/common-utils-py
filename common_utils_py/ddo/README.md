@@ -9,7 +9,7 @@ from common_utils_py.did import DID
 
 did = DID.did()
 print(did)
-# >> did:op:03e6764478d61ce1d74945b6a99e870dcfdd6048a7caa435afdf7f0c8b4bf6fd
+# >> did:nv:03e6764478d61ce1d74945b6a99e870dcfdd6048a7caa435afdf7f0c8b4bf6fd
 ```
 
 2. Create a DDO

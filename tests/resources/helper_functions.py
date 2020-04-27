@@ -1,6 +1,7 @@
 import json
 import os
 import pathlib
+from urllib.request import urlopen
 
 from contracts_lib_py.utils import get_account
 
@@ -27,7 +28,25 @@ def get_consumer_account():
 
 
 def get_ddo_sample():
-    return DDO(json_filename=get_resource_path('ddo', 'ddo_sa_sample.json'))
+    return DDO(json_text=json.dumps(json.loads(urlopen(
+        "https://raw.githubusercontent.com/keyko-io/nevermind-docs/master/architecture/specs"
+        "/examples/access/v0.1/ddo1.json").read().decode(
+        'utf-8'))))
+
+
+def get_ddo_sample2():
+    return DDO(json_text=json.dumps(json.loads(urlopen(
+        "https://raw.githubusercontent.com/keyko-io/nevermind-docs/master/architecture/specs"
+        "/examples/access/v0.1/ddo2.json").read().decode(
+        'utf-8'))))
+
+
+def get_metadata():
+    metadata = urlopen(
+        "https://raw.githubusercontent.com/keyko-io/nevermind-docs/master/architecture/specs"
+        "/examples/metadata/v0.1/metadata1.json").read().decode(
+        'utf-8')
+    return json.loads(metadata)
 
 
 def log_event(event_name):
@@ -35,11 +54,3 @@ def log_event(event_name):
         print(f'Received event {event_name}: {event}')
 
     return _process_event
-
-
-def get_metadata():
-    path = get_resource_path('ddo', 'valid_metadata.json')
-    assert path.exists(), f"{path} does not exist!"
-    with open(path, 'r') as file_handle:
-        metadata = file_handle.read()
-    return json.loads(metadata)

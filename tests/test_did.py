@@ -7,7 +7,7 @@ import pytest
 from web3 import Web3
 
 from common_utils_py.did import (DID, did_parse, did_to_id, did_to_id_bytes, id_to_did, is_did_valid,
-                             OCEAN_PREFIX)
+                                 NEVERMIND_PREFIX)
 from tests.resources.tiers import e2e_test
 
 TEST_SERVICE_TYPE = 'ocean-meta-storage'
@@ -16,15 +16,15 @@ TEST_SERVICE_URL = 'http://localhost:8005'
 
 @e2e_test
 def test_did():
-    assert DID.did({"0": "0x123"}).startswith(OCEAN_PREFIX)
-    assert len(DID.did({"0": "0x123"})) - len(OCEAN_PREFIX) == 64
+    assert DID.did({"0": "0x123"}).startswith(NEVERMIND_PREFIX)
+    assert len(DID.did({"0": "0x123"})) - len(NEVERMIND_PREFIX) == 64
     _id = did_to_id(DID.did({"0": "0x123"}))
     assert not _id.startswith('0x'), 'id portion of did should not have a 0x prefix.'
 
 
 def test_did_parse():
     test_id = '%s' % secrets.token_hex(32)
-    valid_did = 'did:op:{0}'.format(test_id)
+    valid_did = 'did:nv:{0}'.format(test_id)
 
     with pytest.raises(TypeError):
         did_parse(None)
@@ -48,7 +48,7 @@ def test_did_parse():
 
 def test_id_to_did():
     test_id = '%s' % secrets.token_hex(32)
-    valid_did_text = 'did:op:{}'.format(test_id)
+    valid_did_text = 'did:nv:{}'.format(test_id)
     assert id_to_did(test_id) == valid_did_text
 
     # accept hex string from Web3 py
@@ -63,7 +63,7 @@ def test_id_to_did():
     with pytest.raises(TypeError):
         id_to_did({'bad': 'value'})
 
-    assert id_to_did('') == 'did:op:0'
+    assert id_to_did('') == 'did:nv:0'
 
 
 def test_did_to_id():
@@ -72,18 +72,18 @@ def test_did_to_id():
     assert _id is not None and len(_id) == 64, ''
 
     test_id = '%s' % secrets.token_hex(32)
-    assert did_to_id(f'{OCEAN_PREFIX}{test_id}') == test_id
-    assert did_to_id('did:op1:011') == '011'
-    assert did_to_id('did:op:0') == '0'
+    assert did_to_id(f'{NEVERMIND_PREFIX}{test_id}') == test_id
+    assert did_to_id('did:nv1:011') == '011'
+    assert did_to_id('did:nv:0') == '0'
     with pytest.raises(ValueError):
-        did_to_id(OCEAN_PREFIX)
+        did_to_id(NEVERMIND_PREFIX)
 
-    assert did_to_id(f'{OCEAN_PREFIX}AB*&$#') == 'AB', ''
+    assert did_to_id(f'{NEVERMIND_PREFIX}AB*&$#') == 'AB', ''
 
 
 def test_did_to_bytes():
     id_test = secrets.token_hex(32)
-    did_test = 'did:op:{}'.format(id_test)
+    did_test = 'did:nv:{}'.format(id_test)
     id_bytes = Web3.toBytes(hexstr=id_test)
 
     assert did_to_id_bytes(did_test) == id_bytes
@@ -96,7 +96,7 @@ def test_did_to_bytes():
         assert did_to_id_bytes('0x' + id_test)
 
     with pytest.raises(ValueError):
-        did_to_id_bytes('did:opx:Somebadtexstwithnohexvalue0x123456789abcdecfg')
+        did_to_id_bytes('did:nvx:Somebadtexstwithnohexvalue0x123456789abcdecfg')
 
     with pytest.raises(ValueError):
         did_to_id_bytes('')
@@ -123,4 +123,4 @@ def test_create_did():
         }
     }
     did = DID.did(proof['checksum'])
-    assert did == 'did:op:138fccf336883ae6312c9b8b375745a90be369454080e90985fb3e314ab0df25'
+    assert did == 'did:nv:138fccf336883ae6312c9b8b375745a90be369454080e90985fb3e314ab0df25'
