@@ -6,7 +6,7 @@ from web3 import Web3
 
 from common_utils_py.utils.utilities import checksum
 
-OCEAN_PREFIX = 'did:op:'
+NEVERMIND_PREFIX = 'did:nv:'
 
 
 class DID:
@@ -18,12 +18,12 @@ class DID:
         Create a did.
 
         Format of the did:
-        did:op:cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888865
+        did:nv:cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888865
 
         :param seed: The list of checksums that is allocated in the proof, dict
         :return: Asset did, str.
         """
-        return OCEAN_PREFIX + remove_0x_prefix(checksum(seed))
+        return NEVERMIND_PREFIX + remove_0x_prefix(checksum(seed))
 
 
 def did_parse(did):
@@ -64,7 +64,7 @@ def is_did_valid(did):
     return False
 
 
-def id_to_did(did_id, method='op'):
+def id_to_did(did_id, method='nv'):
     """Return an Ocean DID from given a hex id."""
     if isinstance(did_id, bytes):
         did_id = Web3.toHex(did_id)
@@ -93,7 +93,7 @@ def did_to_id_bytes(did):
     """
     Return an Ocean DID to it's correspondng hex id in bytes.
 
-    So did:op:<hex>, will return <hex> in byte format
+    So did:nv:<hex>, will return <hex> in byte format
     """
     if isinstance(did, str):
         if re.match('^[0x]?[0-9A-Za-z]+$', did):

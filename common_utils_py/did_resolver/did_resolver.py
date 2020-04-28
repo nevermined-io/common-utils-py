@@ -20,7 +20,7 @@ class DIDResolver:
         Resolve a DID to an URL/DDO or later an internal/external DID.
 
         :param did: 32 byte value or DID string to resolver, this is part of the ocean
-            DID did:op:<32 byte value>
+            DID did:nv:<32 byte value>
         :return string: URL or DDO of the resolved DID
         :return None: if the DID cannot be resolved
         :raises ValueError: if did is invalid

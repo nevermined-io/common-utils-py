@@ -7,15 +7,11 @@ from contracts_lib_py.web3_provider import Web3Provider
 from web3 import HTTPProvider, Web3
 
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
-from common_utils_py.metadata import MetadataProvider
 from common_utils_py.ddo.ddo import DDO
 from common_utils_py.did import DID
-from tests.resources.helper_functions import (
-    get_consumer_account,
-    get_ddo_sample,
-    get_metadata,
-    get_publisher_account
-)
+from common_utils_py.metadata import MetadataProvider
+from tests.resources.helper_functions import (get_consumer_account, get_ddo_sample, get_ddo_sample2,
+                                              get_metadata, get_publisher_account)
 
 
 def get_metadata_url():
@@ -33,7 +29,8 @@ def get_keeper_url():
 @pytest.fixture(autouse=True)
 def setup_all():
     Web3Provider.get_web3('http://localhost:8545')
-    ContractHandler.artifacts_path = os.path.expanduser('~/.nevermind/nevermind-contracts/artifacts')
+    ContractHandler.artifacts_path = os.path.expanduser(
+        '~/.nevermind/nevermind-contracts/artifacts')
     Keeper.get_instance()
 
 
@@ -68,6 +65,16 @@ def metadata():
 
 
 @pytest.fixture
+def ddo_sample():
+    return get_ddo_sample()
+
+
+@pytest.fixture
+def ddo_sample_2():
+    return get_ddo_sample2()
+
+
+@pytest.fixture
 def setup_agreements_environment():
     consumer_acc = get_consumer_account()
     publisher_acc = get_publisher_account()
@@ -91,7 +98,7 @@ def setup_agreements_environment():
     (access_cond_id,
      lock_cond_id,
      escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-            agreement_id, asset_id, consumer_acc.address, publisher_acc.address, keeper
+        agreement_id, asset_id, consumer_acc.address, publisher_acc.address, keeper
     )
 
     return (

@@ -8,12 +8,10 @@ from contracts_lib_py.exceptions import (
 )
 from web3 import Web3
 
-from common_utils_py.ddo.ddo import DDO
 from common_utils_py.did import DID, did_to_id
 from common_utils_py.did_resolver.did_resolver import (
     DIDResolver,
 )
-from tests.resources.helper_functions import get_resource_path
 from tests.resources.tiers import e2e_test
 
 logger = logging.getLogger()
@@ -24,16 +22,13 @@ def keeper():
 
 
 @e2e_test
-def test_did_resolver_library(publisher_account, metadata_instance):
+def test_did_resolver_library(publisher_account, metadata_instance, ddo_sample_2):
     did_registry = keeper().did_registry
     checksum_test = Web3.sha3(text='checksum')
     value_test = metadata_instance.root_url
 
     did_resolver = DIDResolver(keeper().did_registry)
-
-    sample_ddo_path = get_resource_path('ddo', 'ddo_sample1.json')
-    assert sample_ddo_path.exists(), "{} does not exist!".format(sample_ddo_path)
-    asset1 = DDO(json_filename=sample_ddo_path)
+    asset1 = ddo_sample_2
     asset1._did = DID.did({"0": "0x1098098"})
     did_registry.register(asset1.asset_id, checksum_test, url=value_test, account=publisher_account)
     metadata_instance.publish_asset_ddo(asset1)
