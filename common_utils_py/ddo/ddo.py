@@ -7,7 +7,7 @@ from common_utils_py.agreements.service_agreement import ServiceAgreement
 from common_utils_py.agreements.service_types import ServiceTypes
 from common_utils_py.ddo.public_key_base import PublicKeyBase
 from common_utils_py.ddo.public_key_rsa import PUBLIC_KEY_TYPE_ETHEREUM_ECDSA
-from common_utils_py.did import did_to_id, NEVERMIND_PREFIX
+from common_utils_py.did import did_to_id, NEVERMINED_PREFIX
 from common_utils_py.utils.utilities import get_timestamp
 from .constants import DID_DDO_CONTEXT_URL, PROOF_TYPE
 from .public_key_rsa import PUBLIC_KEY_TYPE_RSA, PublicKeyRSA
@@ -89,8 +89,8 @@ class DDO:
             raise AssertionError('"did" is already set on this DDO instance.')
         assert did and isinstance(did, str), \
             f'did must be of str type, got {did} of type {type(did)}'
-        assert did.startswith(NEVERMIND_PREFIX), \
-            f'"did" seems invalid, must start with {NEVERMIND_PREFIX} prefix.'
+        assert did.startswith(NEVERMINED_PREFIX), \
+            f'"did" seems invalid, must start with {NEVERMINED_PREFIX} prefix.'
         self._did = did
         return did
 

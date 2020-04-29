@@ -6,7 +6,7 @@ from web3 import Web3
 
 from common_utils_py.utils.utilities import checksum
 
-NEVERMIND_PREFIX = 'did:nv:'
+NEVERMINED_PREFIX = 'did:nv:'
 
 
 class DID:
@@ -23,7 +23,7 @@ class DID:
         :param seed: The list of checksums that is allocated in the proof, dict
         :return: Asset did, str.
         """
-        return NEVERMIND_PREFIX + remove_0x_prefix(checksum(seed))
+        return NEVERMINED_PREFIX + remove_0x_prefix(checksum(seed))
 
 
 def did_parse(did):
