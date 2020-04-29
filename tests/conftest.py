@@ -30,7 +30,7 @@ def get_keeper_url():
 def setup_all():
     Web3Provider.get_web3('http://localhost:8545')
     ContractHandler.artifacts_path = os.path.expanduser(
-        '~/.nevermind/nevermind-contracts/artifacts')
+        '~/.nevermined/nevermined-contracts/artifacts')
     Keeper.get_instance()
 
 

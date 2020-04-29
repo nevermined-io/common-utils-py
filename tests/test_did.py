@@ -7,7 +7,7 @@ import pytest
 from web3 import Web3
 
 from common_utils_py.did import (DID, did_parse, did_to_id, did_to_id_bytes, id_to_did, is_did_valid,
-                                 NEVERMIND_PREFIX)
+                                 NEVERMINED_PREFIX)
 from tests.resources.tiers import e2e_test
 
 TEST_SERVICE_TYPE = 'ocean-meta-storage'
@@ -16,8 +16,8 @@ TEST_SERVICE_URL = 'http://localhost:8005'
 
 @e2e_test
 def test_did():
-    assert DID.did({"0": "0x123"}).startswith(NEVERMIND_PREFIX)
-    assert len(DID.did({"0": "0x123"})) - len(NEVERMIND_PREFIX) == 64
+    assert DID.did({"0": "0x123"}).startswith(NEVERMINED_PREFIX)
+    assert len(DID.did({"0": "0x123"})) - len(NEVERMINED_PREFIX) == 64
     _id = did_to_id(DID.did({"0": "0x123"}))
     assert not _id.startswith('0x'), 'id portion of did should not have a 0x prefix.'
 
@@ -72,13 +72,13 @@ def test_did_to_id():
     assert _id is not None and len(_id) == 64, ''
 
     test_id = '%s' % secrets.token_hex(32)
-    assert did_to_id(f'{NEVERMIND_PREFIX}{test_id}') == test_id
+    assert did_to_id(f'{NEVERMINED_PREFIX}{test_id}') == test_id
     assert did_to_id('did:nv1:011') == '011'
     assert did_to_id('did:nv:0') == '0'
     with pytest.raises(ValueError):
-        did_to_id(NEVERMIND_PREFIX)
+        did_to_id(NEVERMINED_PREFIX)
 
-    assert did_to_id(f'{NEVERMIND_PREFIX}AB*&$#') == 'AB', ''
+    assert did_to_id(f'{NEVERMINED_PREFIX}AB*&$#') == 'AB', ''
 
 
 def test_did_to_bytes():
