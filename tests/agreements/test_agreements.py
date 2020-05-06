@@ -5,10 +5,8 @@ from common_utils_py.agreements.service_agreement import ServiceAgreement, Servi
 from tests.resources.helper_functions import (
     log_event
 )
-from tests.resources.tiers import e2e_test
 
 
-@e2e_test
 def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
     """Test the agreement flow according to the EscrowAccessSecretStoreTemplate."""
     (
@@ -126,7 +124,6 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
     assert keeper.token.get_token_balance(publisher_acc.address) == (pub_token_balance + price), ''
 
 
-@e2e_test
 def test_agreement_hash(ddo_sample):
     """
     This test verifies generating agreement hash using fixed inputs and ddo example.

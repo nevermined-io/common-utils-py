@@ -1,10 +1,8 @@
 from web3 import Web3
 
 from common_utils_py.utils import utilities
-from tests.resources.tiers import e2e_test
 
 
-@e2e_test
 def test_convert():
     input_text = "my text"
     text_bytes = utilities.convert_to_bytes(Web3, input_text)

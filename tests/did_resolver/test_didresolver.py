@@ -4,7 +4,7 @@ import secrets
 import pytest
 from contracts_lib_py import Keeper
 from contracts_lib_py.exceptions import (
-    OceanDIDNotFound,
+    DIDNotFound,
 )
 from web3 import Web3
 
@@ -12,7 +12,6 @@ from common_utils_py.did import DID, did_to_id
 from common_utils_py.did_resolver.did_resolver import (
     DIDResolver,
 )
-from tests.resources.tiers import e2e_test
 
 logger = logging.getLogger()
 
@@ -21,10 +20,9 @@ def keeper():
     return Keeper.get_instance()
 
 
-@e2e_test
 def test_did_resolver_library(publisher_account, metadata_instance, ddo_sample_2):
     did_registry = keeper().did_registry
-    checksum_test = Web3.sha3(text='checksum')
+    checksum_test = Web3.keccak(text='checksum')
     value_test = metadata_instance.root_url
 
     did_resolver = DIDResolver(keeper().did_registry)
@@ -43,16 +41,14 @@ def test_did_resolver_library(publisher_account, metadata_instance, ddo_sample_2
     metadata_instance.retire_asset_ddo(asset1.did)
 
 
-@e2e_test
 def test_did_not_found():
     did_resolver = DIDResolver(keeper().did_registry)
     did_id = secrets.token_hex(32)
     did_id_bytes = Web3.toBytes(hexstr=did_id)
-    with pytest.raises(OceanDIDNotFound):
+    with pytest.raises(DIDNotFound):
         did_resolver.resolve(did_id_bytes)
 
 
-@e2e_test
 def test_get_resolve_url(metadata_instance, publisher_account):
     register_account = publisher_account
     did_registry = keeper().did_registry
@@ -65,7 +61,6 @@ def test_get_resolve_url(metadata_instance, publisher_account):
     assert url == value_test
 
 
-@e2e_test
 def test_get_resolve_multiple_urls(publisher_account):
     register_account = publisher_account
     did_registry = keeper().did_registry
@@ -132,7 +127,6 @@ def test_get_resolve_multiple_urls(publisher_account):
     assert url10 == value_test10
 
 
-@e2e_test
 def test_get_did_not_valid():
     did_resolver = DIDResolver(keeper().did_registry)
     with pytest.raises(TypeError):

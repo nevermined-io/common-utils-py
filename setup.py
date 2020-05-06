@@ -23,8 +23,8 @@ install_requirements = [
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'contracts-lib-py==0.2.0',
-    'web3==4.5.0',
+    'contracts-lib-py==0.2.2',
+    'web3==5.9.0',
     'coverage',
     'docker',
     'mccabe',
