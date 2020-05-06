@@ -12,7 +12,6 @@ from common_utils_py.ddo.public_key_rsa import PUBLIC_KEY_TYPE_ETHEREUM_ECDSA, P
 from common_utils_py.did import DID, did_to_id_bytes
 from common_utils_py.utils.utilities import checksum
 from tests.resources.helper_functions import get_publisher_account
-from tests.resources.tiers import unit_test
 
 TEST_SERVICE_TYPE = 'ocean-meta-storage'
 TEST_SERVICE_URL = 'http://localhost:8005'
@@ -33,7 +32,6 @@ def test_create_ddo(metadata):
     ddo.add_authentication(did, PUBLIC_KEY_TYPE_RSA)
 
 
-@unit_test
 def test_creating_ddo_from_scratch():
     # create an empty ddo
     ddo = DDO()
@@ -70,7 +68,6 @@ def test_creating_ddo_from_scratch():
     assert len(ddo.authentications) == 1
 
 
-@unit_test
 def test_create_auth_from_json():
     auth = {'publicKey': '0x00000', 'type': 'auth-type', 'nothing': ''}
     assert (
@@ -82,7 +79,6 @@ def test_create_auth_from_json():
         DDO.create_authentication_from_json({'type': 'auth-type'})
 
 
-@unit_test
 def test_create_public_key_from_json():
     pkey = {'id': 'pkeyid', 'type': 'keytype', 'owner': '0x00009'}
     pub_key_inst = DDO.create_public_key_from_json(pkey)
@@ -99,7 +95,6 @@ def test_create_public_key_from_json():
     assert pub_key_inst.get_owner() is None
 
 
-@unit_test
 def test_load_ddo_json(ddo_sample_2):
     service = ddo_sample_2.get_service(ServiceTypes.METADATA)
     assert service
@@ -107,14 +102,12 @@ def test_load_ddo_json(ddo_sample_2):
     assert service.attributes
 
 
-@unit_test
 def test_ddo_dict(ddo_sample_2):
     assert len(ddo_sample_2.public_keys) == 1
     assert ddo_sample_2.did == \
            'did:nv:0c184915b07b44c888d468be85a9b28253e80070e5294b1aaed81c2f0264e431'
 
 
-@unit_test
 def test_find_service(ddo_sample):
     service = ddo_sample.get_service_by_index(0)
     assert service and service.type == ServiceTypes.METADATA, 'Failed to find service by integer ' \

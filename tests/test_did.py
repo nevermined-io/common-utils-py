@@ -6,15 +6,11 @@ import secrets
 import pytest
 from web3 import Web3
 
-from common_utils_py.did import (DID, did_parse, did_to_id, did_to_id_bytes, id_to_did, is_did_valid,
+from common_utils_py.did import (DID, did_parse, did_to_id, did_to_id_bytes, id_to_did,
+                                 is_did_valid,
                                  NEVERMINED_PREFIX)
-from tests.resources.tiers import e2e_test
-
-TEST_SERVICE_TYPE = 'ocean-meta-storage'
-TEST_SERVICE_URL = 'http://localhost:8005'
 
 
-@e2e_test
 def test_did():
     assert DID.did({"0": "0x123"}).startswith(NEVERMINED_PREFIX)
     assert len(DID.did({"0": "0x123"})) - len(NEVERMINED_PREFIX) == 64
