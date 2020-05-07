@@ -75,6 +75,12 @@ class DDO:
         return metadata_service.attributes if metadata_service else None
 
     @property
+    def authorization(self):
+        """Get the metadata service."""
+        authorization_service = self.get_service(ServiceTypes.AUTHORIZATION)
+        return authorization_service
+
+    @property
     def created(self):
         return self._created
 
