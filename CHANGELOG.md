@@ -1,6 +1,10 @@
 History
 =======
 
+0.2.3 (May, 2020)
+-------------------------
+* [#9](https://github.com/keyko-io/common-utils-py/issues/9) Adding utility functions to encrypt/descrypt via ECDSA & RSA
+
 0.2.2 (May, 2020)
 -------------------------
 * [#7](https://github.com/keyko-io/common-utils-py/pull/7) Adding support to different authorization services in the DDO
