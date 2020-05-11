@@ -17,6 +17,9 @@ with open('CHANGELOG.md') as history_file:
 # or pip install -e .
 install_requirements = [
     'requests==2.21.0',
+    'eciespy==0.3.5',
+    'eth-keys==0.3.3',
+    'rsa==4.0',
 ]
 
 # Required to run setup.py:
@@ -79,6 +82,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/keyko-io/common-utils-py',
-    version='0.2.2',
+    version='0.2.3',
     zip_safe=False,
 )
