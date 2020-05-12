@@ -1,41 +1,41 @@
 """Exceptions for common_utils_py."""
 
 
-class OceanInvalidContractAddress(Exception):
+class InvalidContractAddress(Exception):
     """Raised when an invalid address is passed to the contract loader."""
 
 
-class OceanDIDUnknownValueType(Exception):
+class DIDUnknownValueType(Exception):
     """Raised when a requested DID or a DID in the chain cannot be found."""
 
 
-class OceanDIDAlreadyExist(Exception):
+class DIDAlreadyExist(Exception):
     """Raised when a requested DID is already published in OceanDB."""
 
 
-class OceanInvalidMetadata(Exception):
+class InvalidMetadata(Exception):
     """Raised when some value in the metadata is invalid."""
 
 
-class OceanInvalidServiceAgreementSignature(Exception):
+class InvalidServiceAgreementSignature(Exception):
     """Raised when the SLA signature is not valid."""
 
 
-class OceanServiceAgreementExists(Exception):
+class ServiceAgreementExists(Exception):
     """Raised when the SLA already exists."""
 
 
-class OceanInitializeServiceAgreementError(Exception):
+class InitializeServiceAgreementError(Exception):
     """Error on invoking purchase endpoint"""
 
 
-class OceanEncryptAssetUrlsError(Exception):
+class EncryptAssetUrlsError(Exception):
     """Error invoking the encrypt endpoint"""
 
 
-class OceanServiceConsumeError(Exception):
+class ServiceConsumeError(Exception):
     """ Error invoking a purchase endpoint"""
 
 
-class OceanInvalidAgreementTemplate(Exception):
+class InvalidAgreementTemplate(Exception):
     """ Error when agreement template is not valid or not approved"""
