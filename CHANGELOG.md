@@ -1,6 +1,10 @@
 History
 =======
 
+0.2.4(May, 2020)
+-------------------------
+* [#11](https://github.com/keyko-io/common-utils-py/pull/11) Udpate service factory to work with the same structure in the authorization
+
 0.2.3 (May, 2020)
 -------------------------
 * [#9](https://github.com/keyko-io/common-utils-py/issues/9) Adding utility functions to encrypt/descrypt via ECDSA & RSA

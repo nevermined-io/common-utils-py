@@ -12,3 +12,9 @@ class ServiceTypesIndices:
     DEFAULT_AUTHORIZATION_INDEX = 2
     DEFAULT_ACCESS_INDEX = 3
     DEFAULT_COMPUTING_INDEX = 4
+
+
+class ServiceAuthorizationTypes:
+    SECRET_STORE = 'SecretStore'
+    PSK_ECDSA = 'PSK-ECDSA'
+    PSK_RSA = 'PSK-RSA'
