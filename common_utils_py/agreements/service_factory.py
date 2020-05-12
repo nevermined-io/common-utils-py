@@ -23,17 +23,16 @@ class ServiceDescriptor(object):
                 {'attributes': attributes, 'serviceEndpoint': service_endpoint})
 
     @staticmethod
-    def authorization_service_descriptor(attributes, service_endpoint, service):
+    def authorization_service_descriptor(attributes, service_endpoint):
         """
         Authorization service descriptor.
 
         :param attributes: attributes of the authorization service, dict
         :param service_endpoint: identifier of the service inside the asset DDO, str
-        :param service: authorization service type (`SecretStore`, `PSK-ECDSA`, `PSK-RSA`)
         :return: Service descriptor.
         """
         return (ServiceTypes.AUTHORIZATION,
-                {'service': service, 'config': attributes, 'serviceEndpoint': service_endpoint})
+                {'attributes': attributes, 'serviceEndpoint': service_endpoint})
 
     @staticmethod
     def access_service_descriptor(attributes, service_endpoint):
@@ -106,9 +105,8 @@ class ServiceFactory(object):
 
         elif service_type == ServiceTypes.AUTHORIZATION:
             return ServiceFactory.build_authorization_service(
-                kwargs['config'],
-                kwargs['serviceEndpoint'],
-                kwargs['service']
+                kwargs['attributes'],
+                kwargs['serviceEndpoint']
             )
 
         elif service_type == ServiceTypes.ASSET_ACCESS:
@@ -139,17 +137,16 @@ class ServiceFactory(object):
                        )
 
     @staticmethod
-    def build_authorization_service(attributes, service_endpoint, service):
+    def build_authorization_service(attributes, service_endpoint):
         """
         Build an authorization service.
 
         :param attributes: attributes of authorization service, dict
         :param service_endpoint: identifier of the service inside the asset DDO, str
-        :param service: service type
         :return: Service
         """
         return Service(service_endpoint, ServiceTypes.AUTHORIZATION,
-                       values={'config': attributes, 'service': service},
+                       values={'attributes': attributes},
                        index=ServiceTypesIndices.DEFAULT_AUTHORIZATION_INDEX)
 
     @staticmethod
