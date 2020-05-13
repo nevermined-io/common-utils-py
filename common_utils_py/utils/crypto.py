@@ -10,7 +10,6 @@ from eth_keys import keys
 from eth_utils import to_hex
 from web3.auto import w3
 
-
 BLOCK_SIZE = 16
 pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
 unpad = lambda s: s[:-ord(s[len(s) - 1:])]
@@ -89,14 +88,11 @@ def rsa_encryption(public_key, data):
     encrypted_data = aes_encryption(data, aes_key)
     encrypted_aes_key = rsa.encrypt(aes_key, public_key)
     return encrypted_data, encrypted_aes_key
-    # return rsa.encrypt(data, public_key)
 
 
 def rsa_decryption(private_key, encrypted_data, encrypted_aes_key):
     aes_key = rsa.decrypt(encrypted_aes_key, private_key)
     return aes_decryption(encrypted_data, aes_key)
-    # return rsa.decrypt(aes_key, private_key)
-    # return rsa.decrypt(encrypted_data, private_key)
 
 
 def get_aes_private_key(passphrase):
