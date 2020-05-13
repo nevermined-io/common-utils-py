@@ -1,11 +1,15 @@
 History
 =======
 
-0.2.5(May, 2020)
+0.2.6 (May, 2020)
+-------------------------
+* [#13](https://github.com/keyko-io/common-utils-py/pull/13) Fix in RSA flow
+
+0.2.5 (May, 2020)
 -------------------------
 * [#12](https://github.com/keyko-io/common-utils-py/pull/12) Adding AES encryption & decryption + RSA support for long messages
 
-0.2.4(May, 2020)
+0.2.4 (May, 2020)
 -------------------------
 * [#11](https://github.com/keyko-io/common-utils-py/pull/11) Udpate service factory to work with the same structure in the authorization
 
