@@ -2,8 +2,7 @@ from ecies import encrypt, decrypt
 from ecies.utils import generate_eth_key
 
 from common_utils_py.utils.crypto import decryption, encryption, get_keys_from_file, get_rsa_public_key_from_file, \
-    get_rsa_private_key_from_file, rsa_encryption, rsa_decryption
-
+    get_rsa_private_key_from_file, rsa_encryption, rsa_decryption, aes_encryption, aes_decryption
 
 PROVIDER_KEY_FILE = 'tests/resources/data/publisher_key_file.json'
 PROVIDER_PASSWORD = 'node0'
@@ -42,5 +41,31 @@ def test_rsa_encryption_decryption():
     priv_key = get_rsa_private_key_from_file(RSA_PRIVKEY_FILE)
 
     data = b'hi there'
-    assert data == rsa_decryption(priv_key, rsa_encryption(pub_key, data))
-    assert b'it should fail' != rsa_decryption(priv_key, rsa_encryption(pub_key, b'kdas'))
+    encrypted_data, encrypted_aes_key = rsa_encryption(pub_key, data)
+    assert data == rsa_decryption(priv_key, encrypted_data, encrypted_aes_key)
+
+    encrypted_data, encrypted_aes_key = rsa_encryption(pub_key, b'kdas')
+    assert b'it should fail' != rsa_decryption(priv_key, encrypted_data, encrypted_aes_key)
+
+
+def test_rsa_encryption_decryption_long():
+    pub_key = get_rsa_public_key_from_file(RSA_PUBKEY_FILE)
+    priv_key = get_rsa_private_key_from_file(RSA_PRIVKEY_FILE)
+
+    data = b'hi there, this is a much longer message that should failing during the encryption if you' \
+           b'dont use an alternative approach. So this test tries to check the new flow works with ' \
+           b'longer messages'
+    encrypted_data, encrypted_aes_key = rsa_encryption(pub_key, data)
+    assert data == rsa_decryption(priv_key, encrypted_data, encrypted_aes_key)
+
+
+def test_aes_encryption_decryption():
+    passphrase = 'my passphrase'
+
+    data = b'hi there, this is a much longer message that should failing during the encryption if you' \
+           b'dont use an alternative approach. So this test tries to check the new flow works with ' \
+           b'longer messages'
+    encrypted_data = aes_encryption(data, passphrase)
+    assert data == aes_decryption(encrypted_data, passphrase)
+
+
