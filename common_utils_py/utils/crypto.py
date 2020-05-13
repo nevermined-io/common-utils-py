@@ -36,7 +36,7 @@ def get_ecdsa_public_key_from_file(keyfile_path, keyfile_password):
     return to_hex(pk.public_key._raw_key)  # hex string
 
 
-def ecdsa_encription_from_file(message, provider_key_file, provider_password):
+def ecdsa_encryption_from_file(message, provider_key_file, provider_password):
     public_key_hex = get_ecdsa_public_key_from_file(provider_key_file, provider_password)
     encrypted_message = encryption(public_key_hex, message.encode())
     hash = to_hex(encrypted_message)
@@ -49,17 +49,11 @@ def ecdsa_decryption(message, provider_key_file, provider_password):
     return result.decode()
 
 
-def rsa_encription_from_file(message, rsa_public_key_file):
+def rsa_encryption_from_file(message, rsa_public_key_file):
     pub_key = get_rsa_public_key_from_file(rsa_public_key_file)
-    encrypted_message = rsa_encryption(pub_key, message.encode())
-    hash = to_hex(encrypted_message)
+    encrypted_message, aes_encrypted_key = rsa_encryption(pub_key, message.encode())
+    hash = to_hex(encrypted_message) + '|' + to_hex(aes_encrypted_key)
     return hash, get_content_keyfile_from_path(rsa_public_key_file)
-
-
-def rsa_decryption(message, rsa_private_key_file):
-    priv_key = get_rsa_private_key_from_file(rsa_private_key_file)
-    result = rsa_decryption(priv_key, message.encode())
-    return result.decode()
 
 
 def get_content_keyfile_from_path(keyfile_path):
@@ -88,6 +82,15 @@ def rsa_encryption(public_key, data):
     encrypted_data = aes_encryption(data, aes_key)
     encrypted_aes_key = rsa.encrypt(aes_key, public_key)
     return encrypted_data, encrypted_aes_key
+
+
+def rsa_decryption(message, rsa_private_key_file):
+    if '|' in message:  # The message includes an encrypted AES key
+        tokens = message.split('|')
+        return rsa_decryption(rsa_private_key_file, tokens[0], tokens[1])
+    priv_key = get_rsa_private_key_from_file(rsa_private_key_file)
+    result = rsa_decryption(priv_key, message.encode())
+    return result.decode()
 
 
 def rsa_decryption(private_key, encrypted_data, encrypted_aes_key):
@@ -125,4 +128,3 @@ def encryption(public_key_hex, data):
 
 def decryption(private_key_hex, encrypted_data):
     return decrypt(private_key_hex, encrypted_data)
-
