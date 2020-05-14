@@ -45,7 +45,7 @@ def ecdsa_encryption_from_file(message, provider_key_file, provider_password):
 
 def ecdsa_decryption(message, provider_key_file, provider_password):
     (public_key_hex, private_key_hex) = get_keys_from_file(provider_key_file, provider_password)
-    result = decryption(private_key_hex, message)
+    result = decryption(private_key_hex, to_bytes(hexstr=message))
     return result.decode()
 
 
