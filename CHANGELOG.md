@@ -1,6 +1,10 @@
 History
 =======
 
+0.2.8 (May, 2020)
+-------------------------
+[#14](https://github.com/keyko-io/common-utils-py/pull/14) Fix issue in rsa and ecdsa decryption
+
 0.2.6 (May, 2020)
 -------------------------
 * [#13](https://github.com/keyko-io/common-utils-py/pull/13) Fix in RSA flow
