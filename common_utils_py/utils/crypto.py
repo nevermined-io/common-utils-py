@@ -5,9 +5,9 @@ import rsa
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
-from ecies import encrypt, decrypt
+from ecies import decrypt, encrypt
 from eth_keys import keys
-from eth_utils import to_hex
+from eth_utils import to_bytes, to_hex
 from web3.auto import w3
 
 BLOCK_SIZE = 16
@@ -84,12 +84,13 @@ def rsa_encryption(public_key, data):
     return encrypted_data, encrypted_aes_key
 
 
-def rsa_decryption(message, rsa_private_key_file):
+def rsa_decryption_aes(message, rsa_private_key_file):
     if '|' in message:  # The message includes an encrypted AES key
         tokens = message.split('|')
-        return rsa_decryption(rsa_private_key_file, tokens[0], tokens[1])
+        return rsa_decryption(get_rsa_private_key_from_file(rsa_private_key_file),
+                              to_bytes(hexstr=tokens[0]), to_bytes(hexstr=tokens[1]))
     priv_key = get_rsa_private_key_from_file(rsa_private_key_file)
-    result = rsa_decryption(priv_key, message.encode())
+    result = rsa.decrypt(to_bytes(hexstr=message), priv_key)
     return result.decode()
 
 
