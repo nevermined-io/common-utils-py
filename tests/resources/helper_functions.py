@@ -29,21 +29,21 @@ def get_consumer_account():
 
 def get_ddo_sample():
     return DDO(json_text=json.dumps(json.loads(urlopen(
-        "https://raw.githubusercontent.com/nevermined-io/docs/master/architecture/specs"
+        "https://raw.githubusercontent.com/nevermined-io/docs/master/docs/architecture/specs"
         "/examples/access/v0.1/ddo1.json").read().decode(
         'utf-8'))))
 
 
 def get_ddo_sample2():
     return DDO(json_text=json.dumps(json.loads(urlopen(
-        "https://raw.githubusercontent.com/nevermined-io/docs/master/architecture/specs"
+        "https://raw.githubusercontent.com/nevermined-io/docs/master/docs/architecture/specs"
         "/examples/access/v0.1/ddo2.json").read().decode(
         'utf-8'))))
 
 
 def get_metadata():
     metadata = urlopen(
-        "https://raw.githubusercontent.com/nevermined-io/docs/master/architecture/specs"
+        "https://raw.githubusercontent.com/nevermined-io/docs/master/docs/architecture/specs"
         "/examples/metadata/v0.1/metadata1.json").read().decode(
         'utf-8')
     return json.loads(metadata)
