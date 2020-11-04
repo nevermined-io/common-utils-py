@@ -1,7 +1,7 @@
-[![banner](https://raw.githubusercontent.com/keyko-io/assets/master/images/logo/small/keyko_logo@2x-100.jpg)](https://keyko.io)
+[![banner](https://raw.githubusercontent.com/nevermined-io/assets/main/images/logo/banner_logo.png)](https://nevermined.io)
 
-# common-utils-py
-Provides common functions to interact with the ocean system.
+# Nevermined Python common utils 
+Provides common functions to interact with Nevermined ecosystem
 
 [![PyPI](https://img.shields.io/pypi/v/common-utils-py.svg)](https://pypi.org/project/common-utils-py/)
 

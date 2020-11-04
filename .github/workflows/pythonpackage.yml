@@ -25,7 +25,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        git clone https://github.com/keyko-io/nevermined-tools
+        git clone https://github.com/nevermined-io/tools nevermined-tools
         cd nevermined-tools
         export KEEPER_VERSION=v0.2.0
         export METADATA_VERSION=latest
