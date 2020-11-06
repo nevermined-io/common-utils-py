@@ -28,7 +28,6 @@ jobs:
         docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
         git clone https://github.com/nevermined-io/tools nevermined-tools
         cd nevermined-tools
-        export KEEPER_VERSION=v0.2.0
         export METADATA_VERSION=latest
         rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
         bash -x start_nevermined.sh --no-commons  --no-gateway --no-secret-store --no-faucet --no-acl-contract 2>&1 > start_nevermined.log &
