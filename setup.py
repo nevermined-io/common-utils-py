@@ -21,7 +21,8 @@ install_requirements = [
     'eth-keys==0.3.3',
     'rsa==4.0',
     # secp256k1 support was added recently and the latest release does not included it yet
-    'authlib @ git+https://github.com/lepture/authlib.git@ffeeaa9fd7b5bc4ea7cae9fcf0c2ad9d7f5cf22a',
+    # so for now we are going to used a fork
+    'nevermined-authlib==0.1.0'
 ]
 
 # Required to run setup.py:
@@ -84,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/nevermined-io/common-utils-py',
-    version='0.4.0',
+    version='0.4.1',
     zip_safe=False,
 )
