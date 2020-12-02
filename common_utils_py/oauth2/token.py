@@ -35,6 +35,7 @@ class NeverminedJWTBearerGrant(JWTBearerGrant):
                 'validate': validate_did
             },
             'execution_id': {
+                'essential': False,
                 'validate': validate_execution_id
             }
         }
