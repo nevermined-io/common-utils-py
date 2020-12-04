@@ -1,7 +1,7 @@
 """DID Lib to do DID's and DDO's."""
 import re
 
-from eth_utils import remove_0x_prefix
+from eth_utils import add_0x_prefix, remove_0x_prefix
 from web3 import Web3
 
 from common_utils_py.utils.utilities import checksum
@@ -91,7 +91,7 @@ def did_to_id(did):
 
 def did_to_id_bytes(did):
     """
-    Return an Ocean DID to it's correspondng hex id in bytes.
+    Return an DID to it's corresponding hex id in bytes.
 
     So did:nv:<hex>, will return <hex> in byte format
     """
@@ -112,3 +112,15 @@ def did_to_id_bytes(did):
             f'Unknown did format, expected str or bytes, got {did} of type {type(did)}'
         )
     return id_bytes
+
+
+def convert_to_bytes(did):
+    if isinstance(did, str):
+        if re.match('^[0x]?[0-9A-Za-z]+$', did):
+            return Web3.toBytes(hexstr=add_0x_prefix(did))
+        else:
+            return Web3.toBytes(hexstr=add_0x_prefix(did_to_id(did)))
+    elif isinstance(did, bytes):
+        return did
+    else:
+        raise ValueError(f'The id {did} is not in a valid format.')
