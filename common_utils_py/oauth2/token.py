@@ -37,6 +37,12 @@ class NeverminedJWTBearerGrant(JWTBearerGrant):
             'execution_id': {
                 'essential': False,
                 'validate': validate_execution_id
+            },
+            'eths': {
+                'essential': False,
+                'values': [
+                    "personal"
+                ]
             }
         }
         claims.update(private_claims)
