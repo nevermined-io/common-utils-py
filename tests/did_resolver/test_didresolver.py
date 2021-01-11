@@ -64,16 +64,16 @@ def test_get_resolve_url(metadata_instance, publisher_account):
 def test_get_resolve_multiple_urls(publisher_account):
     register_account = publisher_account
     did_registry = keeper().did_registry
-    did = DID.did({"0": "0x1"})
-    did2 = DID.did({"0": "0x2"})
-    did3 = DID.did({"0": "0x3"})
-    did4 = DID.did({"0": "0x4"})
-    did5 = DID.did({"0": "0x5"})
-    did6 = DID.did({"0": "0x6"})
-    did7 = DID.did({"0": "0x7"})
-    did8 = DID.did({"0": "0x8"})
-    did9 = DID.did({"0": "0x9"})
-    did10 = DID.did({"0": "0x10"})
+    did = DID.did({"0": "0x2"})
+    did2 = DID.did({"0": "0x3"})
+    did3 = DID.did({"0": "0x4"})
+    did4 = DID.did({"0": "0x5"})
+    did5 = DID.did({"0": "0x6"})
+    did6 = DID.did({"0": "0x7"})
+    did7 = DID.did({"0": "0x8"})
+    did8 = DID.did({"0": "0x9"})
+    did9 = DID.did({"0": "0x10"})
+    did10 = DID.did({"0": "0x11"})
     value_test = 'http://localhost:5000'
     value_test2 = 'http://localhost:5001'
     value_test3 = 'http://localhost:5002'
