@@ -2,6 +2,7 @@ from contracts_lib_py.utils import generate_multi_value_hash
 from web3 import Web3
 
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
+from common_utils_py.utils.utilities import to_checksum_addresses
 from tests.resources.helper_functions import (
     log_event
 )
@@ -108,7 +109,7 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
     assert event, 'no event for AccessSecretStoreCondition.Fulfilled'
     assert keeper.condition_manager.get_condition_state(access_cond_id) == 2, ''
 
-    checksum_addresses = keeper.escrow_reward_condition.to_checksum_addresses(receivers)
+    checksum_addresses = to_checksum_addresses(receivers)
 
     # Fulfill escrow_reward_condition
     tx_hash = keeper.escrow_reward_condition.fulfill(
