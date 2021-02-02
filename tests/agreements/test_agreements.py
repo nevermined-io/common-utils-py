@@ -6,11 +6,11 @@ from tests.resources.helper_functions import (
     log_event
 )
 
-
 def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
     """Test the agreement flow according to the EscrowAccessSecretStoreTemplate."""
     (
         keeper,
+        ddo,
         publisher_acc,
         consumer_acc,
         agreement_id,
@@ -31,6 +31,12 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
           'consumer', consumer_acc.address,
           'publisher', publisher_acc.address
           )
+
+    amounts = service_agreement.get_param_value_by_name('_amounts')
+    receivers = service_agreement.get_param_value_by_name('_receivers')
+
+    receiver_0_starting_balance = keeper.token.get_token_balance(
+        keeper.agreement_manager.to_checksum_address(receivers[0]))
 
     assert keeper.template_manager.is_template_approved(
         keeper.escrow_access_secretstore_template.address), 'Template is not approved.'
@@ -102,10 +108,12 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
     assert event, 'no event for AccessSecretStoreCondition.Fulfilled'
     assert keeper.condition_manager.get_condition_state(access_cond_id) == 2, ''
 
+    checksum_addresses = keeper.escrow_reward_condition.to_checksum_addresses(receivers)
+
     # Fulfill escrow_reward_condition
     tx_hash = keeper.escrow_reward_condition.fulfill(
-        agreement_id, price, publisher_acc.address,
-        consumer_acc.address, lock_cond_id,
+        agreement_id, amounts, checksum_addresses,
+        publisher_acc.address, lock_cond_id,
         access_cond_id, publisher_acc
     )
     keeper.escrow_reward_condition.get_tx_receipt(tx_hash)
@@ -116,12 +124,17 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
         (),
         wait=True
     )
+
+
+
     assert event, 'no event for EscrowReward.Fulfilled'
     assert keeper.condition_manager.get_condition_state(escrow_cond_id) == 2, ''
     assert keeper.token.get_token_balance(
         keeper.escrow_reward_condition.address
     ) == starting_balance, ''
-    assert keeper.token.get_token_balance(publisher_acc.address) == (pub_token_balance + price), ''
+
+    assert keeper.token.get_token_balance(
+        keeper.agreement_manager.to_checksum_address(receivers[0])) == (receiver_0_starting_balance + amounts[0]), ''
 
 
 def test_agreement_hash(ddo_sample):

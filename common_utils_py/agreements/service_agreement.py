@@ -1,5 +1,6 @@
 from collections import namedtuple
 
+from contracts_lib_py import utils
 from common_utils_py.agreements.service_agreement_template import ServiceAgreementTemplate
 from common_utils_py.agreements.service_types import ServiceTypes, ServiceTypesIndices
 from common_utils_py.ddo.service import Service
@@ -50,10 +51,27 @@ class ServiceAgreement(Service):
 
         :return: Int
         """
+        price = 0
+        _amounts = self.get_param_value_by_name('_amounts')
+        for amount in _amounts:
+            price = price + int(amount)
+        # for cond in self.conditions:
+        #     for p in cond.parameters:
+        #         if p.name == '_amounts':
+        #             for amount in p.value:
+        #                 price = price + int(amount)
+        return price
+
+    def get_param_value_by_name(self, name):
+        """
+        Return the value from the conditions parameters given the param name.
+
+        :return: Object
+        """
         for cond in self.conditions:
             for p in cond.parameters:
-                if p.name == '_amount':
-                    return int(p.value)
+                if p.name == name:
+                    return p.value
 
     @property
     def service_endpoint(self):
@@ -221,11 +239,22 @@ class ServiceAgreement(Service):
             raise Exception(
                 'Error generating the condition ids, the service_agreement type is not valid.')
 
+        amounts = self.get_param_value_by_name('_amounts')
+        receivers = self.get_param_value_by_name('_receivers')
+        checksum_addresses = keeper.escrow_reward_condition.to_checksum_addresses(receivers)
+        # values_hash = keeper.escrow_reward_condition.hash_values(amounts, receivers, publisher_address, lock_cond_id, access_or_compute_id)
         escrow_cond_id = keeper.escrow_reward_condition.generate_id(
             agreement_id,
             self.condition_by_name['escrowReward'].param_types,
-            [self.get_price(), publisher_address, consumer_address,
-             lock_cond_id, access_or_compute_id]).hex()
+            [amounts, checksum_addresses, publisher_address, lock_cond_id, access_or_compute_id]
+        ).hex()
+        # escrow_cond_id = utils.generate_multi_value_hash(
+        #     ['bytes32', 'address', 'bytes32'],
+        #     [agreement_id, publisher_address, values_hash]
+        # ).hex()
+        # escrow_cond_id = keeper.escrow_reward_condition.generate_escrow_reward_id(
+        #     agreement_id,
+        #     amounts, receivers, lock_cond_id, access_or_compute_id).hex()
 
         return access_or_compute_id, lock_cond_id, escrow_cond_id
 

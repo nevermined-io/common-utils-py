@@ -29,8 +29,8 @@ install_requirements = [
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'contracts-lib-py==0.5.0',
-    'web3==5.9.0',
+    'contracts-lib-py==0.5.5',
+    'web3==5.13.0',
     'coverage',
     'docker',
     'mccabe',
@@ -61,7 +61,7 @@ setup(
     author="nevermined-io",
     author_email='root@nevermined.io',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
@@ -85,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/nevermined-io/common-utils-py',
-    version='0.4.3',
+    version='0.4.4',
     zip_safe=False,
 )

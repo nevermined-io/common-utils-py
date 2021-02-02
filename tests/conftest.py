@@ -12,7 +12,7 @@ from common_utils_py.did import DID
 from common_utils_py.metadata import MetadataProvider
 from tests.resources.helper_functions import (get_consumer_account, get_ddo_sample, get_ddo_sample2,
                                               get_metadata, get_publisher_account)
-
+from common_utils_py.utils.utilities import generate_prefixed_id
 
 def get_metadata_url():
     if os.getenv('METADATA_URL'):
@@ -81,7 +81,9 @@ def setup_agreements_environment():
     keeper = Keeper.get_instance()
 
     ddo = get_ddo_sample()
-    ddo._did = DID.did({"0": "0x12341234"})
+
+    ddo._did = DID.did({"0": generate_prefixed_id()})
+
     keeper.did_registry.register(
         ddo.asset_id,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
@@ -103,6 +105,7 @@ def setup_agreements_environment():
 
     return (
         keeper,
+        ddo,
         publisher_acc,
         consumer_acc,
         agreement_id,

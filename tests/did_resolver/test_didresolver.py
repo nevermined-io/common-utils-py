@@ -12,6 +12,7 @@ from common_utils_py.did import DID, did_to_id
 from common_utils_py.did_resolver.did_resolver import (
     DIDResolver,
 )
+from common_utils_py.utils.utilities import generate_prefixed_id
 
 logger = logging.getLogger()
 
@@ -27,7 +28,8 @@ def test_did_resolver_library(publisher_account, metadata_instance, ddo_sample_2
 
     did_resolver = DIDResolver(keeper().did_registry)
     asset1 = ddo_sample_2
-    asset1._did = DID.did({"0": "0x1098098"})
+    asset1._did = DID.did({"0": generate_prefixed_id()})
+    #    DID.did({"0": "0x1098098"})
     did_registry.register(asset1.asset_id, checksum_test, url=value_test, account=publisher_account)
     metadata_instance.publish_asset_ddo(asset1)
 
@@ -52,7 +54,7 @@ def test_did_not_found():
 def test_get_resolve_url(metadata_instance, publisher_account):
     register_account = publisher_account
     did_registry = keeper().did_registry
-    did = DID.did({"0": "0x1"})
+    did = DID.did({"0": generate_prefixed_id()})
     asset_id = did_to_id(did)
     value_test = metadata_instance.root_url
     did_resolver = DIDResolver(keeper().did_registry)
@@ -64,16 +66,16 @@ def test_get_resolve_url(metadata_instance, publisher_account):
 def test_get_resolve_multiple_urls(publisher_account):
     register_account = publisher_account
     did_registry = keeper().did_registry
-    did = DID.did({"0": "0x2"})
-    did2 = DID.did({"0": "0x3"})
-    did3 = DID.did({"0": "0x4"})
-    did4 = DID.did({"0": "0x5"})
-    did5 = DID.did({"0": "0x6"})
-    did6 = DID.did({"0": "0x7"})
-    did7 = DID.did({"0": "0x8"})
-    did8 = DID.did({"0": "0x9"})
-    did9 = DID.did({"0": "0x10"})
-    did10 = DID.did({"0": "0x11"})
+    did = DID.did({"0": generate_prefixed_id()})
+    did2 = DID.did({"0": generate_prefixed_id()})
+    did3 = DID.did({"0": generate_prefixed_id()})
+    did4 = DID.did({"0": generate_prefixed_id()})
+    did5 = DID.did({"0": generate_prefixed_id()})
+    did6 = DID.did({"0": generate_prefixed_id()})
+    did7 = DID.did({"0": generate_prefixed_id()})
+    did8 = DID.did({"0": generate_prefixed_id()})
+    did9 = DID.did({"0": generate_prefixed_id()})
+    did10 = DID.did({"0": generate_prefixed_id()})
     value_test = 'http://localhost:5000'
     value_test2 = 'http://localhost:5001'
     value_test3 = 'http://localhost:5002'
