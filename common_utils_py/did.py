@@ -65,7 +65,7 @@ def is_did_valid(did):
 
 
 def id_to_did(did_id, method='nv'):
-    """Return an Ocean DID from given a hex id."""
+    """Return an Nevermined DID from given a hex id."""
     if isinstance(did_id, bytes):
         did_id = Web3.toHex(did_id)
 

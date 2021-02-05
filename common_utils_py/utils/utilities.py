@@ -82,7 +82,7 @@ def to_checksum_addresses(addresses):
     """
     Calculate the checksum of an addresses array
 
-    :param address: Address, hex str[]
+    :param addresses: Address, hex str[]
     :return: address, hex str[]
     """
 
