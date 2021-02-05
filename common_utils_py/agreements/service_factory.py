@@ -193,11 +193,19 @@ class ServiceFactory(object):
             '_amount': attributes['main']['price'],
             '_rewardAddress': reward_contract_address
         }
+
+        try:
+            param_map['_amounts'] = attributes['main']['_amounts']
+            param_map['_receivers'] = attributes['main']['_receivers']
+        except KeyError:
+            pass
+        
         sla_template_dict = get_sla_template()
         sla_template = ServiceAgreementTemplate(template_id, ServiceTypes.ASSET_ACCESS,
                                                 attributes['main']['creator'], sla_template_dict)
         sla_template.template_id = template_id
         conditions = sla_template.conditions[:]
+        
         for cond in conditions:
             for param in cond.parameters:
                 param.value = param_map.get(param.name, '')
@@ -232,6 +240,13 @@ class ServiceFactory(object):
             '_amount': attributes['main']['price'],
             '_rewardAddress': reward_contract_address
         }
+
+        try:
+            param_map['_amounts'] = attributes['main']['_amounts']
+            param_map['_receivers'] = attributes['main']['_receivers']
+        except KeyError:
+            pass
+
         sla_template_dict = get_sla_template(ServiceTypes.CLOUD_COMPUTE)
         sla_template = ServiceAgreementTemplate(template_id, ServiceTypes.CLOUD_COMPUTE,
                                                 attributes['main']['creator'], sla_template_dict)

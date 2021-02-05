@@ -5,6 +5,8 @@ import json
 import uuid
 from datetime import datetime
 
+from web3 import Web3
+
 
 def generate_new_id():
     """
@@ -74,3 +76,17 @@ def checksum(seed):
 def get_timestamp():
     """Return the current system timestamp."""
     return f'{datetime.utcnow().replace(microsecond=0).isoformat()}Z'
+
+
+def to_checksum_addresses(addresses):
+    """
+    Calculate the checksum of an addresses array
+
+    :param addresses: Address, hex str[]
+    :return: address, hex str[]
+    """
+
+    hash = []
+    for address in addresses:
+        hash.append(Web3.toChecksumAddress(address))
+    return hash

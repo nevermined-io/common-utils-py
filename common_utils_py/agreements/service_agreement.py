@@ -5,6 +5,7 @@ from common_utils_py.agreements.service_agreement_template import ServiceAgreeme
 from common_utils_py.agreements.service_types import ServiceTypes, ServiceTypesIndices
 from common_utils_py.ddo.service import Service
 from common_utils_py.utils.utilities import generate_prefixed_id
+from common_utils_py.utils.utilities import to_checksum_addresses
 
 Agreement = namedtuple('Agreement', ('template', 'conditions'))
 
@@ -241,20 +242,12 @@ class ServiceAgreement(Service):
 
         amounts = self.get_param_value_by_name('_amounts')
         receivers = self.get_param_value_by_name('_receivers')
-        checksum_addresses = keeper.escrow_reward_condition.to_checksum_addresses(receivers)
-        # values_hash = keeper.escrow_reward_condition.hash_values(amounts, receivers, publisher_address, lock_cond_id, access_or_compute_id)
+        checksum_addresses = to_checksum_addresses(receivers)
         escrow_cond_id = keeper.escrow_reward_condition.generate_id(
             agreement_id,
             self.condition_by_name['escrowReward'].param_types,
             [amounts, checksum_addresses, publisher_address, lock_cond_id, access_or_compute_id]
         ).hex()
-        # escrow_cond_id = utils.generate_multi_value_hash(
-        #     ['bytes32', 'address', 'bytes32'],
-        #     [agreement_id, publisher_address, values_hash]
-        # ).hex()
-        # escrow_cond_id = keeper.escrow_reward_condition.generate_escrow_reward_id(
-        #     agreement_id,
-        #     amounts, receivers, lock_cond_id, access_or_compute_id).hex()
 
         return access_or_compute_id, lock_cond_id, escrow_cond_id
 

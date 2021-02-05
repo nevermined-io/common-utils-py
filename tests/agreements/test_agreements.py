@@ -1,10 +1,15 @@
+import pytest
+from contracts_lib_py import Keeper
 from contracts_lib_py.utils import generate_multi_value_hash
 from web3 import Web3
 
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
+from common_utils_py.utils.utilities import to_checksum_addresses
 from tests.resources.helper_functions import (
     log_event
 )
+
+
 
 def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
     """Test the agreement flow according to the EscrowAccessSecretStoreTemplate."""
@@ -108,7 +113,7 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
     assert event, 'no event for AccessSecretStoreCondition.Fulfilled'
     assert keeper.condition_manager.get_condition_state(access_cond_id) == 2, ''
 
-    checksum_addresses = keeper.escrow_reward_condition.to_checksum_addresses(receivers)
+    checksum_addresses = to_checksum_addresses(receivers)
 
     # Fulfill escrow_reward_condition
     tx_hash = keeper.escrow_reward_condition.fulfill(
@@ -124,8 +129,6 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
         (),
         wait=True
     )
-
-
 
     assert event, 'no event for EscrowReward.Fulfilled'
     assert keeper.condition_manager.get_condition_state(escrow_cond_id) == 2, ''
@@ -173,6 +176,131 @@ def test_agreement_hash(ddo_sample):
     expected = '0x96732b390dacec0f19ad304ac176b3407968a0184d01b3262687fd23a3f0995e'
     print('expected hash: ', expected)
     assert agreement_hash.hex() == expected, 'hash does not match.'
+
+# THIS TEST IS ONLY VALID FOR SIMULATING HASH ENCODINGS IN A FIXED ENVIRONMENT
+# USEFUL TO VALIDATE DIFFERENCES BETWEEN PARAMETER ENCODING BETWEEN SDK IMPLEMENTATIONS
+#
+# def test_escrow_reward_condition_id(setup_agreements_fixed_environment):
+#     """Test the escrow reward condition id"""
+#
+#
+#     (
+#         keeper,
+#         ddo,
+#         publisher_acc,
+#         consumer_acc,
+#         agreement_id,
+#         asset_id,
+#         price,
+#         amounts,
+#         receivers,
+#         service_agreement,
+#         (lock_cond_id, access_cond_id, escrow_cond_id),
+#
+#     ) = setup_agreements_fixed_environment
+#
+#     checksum_addresses = to_checksum_addresses(receivers)
+#
+#     # Give consumer some tokens
+#     keeper.dispenser.request_vodkas(price, consumer_acc)
+#
+#     (access_cond_id,
+#      lock_cond_id,
+#      escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+#         agreement_id, asset_id, consumer_acc.address, publisher_acc.address, keeper
+#     )
+#     escrow_cond_id_generated = keeper.escrow_reward_condition.generate_id(
+#         agreement_id,
+#         service_agreement.condition_by_name['escrowReward'].param_types,
+#         [amounts, checksum_addresses, publisher_acc.address, lock_cond_id, access_cond_id]
+#     ).hex()
+#
+#     assert escrow_cond_id == escrow_cond_id_generated
+#
+#     success = keeper.escrow_access_secretstore_template.create_agreement(
+#         agreement_id,
+#         asset_id,
+#         [access_cond_id, lock_cond_id, escrow_cond_id],
+#         service_agreement.conditions_timelocks,
+#         service_agreement.conditions_timeouts,
+#         consumer_acc.address,
+#         consumer_acc
+#     )
+#     print('create agreement: ', success)
+#     assert success, f'createAgreement failed {success}'
+#     event = keeper.escrow_access_secretstore_template.subscribe_agreement_created(
+#         agreement_id,
+#         10,
+#         log_event(keeper.escrow_access_secretstore_template.AGREEMENT_CREATED_EVENT),
+#         (),
+#         wait=True
+#     )
+#     assert event, 'no event for AgreementCreated '
+#
+#     # Verify condition types (condition contracts)
+#     agreement = keeper.agreement_manager.get_agreement(agreement_id)
+#     assert agreement.did == asset_id, ''
+#     cond_types = keeper.escrow_access_secretstore_template.get_condition_types()
+#     for i, cond_id in enumerate(agreement.condition_ids):
+#         cond = keeper.condition_manager.get_condition(cond_id)
+#         assert cond.type_ref == cond_types[i]
+#         assert int(cond.state) == 1
+#
+#     # Give consumer some tokens
+#     keeper.dispenser.request_vodkas(price, consumer_acc)
+#
+#     # Fulfill lock_reward_condition
+#     pub_token_balance = keeper.token.get_token_balance(publisher_acc.address)
+#     starting_balance = keeper.token.get_token_balance(keeper.escrow_reward_condition.address)
+#     keeper.token.token_approve(keeper.lock_reward_condition.address, price, consumer_acc)
+#     tx_hash = keeper.lock_reward_condition.fulfill(
+#         agreement_id, keeper.escrow_reward_condition.address, price, consumer_acc)
+#     keeper.lock_reward_condition.get_tx_receipt(tx_hash)
+#     event = keeper.lock_reward_condition.subscribe_condition_fulfilled(
+#         agreement_id,
+#         10,
+#         log_event(keeper.lock_reward_condition.FULFILLED_EVENT),
+#         (),
+#         wait=True
+#     )
+#     assert event, 'no event for LockRewardCondition.Fulfilled'
+#     assert keeper.condition_manager.get_condition_state(lock_cond_id) == 2, ''
+#     assert keeper.token.get_token_balance(
+#         keeper.escrow_reward_condition.address
+#     ) == (price + starting_balance), ''
+#
+#     # Fulfill access_secret_store_condition
+#     tx_hash = keeper.access_secret_store_condition.fulfill(
+#         agreement_id, asset_id, consumer_acc.address, publisher_acc
+#     )
+#     keeper.access_secret_store_condition.get_tx_receipt(tx_hash)
+#     event = keeper.access_secret_store_condition.subscribe_condition_fulfilled(
+#         agreement_id,
+#         20,
+#         log_event(keeper.access_secret_store_condition.FULFILLED_EVENT),
+#         (),
+#         wait=True
+#     )
+#     assert event, 'no event for AccessSecretStoreCondition.Fulfilled'
+#     assert keeper.condition_manager.get_condition_state(access_cond_id) == 2, ''
+#
+#
+#     # Fulfill escrow_reward_condition
+#     tx_hash = keeper.escrow_reward_condition.fulfill(
+#         agreement_id, amounts, checksum_addresses,
+#         publisher_acc.address, lock_cond_id,
+#         access_cond_id, publisher_acc
+#     )
+#     keeper.escrow_reward_condition.get_tx_receipt(tx_hash)
+#     assert keeper.condition_manager.get_condition_state(escrow_cond_id) == 2, ''
+#
+#     print('agreementId: ' + agreement_id)
+#     print('did: ' + asset_id)
+#     print('lockConditionId: ' + lock_cond_id)
+#     print('accessConditionId: ' + access_cond_id)
+#     print('escrowConditionId: ' + escrow_cond_id)
+#     print('publisherAccount: ' + publisher_acc.address)
+#     print('consumerAccount: ' + consumer_acc.address)
 
 
 def test_agreement():

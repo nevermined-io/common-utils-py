@@ -108,14 +108,14 @@ ACCESS_SLA_TEMPLATE = {
         "functionName": "fulfill",
         "parameters": [
           {
-            "name": "_amount",
-            "type": "uint256",
-            "value": ""
+            "name": "_amounts",
+            "type": "uint256[]",
+            "value": []
           },
           {
-            "name": "_receiver",
-            "type": "address",
-            "value": ""
+            "name": "_receivers",
+            "type": "address[]",
+            "value": []
           },
           {
             "name": "_sender",
