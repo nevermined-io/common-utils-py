@@ -37,7 +37,7 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
           'publisher', publisher_acc.address
           )
 
-    amounts = service_agreement.get_param_value_by_name('_amounts')
+    amounts = list(map(int, service_agreement.get_param_value_by_name('_amounts')))
     receivers = service_agreement.get_param_value_by_name('_receivers')
 
     receiver_0_starting_balance = keeper.token.get_token_balance(
@@ -137,7 +137,7 @@ def test_escrow_access_secret_store_template_flow(setup_agreements_environment):
     ) == starting_balance, ''
 
     assert keeper.token.get_token_balance(
-        keeper.agreement_manager.to_checksum_address(receivers[0])) == (receiver_0_starting_balance + amounts[0]), ''
+        keeper.agreement_manager.to_checksum_address(receivers[0])) == (receiver_0_starting_balance + int(amounts[0])), ''
 
 
 def test_agreement_hash(ddo_sample):
