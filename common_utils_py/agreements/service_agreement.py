@@ -240,7 +240,7 @@ class ServiceAgreement(Service):
             raise Exception(
                 'Error generating the condition ids, the service_agreement type is not valid.')
 
-        amounts = self.get_param_value_by_name('_amounts')
+        amounts = list(map(int, self.get_param_value_by_name('_amounts')))
         receivers = self.get_param_value_by_name('_receivers')
         checksum_addresses = to_checksum_addresses(receivers)
         escrow_cond_id = keeper.escrow_reward_condition.generate_id(
