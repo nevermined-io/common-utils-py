@@ -12,41 +12,51 @@ COMPUTE_SLA_TEMPLATE = {
         "actorType": "consumer",
         "handler": {
           "moduleName": "EscrowComputeExecutionTemplate",
-          "functionName": "fulfillLockRewardCondition",
+          "functionName": "fulfillLockPaymentCondition",
           "version": "0.1"
         }
       }
     ],
     "fulfillmentOrder": [
-      "lockReward.fulfill",
+      "lockPayment.fulfill",
       "execCompute.fulfill",
-      "escrowReward.fulfill"
+      "escrowPayment.fulfill"
     ],
     "conditionDependency": {
-      "lockReward": [],
+      "lockPayment": [],
       "execCompute": [],
-      "escrowReward": [
-        "lockReward",
+      "escrowPayment": [
+        "lockPayment",
         "execCompute"
       ]
     },
     "conditions": [
         {
-            "name": "lockReward",
+            "name": "lockPayment",
             "timelock": 0,
             "timeout": 0,
-            "contractName": "LockRewardCondition",
+            "contractName": "LockPaymentCondition",
             "functionName": "fulfill",
             "parameters": [
                 {
-                    "name": "_rewardAddress",
-                    "type": "address",
-                    "value": "{contract.EscrowReward.address}"
+                    "name": "_did",
+                    "type": "bytes32",
+                    "value": "{parameter.assetId}"
                 },
                 {
-                    "name": "_amount",
-                    "type": "uint256",
-                    "value": "{parameter.price}"
+                    "name": "_rewardAddress",
+                    "type": "address",
+                    "value": "{contract.EscrowPayment.address}"
+                },
+                {
+                    "name": "_amounts",
+                    "type": "uint256[]",
+                    "value": []
+                },
+                {
+                    "name": "_receivers",
+                    "type": "address[]",
+                    "value": []
                 }
             ],
             "events": [
@@ -54,7 +64,7 @@ COMPUTE_SLA_TEMPLATE = {
                     "name": "Fulfilled",
                     "actorType": "publisher",
                     "handler": {
-                        "moduleName": "lockRewardCondition",
+                        "moduleName": "lockPaymentCondition",
                         "functionName": "fulfillExecComputeCondition",
                         "version": "0.1"
                     }
@@ -84,8 +94,8 @@ COMPUTE_SLA_TEMPLATE = {
                     "name": "Fulfilled",
                     "actorType": "publisher",
                     "handler": {
-                        "moduleName": "accessSecretStore",
-                        "functionName": "fulfillEscrowRewardCondition",
+                        "moduleName": "access",
+                        "functionName": "fulfillEscrowPaymentCondition",
                         "version": "0.1"
                     }
                 },
@@ -94,19 +104,24 @@ COMPUTE_SLA_TEMPLATE = {
                     "actorType": "consumer",
                     "handler": {
                         "moduleName": "execCompute",
-                        "functionName": "fulfillEscrowRewardCondition",
+                        "functionName": "fulfillEscrowPaymentCondition",
                         "version": "0.1"
                     }
                 }
             ]
         },
         {
-            "name": "escrowReward",
+            "name": "escrowPayment",
             "timelock": 0,
             "timeout": 0,
-            "contractName": "EscrowReward",
+            "contractName": "EscrowPayment",
             "functionName": "fulfill",
             "parameters": [
+                {
+                    "name": "_did",
+                    "type": "bytes32",
+                    "value": "{parameter.assetId}"
+                },
                 {
                     "name": "_amounts",
                     "type": "uint256[]",
@@ -125,7 +140,7 @@ COMPUTE_SLA_TEMPLATE = {
                 {
                     "name": "_lockCondition",
                     "type": "bytes32",
-                    "value": "{contract.LockRewardCondition.address}"
+                    "value": "{contract.LockPaymentCondition.address}"
                 },
                 {
                     "name": "_releaseCondition",
@@ -138,7 +153,7 @@ COMPUTE_SLA_TEMPLATE = {
                     "name": "Fulfilled",
                     "actorType": "publisher",
                     "handler": {
-                        "moduleName": "escrowRewardCondition",
+                        "moduleName": "escrowPaymentCondition",
                         "functionName": "verifyRewardTokens",
                         "version": "0.1"
                     }
