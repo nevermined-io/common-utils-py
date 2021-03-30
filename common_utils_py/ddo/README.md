@@ -16,7 +16,7 @@ print(did)
 
 load in the libraries
 ```python
-from did_ddo_lib import OceanDDO
+from did_ddo_lib import DDO
 ```
 
 Create a DDO object using a DID
@@ -49,12 +49,12 @@ json_text = ddo.as_text()
 
 load in the libraries
 ```python
-from did_ddo_lib import OceanDDO
+from did_ddo_lib import DDO
 ```
 
 Create a DDO object using JSON text
 ```python
-ddo = OceanDDO(ddo_text = json_text)
+ddo = DDO(ddo_text = json_text)
 ```
 
 check to see if it's valid

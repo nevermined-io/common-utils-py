@@ -46,6 +46,30 @@ class ServiceAgreement(Service):
         else:
             raise ValueError(f'The service_type {service_type} is not currently supported.')
 
+    def get_amounts(self):
+        """
+        Return the list of amounts/rewards to distribute
+
+        :return: Str[]
+        """
+        return self.get_param_value_by_name('_amounts')
+
+    def get_amounts_int(self):
+        """
+        Return the list of amounts/rewards to distribute
+
+        :return: Int[]
+        """
+        return list(map(int, self.get_amounts()))
+
+    def get_receivers(self):
+        """
+        Return the list of receivers addresses
+
+        :return: str[]
+        """
+        return to_checksum_addresses(self.get_param_value_by_name('_receivers'))
+
     def get_price(self):
         """
         Return the price from the conditions parameters.
@@ -56,11 +80,6 @@ class ServiceAgreement(Service):
         _amounts = self.get_param_value_by_name('_amounts')
         for amount in _amounts:
             price = price + int(amount)
-        # for cond in self.conditions:
-        #     for p in cond.parameters:
-        #         if p.name == '_amounts':
-        #             for amount in p.value:
-        #                 price = price + int(amount)
         return price
 
     def get_param_value_by_name(self, name):
@@ -218,18 +237,20 @@ class ServiceAgreement(Service):
         :param consumer_address: ethereum account address of consumer, hex str
         :param publisher_address: ethereum account address of publisher, hex str
         :param keeper:
-        :param template_type: type of template, currently only access and compute are supported
         :return:
         """
-        lock_cond_id = keeper.lock_reward_condition.generate_id(
+        amounts = self.get_amounts_int()
+        receivers = self.get_receivers()
+
+        lock_cond_id = keeper.lock_payment_condition.generate_id(
             agreement_id,
-            self.condition_by_name['lockReward'].param_types,
-            [keeper.escrow_reward_condition.address, self.get_price()]).hex()
+            self.condition_by_name['lockPayment'].param_types,
+            [asset_id, keeper.escrow_payment_condition.address, amounts, receivers]).hex()
 
         if self.type == ServiceTypes.ASSET_ACCESS:
-            access_or_compute_id = keeper.access_secret_store_condition.generate_id(
+            access_or_compute_id = keeper.access_condition.generate_id(
                 agreement_id,
-                self.condition_by_name['accessSecretStore'].param_types,
+                self.condition_by_name['access'].param_types,
                 [asset_id, consumer_address]).hex()
         elif self.type == ServiceTypes.CLOUD_COMPUTE:
             access_or_compute_id = keeper.compute_execution_condition.generate_id(
@@ -240,13 +261,10 @@ class ServiceAgreement(Service):
             raise Exception(
                 'Error generating the condition ids, the service_agreement type is not valid.')
 
-        amounts = list(map(int, self.get_param_value_by_name('_amounts')))
-        receivers = self.get_param_value_by_name('_receivers')
-        checksum_addresses = to_checksum_addresses(receivers)
-        escrow_cond_id = keeper.escrow_reward_condition.generate_id(
+        escrow_cond_id = keeper.escrow_payment_condition.generate_id(
             agreement_id,
-            self.condition_by_name['escrowReward'].param_types,
-            [amounts, checksum_addresses, publisher_address, lock_cond_id, access_or_compute_id]
+            self.condition_by_name['escrowPayment'].param_types,
+            [asset_id, amounts, receivers, keeper.escrow_payment_condition.address, lock_cond_id, access_or_compute_id]
         ).hex()
 
         return access_or_compute_id, lock_cond_id, escrow_cond_id

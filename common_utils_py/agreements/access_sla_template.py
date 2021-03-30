@@ -5,48 +5,58 @@ ACCESS_SLA_TEMPLATE = {
   "description": "This service agreement defines the flow for accessing a data asset on the ocean network. Any file or bundle of files can be access using this service agreement",
   "creator": "",
   "serviceAgreementTemplate": {
-    "contractName": "EscrowAccessSecretStoreTemplate",
+    "contractName": "AccessTemplate",
     "events": [
       {
         "name": "AgreementCreated",
         "actorType": "consumer",
         "handler": {
-          "moduleName": "escrowAccessSecretStoreTemplate",
-          "functionName": "fulfillLockRewardCondition",
+          "moduleName": "escrowAccessTemplate",
+          "functionName": "fulfillLockPaymentCondition",
           "version": "0.1"
         }
       }
     ],
     "fulfillmentOrder": [
-      "lockReward.fulfill",
-      "accessSecretStore.fulfill",
-      "escrowReward.fulfill"
+      "lockPayment.fulfill",
+      "access.fulfill",
+      "escrowPayment.fulfill"
     ],
     "conditionDependency": {
-      "lockReward": [],
-      "accessSecretStore": [],
-      "escrowReward": [
-        "lockReward",
-        "accessSecretStore"
+      "lockPayment": [],
+      "access": [],
+      "escrowPayment": [
+        "lockPayment",
+        "access"
       ]
     },
     "conditions": [
       {
-        "name": "lockReward",
+        "name": "lockPayment",
         "timelock": 0,
         "timeout": 0,
-        "contractName": "LockRewardCondition",
+        "contractName": "LockPaymentCondition",
         "functionName": "fulfill",
         "parameters": [
+          {
+            "name": "_did",
+            "type": "bytes32",
+            "value": ""
+          },
           {
             "name": "_rewardAddress",
             "type": "address",
             "value": ""
           },
           {
-            "name": "_amount",
-            "type": "uint256",
-            "value": ""
+            "name": "_amounts",
+            "type": "uint256[]",
+            "value": []
+          },
+          {
+            "name": "_receivers",
+            "type": "address[]",
+            "value": []
           }
         ],
         "events": [
@@ -54,18 +64,18 @@ ACCESS_SLA_TEMPLATE = {
             "name": "Fulfilled",
             "actorType": "publisher",
             "handler": {
-              "moduleName": "lockRewardCondition",
-              "functionName": "fulfillAccessSecretStoreCondition",
+              "moduleName": "lockPaymentCondition",
+              "functionName": "fulfillAccessCondition",
               "version": "0.1"
             }
           }
         ]
       },
       {
-        "name": "accessSecretStore",
+        "name": "access",
         "timelock": 0,
         "timeout": 0,
-        "contractName": "AccessSecretStoreCondition",
+        "contractName": "AccessCondition",
         "functionName": "fulfill",
         "parameters": [
           {
@@ -84,8 +94,8 @@ ACCESS_SLA_TEMPLATE = {
             "name": "Fulfilled",
             "actorType": "publisher",
             "handler": {
-              "moduleName": "accessSecretStore",
-              "functionName": "fulfillEscrowRewardCondition",
+              "moduleName": "access",
+              "functionName": "fulfillEscrowPaymentCondition",
               "version": "0.1"
             }
           },
@@ -93,20 +103,25 @@ ACCESS_SLA_TEMPLATE = {
             "name": "TimedOut",
             "actorType": "consumer",
             "handler": {
-              "moduleName": "accessSecretStore",
-              "functionName": "fulfillEscrowRewardCondition",
+              "moduleName": "access",
+              "functionName": "fulfillEscrowPaymentCondition",
               "version": "0.1"
             }
           }
         ]
       },
       {
-        "name": "escrowReward",
+        "name": "escrowPayment",
         "timelock": 0,
         "timeout": 0,
-        "contractName": "EscrowReward",
+        "contractName": "EscrowPayment",
         "functionName": "fulfill",
         "parameters": [
+          {
+            "name": "_did",
+            "type": "bytes32",
+            "value": ""
+          },
           {
             "name": "_amounts",
             "type": "uint256[]",
@@ -138,7 +153,7 @@ ACCESS_SLA_TEMPLATE = {
             "name": "Fulfilled",
             "actorType": "publisher",
             "handler": {
-              "moduleName": "escrowRewardCondition",
+              "moduleName": "escrowPaymentCondition",
               "functionName": "verifyRewardTokens",
               "version": "0.1"
             }

@@ -29,7 +29,7 @@ install_requirements = [
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'contracts-lib-py==0.5.5',
+    'contracts-lib-py==0.6.2',
     'web3==5.13.0',
     'coverage',
     'docker',
@@ -65,7 +65,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     description="🐳 Library including all the common functionalities used in Python projects",
     extras_require={
@@ -85,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/nevermined-io/common-utils-py',
-    version='0.4.6',
+    version='0.5.0',
     zip_safe=False,
 )
