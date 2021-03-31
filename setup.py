@@ -19,7 +19,7 @@ install_requirements = [
     'requests==2.21.0',
     'eciespy==0.3.5',
     'eth-keys==0.3.3',
-    'rsa==4.0',
+    'rsa==4.1',
     # secp256k1 support was added recently and the latest release does not included it yet
     # so for now we are going to used a fork
     'nevermined-authlib==0.1.0'
