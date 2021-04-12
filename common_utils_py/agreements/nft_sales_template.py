@@ -1,17 +1,17 @@
-ACCESS_SLA_TEMPLATE = {
-  "type": "Access",
+NFT_SALES_TEMPLATE = {
+  "type": "nft-sales",
   "templateId": "",
-  "name": "dataAssetAccessServiceAgreement",
-  "description": "This service agreement defines the flow for accessing a data asset on the network. Any file or bundle of files can be access using this service agreement",
+  "name": "nftSalesAgreement",
+  "description": "This service agreement defines the flow for selling a NFT between users",
   "creator": "",
   "serviceAgreementTemplate": {
-    "contractName": "AccessTemplate",
+    "contractName": "NFTSalesTemplate",
     "events": [
       {
         "name": "AgreementCreated",
         "actorType": "consumer",
         "handler": {
-          "moduleName": "escrowAccessTemplate",
+          "moduleName": "nftSalesTemplate",
           "functionName": "fulfillLockPaymentCondition",
           "version": "0.1"
         }
@@ -19,15 +19,15 @@ ACCESS_SLA_TEMPLATE = {
     ],
     "fulfillmentOrder": [
       "lockPayment.fulfill",
-      "access.fulfill",
+      "transferNFT.fulfill",
       "escrowPayment.fulfill"
     ],
     "conditionDependency": {
       "lockPayment": [],
-      "access": [],
+      "transferNFT": [],
       "escrowPayment": [
         "lockPayment",
-        "access"
+        "transferNFT"
       ]
     },
     "conditions": [
@@ -65,17 +65,17 @@ ACCESS_SLA_TEMPLATE = {
             "actorType": "publisher",
             "handler": {
               "moduleName": "lockPaymentCondition",
-              "functionName": "fulfillAccessCondition",
+              "functionName": "fulfillTransferNFTCondition",
               "version": "0.1"
             }
           }
         ]
       },
       {
-        "name": "access",
+        "name": "transferNFT",
         "timelock": 0,
         "timeout": 0,
-        "contractName": "AccessCondition",
+        "contractName": "TransferNFTCondition",
         "functionName": "fulfill",
         "parameters": [
           {
@@ -84,8 +84,18 @@ ACCESS_SLA_TEMPLATE = {
             "value": ""
           },
           {
-            "name": "_grantee",
+            "name": "_receiver",
             "type": "address",
+            "value": ""
+          },
+          {
+            "name": "_numberNfts",
+            "type": "uint256",
+            "value": ""
+          },
+          {
+            "name": "_conditionId",
+            "type": "bytes32",
             "value": ""
           }
         ],
@@ -94,7 +104,7 @@ ACCESS_SLA_TEMPLATE = {
             "name": "Fulfilled",
             "actorType": "publisher",
             "handler": {
-              "moduleName": "access",
+              "moduleName": "transferNFT",
               "functionName": "fulfillEscrowPaymentCondition",
               "version": "0.1"
             }

@@ -41,6 +41,20 @@ def get_ddo_sample2():
         'utf-8'))))
 
 
+def get_ddo_did_sales_sample():
+    return DDO(json_text=json.dumps(json.loads(urlopen(
+        "https://raw.githubusercontent.com/nevermined-io/docs/master/docs/architecture/specs/examples/access/v0.1"
+        "/ddo_sales.json").read().decode(
+        'utf-8'))))
+
+
+def get_ddo_nft_sample():
+    return DDO(json_text=json.dumps(json.loads(urlopen(
+        "https://raw.githubusercontent.com/nevermined-io/docs/master/docs/architecture/specs/examples/access/v0.1"
+        "/ddo_nft.json").read().decode(
+        'utf-8'))))
+
+
 def get_metadata():
     metadata = urlopen(
         "https://raw.githubusercontent.com/nevermined-io/docs/master/docs/architecture/specs"

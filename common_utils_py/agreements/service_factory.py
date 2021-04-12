@@ -62,6 +62,48 @@ class ServiceDescriptor(object):
             {'attributes': attributes, 'serviceEndpoint': service_endpoint}
         )
 
+    @staticmethod
+    def did_sales_service_descriptor(attributes, service_endpoint):
+        """
+        DID Sales service descriptor.
+
+        :param attributes: attributes of the did sales service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service descriptor.
+        """
+        return (
+            ServiceTypes.DID_SALES,
+            {'attributes': attributes, 'serviceEndpoint': service_endpoint}
+        )
+
+    @staticmethod
+    def nft_sales_service_descriptor(attributes, service_endpoint):
+        """
+        NFT Sales service descriptor.
+
+        :param attributes: attributes of the nft sales service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service descriptor.
+        """
+        return (
+            ServiceTypes.NFT_SALES,
+            {'attributes': attributes, 'serviceEndpoint': service_endpoint}
+        )
+
+    @staticmethod
+    def nft_access_service_descriptor(attributes, service_endpoint):
+        """
+        NFT Access service descriptor.
+
+        :param attributes: attributes of the nft access service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service descriptor.
+        """
+        return (
+            ServiceTypes.NFT_ACCESS,
+            {'attributes': attributes, 'serviceEndpoint': service_endpoint}
+        )
+
 
 class ServiceFactory(object):
     """Factory class to create Services."""
@@ -102,13 +144,11 @@ class ServiceFactory(object):
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
-
         elif service_type == ServiceTypes.AUTHORIZATION:
             return ServiceFactory.build_authorization_service(
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
-
         elif service_type == ServiceTypes.ASSET_ACCESS:
             return ServiceFactory.build_access_service(
                 kwargs['attributes'],
@@ -119,6 +159,22 @@ class ServiceFactory(object):
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
+        elif service_type == ServiceTypes.DID_SALES:
+            return ServiceFactory.build_authorization_service(
+                kwargs['attributes'],
+                kwargs['serviceEndpoint']
+            )
+        elif service_type == ServiceTypes.NFT_SALES:
+            return ServiceFactory.build_access_service(
+                kwargs['attributes'],
+                kwargs['serviceEndpoint']
+            )
+        elif service_type == ServiceTypes.NFT_ACCESS:
+            return ServiceFactory.build_compute_service(
+                kwargs['attributes'],
+                kwargs['serviceEndpoint']
+            )
+
         raise ValueError(f'Unknown service type {service_type}')
 
     @staticmethod
@@ -152,7 +208,7 @@ class ServiceFactory(object):
     @staticmethod
     def build_access_service(attributes, service_endpoint):
         """
-        Build an authorization service.
+        Build an access service.
 
         :param attributes: attributes of access service, dict
         :param service_endpoint: identifier of the service inside the asset DDO, str
@@ -165,7 +221,7 @@ class ServiceFactory(object):
     @staticmethod
     def build_compute_service(attributes, service_endpoint):
         """
-        Build an authorization service.
+        Build a compute service.
 
         :param attributes: attributes of compute service, dict
         :param service_endpoint: identifier of the service inside the asset DDO, str
@@ -174,6 +230,45 @@ class ServiceFactory(object):
         return Service(service_endpoint, ServiceTypes.CLOUD_COMPUTE,
                        values={'attributes': attributes},
                        index=ServiceTypesIndices.DEFAULT_COMPUTING_INDEX)
+
+    @staticmethod
+    def build_did_sales_service(attributes, service_endpoint):
+        """
+        Build a did sales service.
+
+        :param attributes: attributes of did sales service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service
+        """
+        return Service(service_endpoint, ServiceTypes.DID_SALES,
+                       values={'attributes': attributes},
+                       index=ServiceTypesIndices.DEFAULT_DID_SALES_INDEX)
+
+    @staticmethod
+    def build_nft_sales_service(attributes, service_endpoint):
+        """
+        Build a nft sales service.
+
+        :param attributes: attributes of nft sales service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service
+        """
+        return Service(service_endpoint, ServiceTypes.NFT_SALES,
+                       values={'attributes': attributes},
+                       index=ServiceTypesIndices.DEFAULT_NFT_SALES_INDEX)
+
+    @staticmethod
+    def build_nft_access_service(attributes, service_endpoint):
+        """
+        Build a nft sales service.
+
+        :param attributes: attributes of nft sales service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service
+        """
+        return Service(service_endpoint, ServiceTypes.NFT_ACCESS,
+                       values={'attributes': attributes},
+                       index=ServiceTypesIndices.DEFAULT_NFT_ACCESS_INDEX)
 
     @staticmethod
     def complete_access_service(did, service_endpoint, attributes, template_id,
@@ -267,3 +362,4 @@ class ServiceFactory(object):
             ServiceTypes.CLOUD_COMPUTE
         )
         return sa
+

@@ -1,10 +1,7 @@
-import pytest
-from contracts_lib_py import Keeper
 from contracts_lib_py.utils import generate_multi_value_hash
 from web3 import Web3
 
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
-from common_utils_py.utils.utilities import to_checksum_addresses
 from tests.resources.helper_functions import (
     log_event
 )

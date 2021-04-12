@@ -1,17 +1,17 @@
-ACCESS_SLA_TEMPLATE = {
-  "type": "Access",
+DID_SALES_TEMPLATE = {
+  "type": "did-sales",
   "templateId": "",
-  "name": "dataAssetAccessServiceAgreement",
-  "description": "This service agreement defines the flow for accessing a data asset on the network. Any file or bundle of files can be access using this service agreement",
+  "name": "didSalesAgreement",
+  "description": "This service agreement defines the flow for selling a DID between users",
   "creator": "",
   "serviceAgreementTemplate": {
-    "contractName": "AccessTemplate",
+    "contractName": "DIDSalesTemplate",
     "events": [
       {
         "name": "AgreementCreated",
         "actorType": "consumer",
         "handler": {
-          "moduleName": "escrowAccessTemplate",
+          "moduleName": "didSalesTemplate",
           "functionName": "fulfillLockPaymentCondition",
           "version": "0.1"
         }
@@ -19,15 +19,15 @@ ACCESS_SLA_TEMPLATE = {
     ],
     "fulfillmentOrder": [
       "lockPayment.fulfill",
-      "access.fulfill",
+      "transferDID.fulfill",
       "escrowPayment.fulfill"
     ],
     "conditionDependency": {
       "lockPayment": [],
-      "access": [],
+      "transferDID": [],
       "escrowPayment": [
         "lockPayment",
-        "access"
+        "transferNFT"
       ]
     },
     "conditions": [
@@ -65,17 +65,17 @@ ACCESS_SLA_TEMPLATE = {
             "actorType": "publisher",
             "handler": {
               "moduleName": "lockPaymentCondition",
-              "functionName": "fulfillAccessCondition",
+              "functionName": "fulfillTransferDIDCondition",
               "version": "0.1"
             }
           }
         ]
       },
       {
-        "name": "access",
+        "name": "transferDID",
         "timelock": 0,
         "timeout": 0,
-        "contractName": "AccessCondition",
+        "contractName": "TransferDIDCondition",
         "functionName": "fulfill",
         "parameters": [
           {
@@ -84,7 +84,7 @@ ACCESS_SLA_TEMPLATE = {
             "value": ""
           },
           {
-            "name": "_grantee",
+            "name": "_receiver",
             "type": "address",
             "value": ""
           }
@@ -94,7 +94,7 @@ ACCESS_SLA_TEMPLATE = {
             "name": "Fulfilled",
             "actorType": "publisher",
             "handler": {
-              "moduleName": "access",
+              "moduleName": "transferDID",
               "functionName": "fulfillEscrowPaymentCondition",
               "version": "0.1"
             }
