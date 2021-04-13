@@ -38,13 +38,41 @@ class ServiceAgreement(Service):
             Service.__init__(self, service_endpoint,
                              ServiceTypes.ASSET_ACCESS,
                              values, ServiceTypesIndices.DEFAULT_ACCESS_INDEX)
+
         elif service_type == ServiceTypes.CLOUD_COMPUTE:
             values['index'] = ServiceTypesIndices.DEFAULT_COMPUTING_INDEX
             Service.__init__(self, service_endpoint,
                              ServiceTypes.CLOUD_COMPUTE,
                              values, ServiceTypesIndices.DEFAULT_COMPUTING_INDEX)
+
+        elif service_type == ServiceTypes.DID_SALES:
+            values['index'] = ServiceTypesIndices.DEFAULT_DID_SALES_INDEX
+            Service.__init__(self, service_endpoint,
+                             ServiceTypes.DID_SALES,
+                             values, ServiceTypesIndices.DEFAULT_DID_SALES_INDEX)
+
+        elif service_type == ServiceTypes.NFT_SALES:
+            values['index'] = ServiceTypesIndices.DEFAULT_NFT_SALES_INDEX
+            Service.__init__(self, service_endpoint,
+                             ServiceTypes.NFT_SALES,
+                             values, ServiceTypesIndices.DEFAULT_NFT_SALES_INDEX)
+
+        elif service_type == ServiceTypes.NFT_ACCESS:
+            values['index'] = ServiceTypesIndices.DEFAULT_NFT_ACCESS_INDEX
+            Service.__init__(self, service_endpoint,
+                             ServiceTypes.NFT_ACCESS,
+                             values, ServiceTypesIndices.DEFAULT_NFT_ACCESS_INDEX)
+
         else:
             raise ValueError(f'The service_type {service_type} is not currently supported.')
+
+    def get_number_nfts(self):
+        """
+        Return the number of nfts
+
+        :return: int
+        """
+        return int(self.get_param_value_by_name('_numberNfts'))
 
     def get_amounts(self):
         """
@@ -228,46 +256,88 @@ class ServiceAgreement(Service):
         """
         return generate_prefixed_id()
 
-    def generate_agreement_condition_ids(self, agreement_id, asset_id, consumer_address,
-                                         publisher_address, keeper):
+    def generate_agreement_condition_ids(self, agreement_id, asset_id, consumer_address, keeper):
         """
-
+        Generate the condition ids depending on the ServiceType
         :param agreement_id: id of the agreement, hex str
         :param asset_id:
         :param consumer_address: ethereum account address of consumer, hex str
-        :param publisher_address: ethereum account address of publisher, hex str
         :param keeper:
         :return:
         """
+
+        if self.type == ServiceTypes.NFT_ACCESS:
+            number_nfts = self.get_number_nfts()
+            nft_holder_cond_id = self.generate_nft_holder_condition_id(keeper, agreement_id, asset_id, consumer_address, number_nfts)
+            access_cond_id = self.generate_access_condition_id(keeper, agreement_id, asset_id, consumer_address)
+            return access_cond_id, nft_holder_cond_id
+
         amounts = self.get_amounts_int()
         receivers = self.get_receivers()
-
-        lock_cond_id = keeper.lock_payment_condition.generate_id(
-            agreement_id,
-            self.condition_by_name['lockPayment'].param_types,
-            [asset_id, keeper.escrow_payment_condition.address, amounts, receivers]).hex()
+        lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address, amounts, receivers)
 
         if self.type == ServiceTypes.ASSET_ACCESS:
-            access_or_compute_id = keeper.access_condition.generate_id(
-                agreement_id,
-                self.condition_by_name['access'].param_types,
-                [asset_id, consumer_address]).hex()
+            access_cond_id = self.generate_access_condition_id(keeper, agreement_id, asset_id, consumer_address)
+
         elif self.type == ServiceTypes.CLOUD_COMPUTE:
-            access_or_compute_id = keeper.compute_execution_condition.generate_id(
-                agreement_id,
-                self.condition_by_name['execCompute'].param_types,
-                [asset_id, consumer_address]).hex()
+            access_cond_id = self.generate_compute_condition_id(keeper, agreement_id, asset_id, consumer_address)
+
+        elif self.type == ServiceTypes.DID_SALES:
+            access_cond_id = self.generate_transfer_did_condition_id(keeper, agreement_id, asset_id, consumer_address)
+
+        elif self.type == ServiceTypes.NFT_SALES:
+            number_nfts = self.get_number_nfts()
+            access_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, consumer_address, number_nfts, lock_cond_id)
+
         else:
             raise Exception(
                 'Error generating the condition ids, the service_agreement type is not valid.')
 
-        escrow_cond_id = keeper.escrow_payment_condition.generate_id(
+        escrow_cond_id = self.generate_escrow_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address, amounts, receivers, lock_cond_id, access_cond_id)
+        return access_cond_id, lock_cond_id, escrow_cond_id
+
+    def generate_nft_holder_condition_id(self, keeper, agreement_id, asset_id, holder_address, number_nfts):
+        return keeper.nft_holder_condition.generate_id(
+            agreement_id,
+            self.condition_by_name['nftHolder'].param_types,
+            [asset_id, holder_address, number_nfts]).hex()
+
+    def generate_access_condition_id(self, keeper, agreement_id, asset_id, consumer_address):
+        return keeper.access_condition.generate_id(
+            agreement_id,
+            self.condition_by_name['access'].param_types,
+            [asset_id, consumer_address]).hex()
+
+    def generate_compute_condition_id(self, keeper, agreement_id, asset_id, consumer_address):
+        return keeper.compute_execution_condition.generate_id(
+            agreement_id,
+            self.condition_by_name['execCompute'].param_types,
+            [asset_id, consumer_address]).hex()
+
+    def generate_transfer_did_condition_id(self, keeper, agreement_id, asset_id, receiver_address):
+        return keeper.transfer_did_condition.generate_id(
+            agreement_id,
+            self.condition_by_name['transferDID'].param_types,
+            [asset_id, receiver_address]).hex()
+
+    def generate_transfer_nft_condition_id(self, keeper, agreement_id, asset_id, receiver_address, number_nfts, lock_cond_id):
+        return keeper.transfer_nft_condition.generate_id(
+            agreement_id,
+            self.condition_by_name['transferNFT'].param_types,
+            [asset_id, receiver_address, number_nfts, lock_cond_id]).hex()
+
+    def generate_lock_condition_id(self, keeper, agreement_id, asset_id, escrow_condition_address, amounts, receivers):
+        return keeper.lock_payment_condition.generate_id(
+            agreement_id,
+            self.condition_by_name['lockPayment'].param_types,
+            [asset_id, escrow_condition_address, amounts, receivers]).hex()
+
+    def generate_escrow_condition_id(self, keeper, agreement_id, asset_id, escrow_condition_address, amounts, receivers, lock_cond_id, access_or_compute_id):
+        return keeper.escrow_payment_condition.generate_id(
             agreement_id,
             self.condition_by_name['escrowPayment'].param_types,
-            [asset_id, amounts, receivers, keeper.escrow_payment_condition.address, lock_cond_id, access_or_compute_id]
+            [asset_id, amounts, receivers, escrow_condition_address, lock_cond_id, access_or_compute_id]
         ).hex()
-
-        return access_or_compute_id, lock_cond_id, escrow_cond_id
 
     def get_service_agreement_hash(
             self, agreement_id, asset_id, consumer_address, publisher_address, keeper):
@@ -283,7 +353,7 @@ class ServiceAgreement(Service):
         agreement_hash = ServiceAgreement.generate_service_agreement_hash(
             self.template_id,
             self.generate_agreement_condition_ids(
-                agreement_id, asset_id, consumer_address, publisher_address, keeper),
+                agreement_id, asset_id, consumer_address, keeper),
             self.conditions_timelocks,
             self.conditions_timeouts,
             agreement_id,

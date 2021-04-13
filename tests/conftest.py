@@ -13,7 +13,8 @@ from common_utils_py.did import DID
 from common_utils_py.did_resolver.did_resolver import DIDResolver
 from common_utils_py.metadata import MetadataProvider
 from tests.resources.helper_functions import (get_consumer_account, get_ddo_sample, get_ddo_sample2,
-                                              get_metadata, get_publisher_account)
+                                              get_metadata, get_publisher_account, get_ddo_did_sales_sample,
+                                              get_ddo_nft_sample)
 from common_utils_py.utils.utilities import generate_prefixed_id
 
 
@@ -101,7 +102,7 @@ def setup_agreements_environment():
     agreement_id = ServiceAgreement.create_new_agreement_id()
     price = service_agreement.get_price()
     (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id, asset_id, consumer_acc.address, publisher_acc.address, keeper)
+        agreement_id, asset_id, consumer_acc.address, keeper)
 
     return (
         keeper,
@@ -114,6 +115,98 @@ def setup_agreements_environment():
         service_agreement,
         (lock_cond_id, access_cond_id, escrow_cond_id),
     )
+
+
+@pytest.fixture
+def setup_did_sales_agreements_environment():
+    consumer_acc = get_consumer_account()
+    publisher_acc = get_publisher_account()
+    keeper = Keeper.get_instance()
+
+    ddo = get_ddo_did_sales_sample()
+
+    ddo._did = DID.did({"0": generate_prefixed_id()})
+
+    keeper.did_registry.register(
+        ddo.asset_id,
+        checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
+        url='metadata:5000',
+        account=publisher_acc,
+        providers=None
+    )
+
+    registered_ddo = ddo
+    asset_id = registered_ddo.asset_id
+    service_agreement = ServiceAgreement.from_ddo(ServiceTypes.DID_SALES, ddo)
+    agreement_id = ServiceAgreement.create_new_agreement_id()
+    price = service_agreement.get_price()
+    (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+        agreement_id, asset_id, consumer_acc.address, keeper)
+
+    return (
+        keeper,
+        ddo,
+        publisher_acc,
+        consumer_acc,
+        agreement_id,
+        asset_id,
+        price,
+        service_agreement,
+        (lock_cond_id, access_cond_id, escrow_cond_id),
+    )
+
+
+@pytest.fixture
+def setup_nft_sales_agreements_environment():
+    consumer_acc = get_consumer_account()
+    publisher_acc = get_publisher_account()
+    keeper = Keeper.get_instance()
+
+    ddo = get_ddo_nft_sample()
+
+    ddo._did = DID.did({"0": generate_prefixed_id()})
+
+    keeper.did_registry.register_mintable_did(
+        ddo.asset_id,
+        checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
+        url='metadata:5000',
+        cap=10,
+        royalties=10,
+        account=publisher_acc,
+        providers=None
+    )
+
+    keeper.did_registry.mint(ddo.asset_id, 10, account=publisher_acc)
+
+    registered_ddo = ddo
+    asset_id = registered_ddo.asset_id
+    service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_SALES, ddo)
+    agreement_id = ServiceAgreement.create_new_agreement_id()
+    price = service_agreement.get_price()
+    (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+        agreement_id, asset_id, consumer_acc.address, keeper)
+
+    nft_access_service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_ACCESS, ddo)
+    nft_access_agreement_id = ServiceAgreement.create_new_agreement_id()
+
+    (nft_access_cond_id, nft_holder_cond_id) = nft_access_service_agreement.generate_agreement_condition_ids(
+        nft_access_agreement_id, asset_id, consumer_acc.address, keeper)
+
+    return (
+        keeper,
+        ddo,
+        publisher_acc,
+        consumer_acc,
+        agreement_id,
+        nft_access_agreement_id,
+        asset_id,
+        price,
+        service_agreement,
+        nft_access_service_agreement,
+        (lock_cond_id, access_cond_id, escrow_cond_id),
+        (nft_access_cond_id, nft_holder_cond_id)
+    )
+
 
 
 # @pytest.fixture

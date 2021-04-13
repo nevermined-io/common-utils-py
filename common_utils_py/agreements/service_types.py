@@ -4,6 +4,9 @@ class ServiceTypes:
     METADATA = 'metadata'
     ASSET_ACCESS = 'access'
     CLOUD_COMPUTE = 'compute'
+    DID_SALES = 'did-sales'
+    NFT_SALES = 'nft-sales'
+    NFT_ACCESS = 'nft-access'
 
 
 class ServiceTypesIndices:
@@ -12,6 +15,9 @@ class ServiceTypesIndices:
     DEFAULT_AUTHORIZATION_INDEX = 2
     DEFAULT_ACCESS_INDEX = 3
     DEFAULT_COMPUTING_INDEX = 4
+    DEFAULT_DID_SALES_INDEX = 5
+    DEFAULT_NFT_SALES_INDEX = 6
+    DEFAULT_NFT_ACCESS_INDEX = 7
 
 
 class ServiceAuthorizationTypes:

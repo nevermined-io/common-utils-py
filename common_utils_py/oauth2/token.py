@@ -3,6 +3,7 @@ from authlib.oauth2.rfc7523.jwt_bearer import JWTBearerGrant
 
 BASE_AUD_URL = "/api/v1/gateway/services"
 
+
 class NeverminedJWTBearerGrant(JWTBearerGrant):
     def create_claims_options(self):
         """Create a claims_options to verify JWT payload claims.
@@ -22,7 +23,7 @@ class NeverminedJWTBearerGrant(JWTBearerGrant):
                     BASE_AUD_URL + '/compute',
                     BASE_AUD_URL + '/download',
                     BASE_AUD_URL + '/execute'
-               ],
+                ],
             },
             'exp': {'essential': True},
         }
@@ -72,7 +73,7 @@ def validate_execution_id(claims, value):
 
 
 def generate_access_grant_token(account, service_agreement_id, did):
-     # create jwt bearer grant
+    # create jwt bearer grant
     jwk = account_to_jwk(account)
     assertion = NeverminedJWTBearerGrant.sign(
         jwk,
@@ -107,7 +108,7 @@ def generate_download_grant_token(account, did):
 
 
 def generate_execute_grant_token(account, service_agreement_id, workflow_did):
-     # create jwt bearer grant
+    # create jwt bearer grant
     jwk = account_to_jwk(account)
     assertion = NeverminedJWTBearerGrant.sign(
         jwk,
@@ -125,7 +126,7 @@ def generate_execute_grant_token(account, service_agreement_id, workflow_did):
 
 
 def generate_compute_grant_token(account, service_agreement_id, execution_id):
-     # create jwt bearer grant
+    # create jwt bearer grant
     jwk = account_to_jwk(account)
     assertion = NeverminedJWTBearerGrant.sign(
         jwk,
