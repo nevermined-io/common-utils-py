@@ -2,7 +2,7 @@ NFT_ACCESS_TEMPLATE = {
   "type": "nft-access",
   "templateId": "",
   "name": "nftAccessAgreement",
-  "description": "This service agreement defines the flow for accessing an access holding a NFT",
+  "description": "This service agreement defines the flow for accessing an asset holding a NFT",
   "creator": "",
   "serviceAgreementTemplate": {
     "contractName": "NFTAccessTemplate",
