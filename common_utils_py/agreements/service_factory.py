@@ -160,17 +160,17 @@ class ServiceFactory(object):
                 kwargs['serviceEndpoint']
             )
         elif service_type == ServiceTypes.DID_SALES:
-            return ServiceFactory.build_authorization_service(
+            return ServiceFactory.build_did_sales_service(
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
         elif service_type == ServiceTypes.NFT_SALES:
-            return ServiceFactory.build_access_service(
+            return ServiceFactory.build_nft_sales_service(
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
         elif service_type == ServiceTypes.NFT_ACCESS:
-            return ServiceFactory.build_compute_service(
+            return ServiceFactory.build_nft_access_service(
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
