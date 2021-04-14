@@ -40,7 +40,7 @@ class MetadataMain(object):
 
 
 class Metadata(object):
-    """Every Asset (dataset, algorithm, etc.) in the Ocean Network has an associated Decentralized
+    """Every Asset (dataset, algorithm, etc.) in a Nevermined Network has an associated Decentralized
     Identifier (DID) and DID document / DID Descriptor Object (DDO)."""
     REQUIRED_SECTIONS = {MetadataMain.KEY}
     MAIN_SECTIONS = {
@@ -53,7 +53,7 @@ class Metadata(object):
     def validate(metadata):
         """Validator of the metadata composition
 
-        :param metadata: conforming to the Metadata accepted by Ocean Protocol, dict
+        :param metadata: conforming to the Metadata accepted by Nevermined, dict
         :return: bool
         """
         # validate required sections and their sub items

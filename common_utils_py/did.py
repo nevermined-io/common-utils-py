@@ -53,7 +53,7 @@ def is_did_valid(did):
     Did validator.
 
     Return True if the did is a valid DID with the method name 'op' and the id
-    in the Ocean format
+    in the Nevermined format
 
     :param did: Asset did, str
     :return bool

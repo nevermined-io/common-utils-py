@@ -261,7 +261,7 @@ class Metadata:
         """
         Validate that the metadata of your ddo is valid.
 
-        :param metadata: conforming to the Metadata accepted by Ocean Protocol, dict
+        :param metadata: conforming to the Metadata accepted by Nevermined, dict
         :return: bool
         """
         response = self.requests_session.post(

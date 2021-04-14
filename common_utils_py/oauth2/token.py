@@ -20,6 +20,7 @@ class NeverminedJWTBearerGrant(JWTBearerGrant):
                 'essential': True,
                 'values': [
                     BASE_AUD_URL + '/access',
+                    BASE_AUD_URL + '/nft-access',
                     BASE_AUD_URL + '/compute',
                     BASE_AUD_URL + '/download',
                     BASE_AUD_URL + '/execute'
@@ -72,13 +73,13 @@ def validate_execution_id(claims, value):
     return True
 
 
-def generate_access_grant_token(account, service_agreement_id, did):
+def generate_access_grant_token(account, service_agreement_id, did, uri="/access"):
     # create jwt bearer grant
     jwk = account_to_jwk(account)
     assertion = NeverminedJWTBearerGrant.sign(
         jwk,
         issuer=account.address,
-        audience=BASE_AUD_URL + "/access",
+        audience=BASE_AUD_URL + uri,
         subject=service_agreement_id,
         claims={
             "did": did
