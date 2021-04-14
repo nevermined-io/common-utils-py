@@ -15,7 +15,7 @@ class ServiceDescriptor(object):
         """
         Metadata service descriptor.
 
-        :param attributes: conforming to the Metadata accepted by Ocean Protocol, dict
+        :param attributes: conforming to the Metadata accepted by Nevermined, dict
         :param service_endpoint: identifier of the service inside the asset DDO, str
         :return: Service descriptor.
         """
@@ -182,7 +182,7 @@ class ServiceFactory(object):
         """
         Build a metadata service.
 
-        :param metadata: conforming to the Metadata accepted by Ocean Protocol, dict
+        :param metadata: conforming to the Metadata accepted by Nevermined, dict
         :param service_endpoint: identifier of the service inside the asset DDO, str
         :return: Service
         """
@@ -272,7 +272,7 @@ class ServiceFactory(object):
 
     @staticmethod
     def complete_access_service(did, service_endpoint, attributes, template_id,
-                                reward_contract_address):
+                                reward_contract_address=None, service_type=ServiceTypes.ASSET_ACCESS):
         """
         Build the access service.
 
@@ -285,18 +285,21 @@ class ServiceFactory(object):
         """
         param_map = {
             '_documentId': did_to_id(did),
-            '_amount': attributes['main']['price'],
-            '_rewardAddress': reward_contract_address
+            '_amount': attributes['main']['price']
         }
+
+        if reward_contract_address is not None:
+            param_map ['_rewardAddress'] = reward_contract_address
 
         try:
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
+            param_map['_numberNfts'] = attributes['main']['_numberNfts']
         except KeyError:
             pass
         
-        sla_template_dict = get_sla_template()
-        sla_template = ServiceAgreementTemplate(template_id, ServiceTypes.ASSET_ACCESS,
+        sla_template_dict = get_sla_template(service_type)
+        sla_template = ServiceAgreementTemplate(template_id, service_type,
                                                 attributes['main']['creator'], sla_template_dict)
         sla_template.template_id = template_id
         conditions = sla_template.conditions[:]
@@ -313,7 +316,7 @@ class ServiceFactory(object):
             attributes,
             sla_template,
             service_endpoint,
-            ServiceTypes.ASSET_ACCESS
+            service_type
         )
         return sa
 

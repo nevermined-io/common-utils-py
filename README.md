@@ -8,7 +8,7 @@ Provides common functions to interact with Nevermined ecosystem
 ## Main components
 * DID and DDO
   * DID format: 'did:nv:<32bytes-hex-representation>
-  * DID is the universal identifier for assets in the Ocean network
+  * DID is the universal identifier for assets in the Nevermined network
   * DDO is the json document that 
 * DID resolver
   * Given a valid did, returns the associated DDO document which define 

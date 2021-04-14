@@ -1,1 +1,1 @@
-"""Ocean Protocol DID/DDO Python Library"""
+"""Nevermined DID/DDO Python Library"""

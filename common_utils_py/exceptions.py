@@ -10,7 +10,7 @@ class DIDUnknownValueType(Exception):
 
 
 class DIDAlreadyExist(Exception):
-    """Raised when a requested DID is already published in OceanDB."""
+    """Raised when a requested DID is already published in Metadata API."""
 
 
 class InvalidMetadata(Exception):
