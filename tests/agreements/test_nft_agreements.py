@@ -194,14 +194,14 @@ def test_nft_sales_flow(setup_nft_sales_agreements_environment):
         wait=True
     )
 
-    tx_hash = keeper.access_condition.fulfill(
+    tx_hash = keeper.nft_access_condition.fulfill(
         nft_access_agreement_id, asset_id, consumer_acc.address, publisher_acc
     )
-    keeper.access_condition.get_tx_receipt(tx_hash)
-    event = keeper.access_condition.subscribe_condition_fulfilled(
+    keeper.nft_access_condition.get_tx_receipt(tx_hash)
+    event = keeper.nft_access_condition.subscribe_condition_fulfilled(
         nft_access_agreement_id,
         20,
-        log_event(keeper.access_condition.FULFILLED_EVENT),
+        log_event(keeper.nft_access_condition.FULFILLED_EVENT),
         (),
         wait=True
     )
