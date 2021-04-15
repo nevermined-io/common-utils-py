@@ -19,7 +19,7 @@ NFT_ACCESS_TEMPLATE = {
     ],
     "fulfillmentOrder": [
       "nftHolder.fulfill",
-      "access.fulfill"
+      "nftAccess.fulfill"
     ],
     "conditionDependency": {
       "nftHolder": [],
@@ -62,10 +62,10 @@ NFT_ACCESS_TEMPLATE = {
         ]
       },
       {
-        "name": "access",
+        "name": "nftAccess",
         "timelock": 0,
         "timeout": 0,
-        "contractName": "AccessCondition",
+        "contractName": "NFTAccessCondition",
         "functionName": "fulfill",
         "parameters": [
           {
@@ -84,8 +84,8 @@ NFT_ACCESS_TEMPLATE = {
             "name": "Fulfilled",
             "actorType": "publisher",
             "handler": {
-              "moduleName": "access",
-              "functionName": "fulfillAccessCondition",
+              "moduleName": "nftAccess",
+              "functionName": "fulfillNFTAccessCondition",
               "version": "0.1"
             }
           },
@@ -94,7 +94,7 @@ NFT_ACCESS_TEMPLATE = {
             "actorType": "consumer",
             "handler": {
               "moduleName": "access",
-              "functionName": "fulfillAccessCondition",
+              "functionName": "fulfillNFTAccessCondition",
               "version": "0.1"
             }
           }

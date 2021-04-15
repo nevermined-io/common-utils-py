@@ -269,7 +269,7 @@ class ServiceAgreement(Service):
         if self.type == ServiceTypes.NFT_ACCESS:
             number_nfts = self.get_number_nfts()
             nft_holder_cond_id = self.generate_nft_holder_condition_id(keeper, agreement_id, asset_id, consumer_address, number_nfts)
-            access_cond_id = self.generate_access_condition_id(keeper, agreement_id, asset_id, consumer_address)
+            access_cond_id = self.generate_nft_access_condition_id(keeper, agreement_id, asset_id, consumer_address)
             return access_cond_id, nft_holder_cond_id
 
         amounts = self.get_amounts_int()
@@ -306,6 +306,12 @@ class ServiceAgreement(Service):
         return keeper.access_condition.generate_id(
             agreement_id,
             self.condition_by_name['access'].param_types,
+            [asset_id, consumer_address]).hex()
+
+    def generate_nft_access_condition_id(self, keeper, agreement_id, asset_id, consumer_address):
+        return keeper.nft_access_condition.generate_id(
+            agreement_id,
+            self.condition_by_name['nftAccess'].param_types,
             [asset_id, consumer_address]).hex()
 
     def generate_compute_condition_id(self, keeper, agreement_id, asset_id, consumer_address):
