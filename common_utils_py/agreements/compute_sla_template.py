@@ -49,6 +49,11 @@ COMPUTE_SLA_TEMPLATE = {
                     "value": "{contract.EscrowPayment.address}"
                 },
                 {
+                    "name": "_tokenAddress",
+                    "type": "address",
+                    "value": ""
+                },
+                {
                     "name": "_amounts",
                     "type": "uint256[]",
                     "value": []
@@ -134,6 +139,11 @@ COMPUTE_SLA_TEMPLATE = {
                 },
                 {
                     "name": "_sender",
+                    "type": "address",
+                    "value": ""
+                },
+                {
+                    "name": "_tokenAddress",
                     "type": "address",
                     "value": ""
                 },

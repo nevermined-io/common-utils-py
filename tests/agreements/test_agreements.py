@@ -35,6 +35,7 @@ def test_access_template_flow(setup_agreements_environment):
 
     amounts = service_agreement.get_amounts_int()
     receivers = service_agreement.get_receivers()
+    token_address = keeper.token.address
 
     receiver_0_starting_balance = keeper.token.get_token_balance(
         keeper.agreement_manager.to_checksum_address(receivers[0]))
@@ -79,7 +80,7 @@ def test_access_template_flow(setup_agreements_environment):
     starting_balance = keeper.token.get_token_balance(keeper.escrow_payment_condition.address)
     keeper.token.token_approve(keeper.lock_payment_condition.address, price, consumer_acc)
     tx_hash = keeper.lock_payment_condition.fulfill(
-        agreement_id, asset_id, keeper.escrow_payment_condition.address, amounts, receivers, consumer_acc)
+        agreement_id, asset_id, keeper.escrow_payment_condition.address, token_address, amounts, receivers, consumer_acc)
     keeper.lock_payment_condition.get_tx_receipt(tx_hash)
     event = keeper.lock_payment_condition.subscribe_condition_fulfilled(
         agreement_id,
@@ -112,7 +113,7 @@ def test_access_template_flow(setup_agreements_environment):
     # Fulfill escrow_payment_condition
     tx_hash = keeper.escrow_payment_condition.fulfill(
         agreement_id, asset_id, amounts, receivers,
-        keeper.escrow_payment_condition.address, lock_cond_id,
+        keeper.escrow_payment_condition.address, token_address, lock_cond_id,
         access_cond_id, publisher_acc
     )
 

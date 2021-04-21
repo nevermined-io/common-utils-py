@@ -91,7 +91,7 @@ def setup_agreements_environment():
     keeper.did_registry.register(
         ddo.asset_id,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
-        url='metadata:5000',
+        url='http://172.17.0.1:5000',
         account=publisher_acc,
         providers=None
     )
@@ -169,7 +169,7 @@ def setup_nft_sales_agreements_environment():
     keeper.did_registry.register_mintable_did(
         ddo.asset_id,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
-        url='metadata:5000',
+        url='http://172.17.0.1:5000',
         cap=10,
         royalties=10,
         account=publisher_acc,

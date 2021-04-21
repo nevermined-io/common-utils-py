@@ -49,6 +49,11 @@ NFT_SALES_TEMPLATE = {
             "value": ""
           },
           {
+            "name": "_tokenAddress",
+            "type": "address",
+            "value": ""
+          },
+          {
             "name": "_amounts",
             "type": "uint256[]",
             "value": []
@@ -144,6 +149,11 @@ NFT_SALES_TEMPLATE = {
           },
           {
             "name": "_sender",
+            "type": "address",
+            "value": ""
+          },
+          {
+            "name": "_tokenAddress",
             "type": "address",
             "value": ""
           },
