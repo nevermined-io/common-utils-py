@@ -162,6 +162,8 @@ def test_nft_sales_flow(setup_nft_sales_agreements_environment):
 
 
     ### NFT ACCESS FLOW
+    print('Downloading NFT content, DID: ' + ddo.did)
+
     success = keeper.nft_access_template.create_agreement(
         nft_access_agreement_id,
         asset_id,

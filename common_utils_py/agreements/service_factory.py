@@ -297,7 +297,7 @@ class ServiceFactory(object):
             param_map['_numberNfts'] = attributes['main']['_numberNfts']
         except KeyError:
             pass
-        
+
         sla_template_dict = get_sla_template(service_type)
         sla_template = ServiceAgreementTemplate(template_id, service_type,
                                                 attributes['main']['creator'], sla_template_dict)
@@ -363,6 +363,56 @@ class ServiceFactory(object):
             sla_template,
             service_endpoint,
             ServiceTypes.CLOUD_COMPUTE
+        )
+        return sa
+
+    @staticmethod
+    def complete_nft_sales_service(did, service_endpoint, attributes, template_id,
+                                reward_contract_address=None, service_type=ServiceTypes.NFT_SALES):
+        """
+        Build the nft sales service.
+
+        :param did: DID, str
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :param template_id: id of the template use to create the service, str
+        :param reward_contract_address: hex str ethereum address of deployed reward condition
+            smart contract
+        :return: ServiceAgreement
+        """
+        param_map = {
+            '_documentId': did_to_id(did),
+            '_amount': attributes['main']['price']
+        }
+
+        if reward_contract_address is not None:
+            param_map ['_rewardAddress'] = reward_contract_address
+
+        try:
+            param_map['_amounts'] = attributes['main']['_amounts']
+            param_map['_receivers'] = attributes['main']['_receivers']
+            param_map['_numberNfts'] = attributes['main']['_numberNfts']
+        except KeyError:
+            pass
+
+        sla_template_dict = get_sla_template(service_type)
+        sla_template = ServiceAgreementTemplate(template_id, service_type,
+                                                attributes['main']['creator'], sla_template_dict)
+        sla_template.template_id = template_id
+        conditions = sla_template.conditions[:]
+
+        for cond in conditions:
+            for param in cond.parameters:
+                param.value = param_map.get(param.name, '')
+
+            if cond.timeout > 0:
+                cond.timeout = attributes['main']['timeout']
+
+        sla_template.set_conditions(conditions)
+        sa = ServiceAgreement(
+            attributes,
+            sla_template,
+            service_endpoint,
+            service_type
         )
         return sa
 

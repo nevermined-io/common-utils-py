@@ -213,6 +213,21 @@ class ServiceAgreement(Service):
         return cls.from_service_dict(service_dict)
 
     @classmethod
+    def from_service_index(cls, service_index, ddo):
+        """
+
+        :param service_index: index of the service inside the asset DDO, str
+        :param ddo:
+        :return:
+        """
+        service_dict = ddo.get_service_by_index(service_index).as_dictionary()
+        if not service_dict:
+            raise ValueError(
+                f'Service of type {service_index} is not found in this DDO.')
+
+        return cls.from_service_dict(service_dict)
+
+    @classmethod
     def from_service_dict(cls, service_dict):
         """
 
