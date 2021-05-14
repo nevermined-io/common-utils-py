@@ -1,5 +1,6 @@
 from contracts_lib_py.utils import generate_multi_value_hash
 from web3 import Web3
+from web3._utils.personal import new_account
 
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
 from tests.resources.helper_functions import (
@@ -35,6 +36,7 @@ def test_access_template_flow(setup_agreements_environment):
 
     amounts = service_agreement.get_amounts_int()
     receivers = service_agreement.get_receivers()
+    # receivers = [publisher_acc.address, '0x2B5AD5c4795c026514f8317c7a215E218DcCD6cF']
     token_address = keeper.token.address
 
     receiver_0_starting_balance = keeper.token.get_token_balance(

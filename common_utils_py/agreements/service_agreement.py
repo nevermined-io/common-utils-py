@@ -1,6 +1,8 @@
 from collections import namedtuple
 
 from contracts_lib_py import utils
+from web3 import Web3
+
 from common_utils_py.agreements.service_agreement_template import ServiceAgreementTemplate
 from common_utils_py.agreements.service_types import ServiceTypes, ServiceTypesIndices
 from common_utils_py.ddo.service import Service
@@ -351,9 +353,16 @@ class ServiceAgreement(Service):
             [asset_id, receiver_address, number_nfts, lock_cond_id]).hex()
 
     def generate_lock_condition_id(self, keeper, agreement_id, asset_id, escrow_condition_address, token_address, amounts, receivers):
+        # amounts_hash = utils.generate_multi_value_hash(['uint256[]'], [amounts]).hex()
+        # receivers_hash = utils.generate_multi_value_hash(['address[]'], [receivers]).hex()
+        # amounts_hash = Web3.solidityKeccak(['uint256[]'], [amounts]).hex()
+        # receivers_hash = Web3.solidityKeccak(['address[]'], [receivers]).hex()
+        # values_hash = '0x' + keeper.lock_payment_condition.hash_values(asset_id, escrow_condition_address, token_address, amounts, receivers).hex()
+        # return '0x' + keeper.lock_payment_condition.contract_generate_id(agreement_id, values_hash).hex()
         return keeper.lock_payment_condition.generate_id(
             agreement_id,
             self.condition_by_name['lockPayment'].param_types,
+            # ['bytes32', 'address', 'address', 'bytes32', 'bytes32'],
             [asset_id, escrow_condition_address, token_address, amounts, receivers]).hex()
 
     def generate_escrow_condition_id(self, keeper, agreement_id, asset_id, escrow_condition_address, amounts, receivers,token_address, lock_cond_id, access_or_compute_id):
