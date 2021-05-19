@@ -26,7 +26,7 @@ def test_create_ddo(metadata):
     for service in ddo.services:
         checksums[str(service.index)] = checksum(service.main)
     ddo.add_proof(checksums, pub_acc)
-    did = ddo.assign_did(DID.did(ddo.proof['checksum']))
+    did = ddo.assign_did(DID.encoded_did(ddo.proof['checksum']))
     ddo.proof['signatureValue'] = Keeper.sign_hash(did_to_id_bytes(did), pub_acc)
     ddo.add_public_key(did, pub_acc.address)
     ddo.add_authentication(did, PUBLIC_KEY_TYPE_RSA)
@@ -39,7 +39,7 @@ def test_creating_ddo_from_scratch():
     assert ddo.asset_id is None
     assert ddo.created is not None
 
-    did = DID.did({"0": "0x99999999999999999"})
+    did = DID.did("0x99999999999999999")
     ddo.assign_did(did)
     assert ddo.did == did
 
