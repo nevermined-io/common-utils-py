@@ -79,6 +79,17 @@ def ddo_sample_2():
 
 
 @pytest.fixture
+def setup_basic_environment():
+    consumer_acc = get_consumer_account()
+    publisher_acc = get_publisher_account()
+    keeper = Keeper.get_instance()
+    return (
+        keeper,
+        publisher_acc,
+        consumer_acc
+    )
+
+@pytest.fixture
 def setup_agreements_environment():
     consumer_acc = get_consumer_account()
     publisher_acc = get_publisher_account()
@@ -86,18 +97,19 @@ def setup_agreements_environment():
 
     ddo = get_ddo_sample()
 
-    ddo._did = DID.did({"0": generate_prefixed_id()})
+    did_seed = generate_prefixed_id()
+    asset_id = keeper.did_registry.hash_did(did_seed, publisher_acc.address)
+
+    ddo._did = DID.did(asset_id)
 
     keeper.did_registry.register(
-        ddo.asset_id,
+        did_seed,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
         url='http://172.17.0.1:5000',
         account=publisher_acc,
         providers=None
     )
 
-    registered_ddo = ddo
-    asset_id = registered_ddo.asset_id
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.ASSET_ACCESS, ddo)
     agreement_id = ServiceAgreement.create_new_agreement_id()
     price = service_agreement.get_price()
@@ -125,18 +137,18 @@ def setup_did_sales_agreements_environment():
 
     ddo = get_ddo_did_sales_sample()
 
-    ddo._did = DID.did({"0": generate_prefixed_id()})
+    did_seed = generate_prefixed_id()
+    asset_id = keeper.did_registry.hash_did(did_seed, publisher_acc.address)
+    ddo._did = DID.did(asset_id)
 
     keeper.did_registry.register(
-        ddo.asset_id,
+        did_seed,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
         url='metadata:5000',
         account=publisher_acc,
         providers=None
     )
 
-    registered_ddo = ddo
-    asset_id = registered_ddo.asset_id
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.DID_SALES, ddo)
     agreement_id = ServiceAgreement.create_new_agreement_id()
     price = service_agreement.get_price()
@@ -164,10 +176,12 @@ def setup_nft_sales_agreements_environment():
 
     ddo = get_ddo_nft_sample()
 
-    ddo._did = DID.did({"0": generate_prefixed_id()})
+    did_seed = generate_prefixed_id()
+    asset_id = keeper.did_registry.hash_did(did_seed, publisher_acc.address)
+    ddo._did = DID.did(asset_id)
 
     keeper.did_registry.register_mintable_did(
-        ddo.asset_id,
+        did_seed,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
         url='http://172.17.0.1:5000',
         cap=10,
@@ -178,8 +192,6 @@ def setup_nft_sales_agreements_environment():
 
     keeper.did_registry.mint(ddo.asset_id, 10, account=publisher_acc)
 
-    registered_ddo = ddo
-    asset_id = registered_ddo.asset_id
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_SALES, ddo)
     agreement_id = ServiceAgreement.create_new_agreement_id()
     price = service_agreement.get_price()

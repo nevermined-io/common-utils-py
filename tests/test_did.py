@@ -12,9 +12,9 @@ from common_utils_py.did import (DID, did_parse, did_to_id, did_to_id_bytes, id_
 
 
 def test_did():
-    assert DID.did({"0": "0x123"}).startswith(NEVERMINED_PREFIX)
-    assert len(DID.did({"0": "0x123"})) - len(NEVERMINED_PREFIX) == 64
-    _id = did_to_id(DID.did({"0": "0x123"}))
+    assert DID.did("0x123").startswith(NEVERMINED_PREFIX)
+    assert len(DID.did("0x123")) - len(NEVERMINED_PREFIX) == 64
+    _id = did_to_id(DID.did("0x123"))
     assert not _id.startswith('0x'), 'id portion of did should not have a 0x prefix.'
 
 
@@ -63,7 +63,7 @@ def test_id_to_did():
 
 
 def test_did_to_id():
-    did = DID.did({"0": "0x123"})
+    did = DID.did("0x123")
     _id = did_to_id(did)
     assert _id is not None and len(_id) == 64, ''
 
@@ -118,5 +118,5 @@ def test_create_did():
             "1": "0x999999952b5c93b82dd9e7ecc3d9fdf4755f7f69a54484941897dc517b4adfe3"
         }
     }
-    did = DID.did(proof['checksum'])
+    did = DID.encoded_did(proof['checksum'])
     assert did == 'did:nv:138fccf336883ae6312c9b8b375745a90be369454080e90985fb3e314ab0df25'

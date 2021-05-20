@@ -13,7 +13,20 @@ class DID:
     """Class representing an asset DID."""
 
     @staticmethod
-    def did(seed):
+    def did(asset_id):
+        """
+        Create a did.
+
+        Format of the did:
+        did:nv:cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888865
+
+        :param asset_id: the asset id
+        :return: Asset did, str.
+        """
+        return NEVERMINED_PREFIX + remove_0x_prefix(asset_id).zfill(64)
+
+    @staticmethod
+    def encoded_did(seed):
         """
         Create a did.
 
@@ -24,7 +37,6 @@ class DID:
         :return: Asset did, str.
         """
         return NEVERMINED_PREFIX + remove_0x_prefix(checksum(seed))
-
 
 def did_parse(did):
     """
