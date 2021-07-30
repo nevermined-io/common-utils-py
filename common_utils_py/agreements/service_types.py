@@ -7,6 +7,7 @@ class ServiceTypes:
     DID_SALES = 'did-sales'
     NFT_SALES = 'nft-sales'
     NFT_ACCESS = 'nft-access'
+    NFT721_ACCESS = 'nft721-access'
 
 
 class ServiceTypesIndices:
@@ -18,6 +19,7 @@ class ServiceTypesIndices:
     DEFAULT_DID_SALES_INDEX = 5
     DEFAULT_NFT_SALES_INDEX = 6
     DEFAULT_NFT_ACCESS_INDEX = 7
+    DEFAULT_NFT721_ACCESS_INDEX = 9
 
 
 class ServiceAuthorizationTypes:

@@ -64,6 +64,12 @@ class ServiceAgreement(Service):
                              ServiceTypes.NFT_ACCESS,
                              values, ServiceTypesIndices.DEFAULT_NFT_ACCESS_INDEX)
 
+        elif service_type == ServiceTypes.NFT721_ACCESS:
+            values['index'] = ServiceTypesIndices.DEFAULT_NFT721_ACCESS_INDEX
+            Service.__init__(self, service_endpoint,
+                             ServiceTypes.NFT_ACCESS,
+                             values, ServiceTypesIndices.DEFAULT_NFT721_ACCESS_INDEX)
+
         else:
             raise ValueError(f'The service_type {service_type} is not currently supported.')
 
@@ -206,12 +212,12 @@ class ServiceAgreement(Service):
         :param ddo:
         :return:
         """
-        service_dict = ddo.get_service(service_type).as_dictionary()
-        if not service_dict:
+        service = ddo.get_service(service_type)
+        if service is None:
             raise ValueError(
                 f'Service of type {service_type} is not found in this DDO.')
 
-        return cls.from_service_dict(service_dict)
+        return cls.from_service_dict(service.as_dictionary())
 
     @classmethod
     def from_service_index(cls, service_index, ddo):
@@ -221,12 +227,12 @@ class ServiceAgreement(Service):
         :param ddo:
         :return:
         """
-        service_dict = ddo.get_service_by_index(service_index).as_dictionary()
-        if not service_dict:
+        service = ddo.get_service_by_index(service_index)
+        if service is None:
             raise ValueError(
                 f'Service of type {service_index} is not found in this DDO.')
 
-        return cls.from_service_dict(service_dict)
+        return cls.from_service_dict(service.as_dictionary())
 
     @classmethod
     def from_service_dict(cls, service_dict):

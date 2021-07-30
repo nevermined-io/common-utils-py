@@ -23,23 +23,25 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Start Nevermined
       run: |
         docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
         git clone https://github.com/nevermined-io/tools nevermined-tools
         cd nevermined-tools
-        export METADATA_VERSION=latest
         rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
-        bash -x start_nevermined.sh --latest --no-marketplace  --no-gateway --no-faucet --no-acl-contract 2>&1 > start_nevermined.log &
+
+        # start nevermined
+        ./start_nevermined.sh --latest --no-marketplace --no-gateway --no-faucet --no-acl-contract --spree-embedded-contracts &
+
+        # extract contracts
         cd ..
-        for i in $(seq 1 50); do
-          sleep 5
-          [ -f "${HOME}/.nevermined/nvermined-contracts/artifacts/ready" ] && break
-        done
-        ls -la "${HOME}/.nevermined/nevermined-contracts/artifacts/"
         ./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
-        python -m pip install pip==20.2.4
+
+    - name: Install python package
+      run: |
+        pip install pip==20.2.4
         pip install -r requirements_dev.txt
+
     - name: Test with pytest
       run: |
         export PARITY_ADDRESS=0x00bd138abd70e2f00903268f3db08f2d25677c9e
@@ -48,5 +50,4 @@ jobs:
         export PARITY_ADDRESS1=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
         export PARITY_PASSWORD1=secret
         export PARITY_KEYFILE1=tests/resources/data/consumer_key_file.json
-        pip install pytest
-        pytest
+        pytest -v
