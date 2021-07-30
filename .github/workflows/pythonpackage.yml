@@ -23,19 +23,16 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Start Nevermined
       run: |
         docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
         git clone https://github.com/nevermined-io/tools nevermined-tools
         cd nevermined-tools
         rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
 
-        # start nevermined with the compute stack
+        # start nevermined
         ./start_nevermined.sh --latest --no-marketplace --no-gateway --no-faucet --no-acl-contract --spree-embedded-contracts &
 
-        # wait for the compute api to be online.
-        # the compute api is the last service to come online
-        ./scripts/wait_for_compute_api.sh
         # extract contracts
         cd ..
         ./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
