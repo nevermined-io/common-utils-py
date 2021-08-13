@@ -29,7 +29,7 @@ install_requirements = [
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'contracts-lib-py==0.7.6',
+    'contracts-lib-py==0.7.8',
     'web3==5.13.0',
     'coverage',
     'docker',
@@ -85,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/nevermined-io/common-utils-py',
-    version='0.7.3',
+    version='0.7.4',
     zip_safe=False,
 )
