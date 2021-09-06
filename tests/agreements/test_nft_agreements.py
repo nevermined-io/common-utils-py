@@ -1,10 +1,4 @@
-from contracts_lib_py.utils import generate_multi_value_hash
-from web3 import Web3
-
-from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
-from tests.resources.helper_functions import (
-    log_event
-)
+from tests.resources.helper_functions import log_event
 
 
 def test_nft_sales_flow(setup_nft_sales_agreements_environment):

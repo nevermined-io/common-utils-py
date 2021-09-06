@@ -10,7 +10,6 @@ from web3 import HTTPProvider, Web3
 from common_utils_py.agreements.service_agreement import ServiceAgreement, ServiceTypes
 from common_utils_py.ddo.ddo import DDO
 from common_utils_py.did import DID
-from common_utils_py.did_resolver.did_resolver import DIDResolver
 from common_utils_py.metadata import MetadataProvider
 from tests.resources.helper_functions import (get_consumer_account, get_ddo_sample, get_ddo_sample2,
                                               get_metadata, get_publisher_account, get_ddo_did_sales_sample,
