@@ -99,6 +99,11 @@ NFT_SALES_TEMPLATE = {
             "value": ""
           },
           {
+            "name": "_nftHolder",
+            "type": "address",
+            "value": ""
+          },
+          {
             "name": "_conditionId",
             "type": "bytes32",
             "value": ""

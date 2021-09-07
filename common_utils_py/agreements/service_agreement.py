@@ -81,6 +81,14 @@ class ServiceAgreement(Service):
         """
         return int(self.get_param_value_by_name('_numberNfts'))
 
+    def get_nft_holder(self):
+        """
+        Return the NFT holder
+
+        :return Str
+        """
+        return self.get_param_value_by_name('_nftHolder')
+
     def get_amounts(self):
         """
         Return the list of amounts/rewards to distribute
@@ -312,7 +320,8 @@ class ServiceAgreement(Service):
 
         elif self.type == ServiceTypes.NFT_SALES:
             number_nfts = self.get_number_nfts()
-            access_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, consumer_address, number_nfts, lock_cond_id)
+            nft_holder = self.get_nft_holder()
+            access_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id)
 
         else:
             raise Exception(
@@ -352,9 +361,9 @@ class ServiceAgreement(Service):
         return add_0x_prefix(
             keeper.transfer_did_condition.contract.functions.generateId(agreement_id, _hash).call().hex())
 
-    def generate_transfer_nft_condition_id(self, keeper, agreement_id, asset_id, receiver_address, number_nfts, lock_cond_id):
+    def generate_transfer_nft_condition_id(self, keeper, agreement_id, asset_id, nft_holder, receiver_address, number_nfts, lock_cond_id):
         _hash = add_0x_prefix(
-            keeper.transfer_nft_condition.hash_values(asset_id, receiver_address, number_nfts, lock_cond_id).hex())
+            keeper.transfer_nft_condition.hash_values(asset_id, nft_holder, receiver_address, number_nfts, lock_cond_id).hex())
         return add_0x_prefix(
             keeper.transfer_nft_condition.contract.functions.generateId(agreement_id, _hash).call().hex())
 
