@@ -303,7 +303,7 @@ class ServiceFactory(object):
                                                 attributes['main']['creator'], sla_template_dict)
         sla_template.template_id = template_id
         conditions = sla_template.conditions[:]
-        
+
         for cond in conditions:
             for param in cond.parameters:
                 param.value = param_map.get(param.name, '')
@@ -391,6 +391,7 @@ class ServiceFactory(object):
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
             param_map['_numberNfts'] = attributes['main']['_numberNfts']
+            param_map['_nftHolder'] = attributes['main']['_nftHolder']
         except KeyError:
             pass
 
