@@ -70,6 +70,12 @@ class ServiceAgreement(Service):
                              ServiceTypes.NFT_ACCESS,
                              values, ServiceTypesIndices.DEFAULT_NFT721_ACCESS_INDEX)
 
+        elif service_type == ServiceTypes.ASSET_ACCESS_PROOF:
+            values['index'] = ServiceTypesIndices.DEFAULT_ACCESS_PROOF_INDEX
+            Service.__init__(self, service_endpoint,
+                             ServiceTypes.ASSET_ACCESS_PROOF,
+                             values, ServiceTypesIndices.DEFAULT_ACCESS_PROOF_INDEX)
+
         else:
             raise ValueError(f'The service_type {service_type} is not currently supported.')
 

@@ -49,6 +49,20 @@ class ServiceDescriptor(object):
         )
 
     @staticmethod
+    def access_proof_service_descriptor(attributes, service_endpoint):
+        """
+        Access service with data transfer proof descriptor.
+
+        :param attributes: attributes of the access service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service descriptor.
+        """
+        return (
+            ServiceTypes.ASSET_ACCESS_PROOF,
+            {'attributes': attributes, 'serviceEndpoint': service_endpoint}
+        )
+
+    @staticmethod
     def compute_service_descriptor(attributes, service_endpoint):
         """
         Compute service descriptor.
@@ -154,6 +168,11 @@ class ServiceFactory(object):
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
+        elif service_type == ServiceTypes.ASSET_ACCESS_PROOF:
+            return ServiceFactory.build_access_proof_service(
+                kwargs['attributes'],
+                kwargs['serviceEndpoint']
+            )
         elif service_type == ServiceTypes.CLOUD_COMPUTE:
             return ServiceFactory.build_compute_service(
                 kwargs['attributes'],
@@ -217,6 +236,19 @@ class ServiceFactory(object):
         return Service(service_endpoint, ServiceTypes.ASSET_ACCESS,
                        values={'attributes': attributes},
                        index=ServiceTypesIndices.DEFAULT_ACCESS_INDEX)
+
+    @staticmethod
+    def build_access_proof_service(attributes, service_endpoint):
+        """
+        Build an access service.
+
+        :param attributes: attributes of access service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service
+        """
+        return Service(service_endpoint, ServiceTypes.ASSET_ACCESS_PROOF,
+                       values={'attributes': attributes},
+                       index=ServiceTypesIndices.DEFAULT_ACCESS_PROOF_INDEX)
 
     @staticmethod
     def build_compute_service(attributes, service_endpoint):
