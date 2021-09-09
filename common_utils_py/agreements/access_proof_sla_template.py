@@ -84,8 +84,8 @@ ACCESS_PROOF_SLA_TEMPLATE = {
         "functionName": "fulfill",
         "parameters": [
           {
-            "name": "_documentId",
-            "type": "bytes32",
+            "name": "_hash",
+            "type": "uint",
             "value": ""
           },
           {
