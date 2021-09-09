@@ -20,6 +20,7 @@ class NeverminedJWTBearerGrant(JWTBearerGrant):
                 'essential': True,
                 'values': [
                     BASE_AUD_URL + '/access',
+                    BASE_AUD_URL + '/access-proof',
                     BASE_AUD_URL + '/nft-access',
                     BASE_AUD_URL + '/compute',
                     BASE_AUD_URL + '/download',
@@ -83,6 +84,24 @@ def generate_access_grant_token(account, service_agreement_id, did, uri="/access
         subject=service_agreement_id,
         claims={
             "did": did
+        },
+        header={
+            "alg": "ES256K"
+        })
+
+    return assertion
+
+def generate_access_proof_grant_token(account, service_agreement_id, did, buyerPub, uri="/access-proof"):
+    # create jwt bearer grant
+    jwk = account_to_jwk(account)
+    assertion = NeverminedJWTBearerGrant.sign(
+        jwk,
+        issuer=account.address,
+        audience=BASE_AUD_URL + uri,
+        subject=service_agreement_id,
+        claims={
+            "did": did,
+            "buyer": buyerPub[0][2:] + buyerPub[1][2:]
         },
         header={
             "alg": "ES256K"

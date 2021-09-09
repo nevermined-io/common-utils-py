@@ -211,6 +211,8 @@ class DDO:
                     value = json.loads(value)
                 if value['type'] == ServiceTypes.ASSET_ACCESS:
                     service = ServiceAgreement.from_service_dict(value)
+                elif value['type'] == ServiceTypes.ASSET_ACCESS_PROOF:
+                    service = ServiceAgreement.from_service_dict(value)
                 elif value['type'] == ServiceTypes.CLOUD_COMPUTE:
                     service = ServiceAgreement.from_service_dict(value)
                 else:

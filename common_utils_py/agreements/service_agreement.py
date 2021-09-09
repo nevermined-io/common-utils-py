@@ -87,6 +87,14 @@ class ServiceAgreement(Service):
         """
         return int(self.get_param_value_by_name('_numberNfts'))
 
+    def get_key_hash(self):
+        """
+        Return the key hash
+
+        :return: Str
+        """
+        return int(self.get_param_value_by_name('_numberNfts'))
+
     def get_nft_holder(self):
         """
         Return the NFT holder
@@ -318,6 +326,9 @@ class ServiceAgreement(Service):
         if self.type == ServiceTypes.ASSET_ACCESS:
             access_cond_id = self.generate_access_condition_id(keeper, agreement_id, asset_id, consumer_address)
 
+        elif self.type == ServiceTypes.ASSET_ACCESS_PROOF:
+            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
+
         elif self.type == ServiceTypes.CLOUD_COMPUTE:
             access_cond_id = self.generate_compute_condition_id(keeper, agreement_id, asset_id, consumer_address)
 
@@ -348,6 +359,15 @@ class ServiceAgreement(Service):
             keeper.access_condition.hash_values(asset_id, consumer_address).hex())
         return add_0x_prefix(
             keeper.access_condition.contract.functions.generateId(agreement_id, _hash).call().hex())
+
+    def generate_access_proof_condition_id(self, keeper, agreement_id, asset_id, consumer_address):
+        keyhash = self.attributes['main']['_hash']
+        provider_address = self.attributes['main']['_providerPub']
+        print([keyhash, provider_address])
+        _hash = add_0x_prefix(
+            keeper.access_proof_condition.hash_values(keyhash, consumer_address, provider_address).hex())
+        return add_0x_prefix(
+            keeper.access_proof_condition.contract.functions.generateId(agreement_id, _hash).call().hex())
 
     def generate_nft_access_condition_id(self, keeper, agreement_id, asset_id, consumer_address):
         _hash = add_0x_prefix(

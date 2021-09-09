@@ -10,6 +10,8 @@ class AdditionalInfoMeta(object):
         'tags',
         'updateFrequency',
         'structuredMarkup',
+        'poseidonHash',
+        'providerKey',
         'workExample'
     )
     REQUIRED_VALUES_KEYS = tuple()

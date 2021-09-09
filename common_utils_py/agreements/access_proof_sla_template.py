@@ -1,11 +1,11 @@
 ACCESS_PROOF_SLA_TEMPLATE = {
-  "type": "Access",
+  "type": "access-proof",
   "templateId": "",
   "name": "dataAssetAccessServiceAgreement",
   "description": "This service agreement defines the flow for accessing a data asset on the network. Any file or bundle of files can be access using this service agreement",
   "creator": "",
   "serviceAgreementTemplate": {
-    "contractName": "AccessTemplate",
+    "contractName": "AccessProofTemplate",
     "events": [
       {
         "name": "AgreementCreated",
