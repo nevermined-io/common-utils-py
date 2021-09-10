@@ -93,7 +93,15 @@ class ServiceAgreement(Service):
 
         :return: Str
         """
-        return int(self.get_param_value_by_name('_numberNfts'))
+        return self.attributes['main']['_hash']
+
+    def get_provider_babyjub_key(self):
+        """
+        Return the provider babyjub key
+
+        :return: Str[]
+        """
+        return self.attributes['main']['_providerPub']
 
     def get_nft_holder(self):
         """
@@ -361,9 +369,8 @@ class ServiceAgreement(Service):
             keeper.access_condition.contract.functions.generateId(agreement_id, _hash).call().hex())
 
     def generate_access_proof_condition_id(self, keeper, agreement_id, asset_id, consumer_address):
-        keyhash = self.attributes['main']['_hash']
-        provider_address = self.attributes['main']['_providerPub']
-        print([keyhash, provider_address])
+        keyhash = self.get_key_hash()
+        provider_address = self.get_provider_babyjub_key()
         _hash = add_0x_prefix(
             keeper.access_proof_condition.hash_values(keyhash, consumer_address, provider_address).hex())
         return add_0x_prefix(
