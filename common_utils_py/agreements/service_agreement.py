@@ -33,7 +33,7 @@ class ServiceAgreement(Service):
         values[ServiceAgreementTemplate.TEMPLATE_ID_KEY] = self.template_id
         values['attributes'] = dict()
         values['attributes'] = attributes
-        values['attributes']['serviceAgreementTemplate'] = service_agreement_template.__dict__
+        values['attributes']['serviceAgreementTemplate'] = service_agreement_template.__dict__['template']
         if service_type == ServiceTypes.ASSET_ACCESS:
             values['index'] = ServiceTypesIndices.DEFAULT_ACCESS_INDEX
             Service.__init__(self, service_endpoint,
