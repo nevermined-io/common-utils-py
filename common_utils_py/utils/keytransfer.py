@@ -1,8 +1,9 @@
 
-from poseidon_constants import constants
-from mimc_constants import mimc_constants
+from common_utils_py.utils.poseidon_constants import constants
+from common_utils_py.utils.mimc_constants import mimc_constants
 from ctypes import *
 import json
+from web3 import Web3
 
 F = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 
@@ -59,7 +60,7 @@ def poseidon(inputs):
         state = nstate
     return state[0] % F
 
-print(poseidon([1,2]))
+# print(poseidon([1,2]))
 
 NROUNDS = 220
 
@@ -84,7 +85,7 @@ def mimc(_xL_in, _xR_in, _k):
             xR = add(xR_tmp, pow5(t))
     return [xL%F, xR%F]
 
-print(mimc(1, 2, 8496618697356220059886051648941066104102428018438044414794308085967084497473))
+# print(mimc(1, 2, 8496618697356220059886051648941066104102428018438044414794308085967084497473))
 
 generator = [
     995203441582195749578291179787384436505546430278305826713579947235728471134,
@@ -125,11 +126,11 @@ buyer_k = 123
 provider_k = 234
 buyer_pub = mulPointEscalar(base8, buyer_k)
 provider_pub = mulPointEscalar(base8, provider_k)
-print(buyer_pub)
-print(provider_pub)
+# print(buyer_pub)
+# print(provider_pub)
 
-print(mulPointEscalar(buyer_pub, provider_k))
-print(mulPointEscalar(provider_pub, buyer_k))
+# print(mulPointEscalar(buyer_pub, provider_k))
+# print(mulPointEscalar(provider_pub, buyer_k))
 
 cdll.LoadLibrary("libkeytransfer.so")
 
@@ -140,8 +141,6 @@ libkey.fullprove.restype = c_char_p
 
 def make_prover(zkey, dat):
     return libkey.make(zkey.encode('utf-8'), dat.encode('utf-8'))
-
-prover = make_prover("keytransfer.zkey", "keytransfer.dat")
 
 def prove(prover, input):
     print(input)
@@ -154,26 +153,34 @@ def split(data):
     return [int(data[0:16].hex(), 16), int(data[16:32].hex(), 16)]
 
 def hash_key(data):
-    return hex(poseidon(split(data)))
+    lst = split(data)
+    print(lst)
+    return hex(poseidon(lst))
 
-def prove_transfer(prover, buyerPub, providerPub, providerK, data):
+def hx(a):
+    # return hex(a)[2:]
+    return str(a)
+
+def prove_transfer(prover, buyerPub, providerK, data):
     orig = split(data)
 
     k = mulPointEscalar(buyerPub, providerK)
     cipher = mimc(orig[0], orig[1], k[0])
     origHash = poseidon([orig[0], orig[1]])
+    providerPub = mulPointEscalar(base8, providerK)
+
 
     snarkParams = {
-        'buyer_x': buyerPub[0],
-        'buyer_y': buyerPub[1],
-        'provider_x': providerPub[0],
-        'provider_y': providerPub[1],
-        'xL_in': orig[0],
-        'xR_in': orig[1],
-        'cipher_xL_in': cipher[0],
-        'cipher_xR_in': cipher[1],
-        'provider_k': providerK,
-        'hash_plain': origHash
+        'buyer_x': hx(buyerPub[0]),
+        'buyer_y': hx(buyerPub[1]),
+        'provider_x': hx(providerPub[0]),
+        'provider_y': hx(providerPub[1]),
+        'xL_in': hx(orig[0]),
+        'xR_in': hx(orig[1]),
+        'cipher_xL_in': hx(cipher[0]),
+        'cipher_xR_in': hx(cipher[1]),
+        'provider_k': hx(providerK),
+        'hash_plain': hx(origHash)
     }
 
     res = {
@@ -185,7 +192,17 @@ def prove_transfer(prover, buyerPub, providerPub, providerK, data):
 
 data = b"123456789q01234567890q1234567890"
 
-res = prove_transfer(prover, buyer_pub, provider_pub, provider_k, data)
+prover = make_prover("keytransfer.zkey", "keytransfer.dat")
 
+asset_plain = '0x23fefefefefefefefefeefefefefefefef2323abababababababab'
+data = bytes.fromhex(asset_plain[2:])
+c = Web3.keccak(text="abc")
+print('keccak::::::::::::::::::::::::::::')
+provider_key=int(c.hex()[0:60], 16)
+print(c.hex())
+res = prove_transfer(prover, [0x0d7cdd240c2f5b0640839c49fbaaf016a8c5571b8f592e2b62ea939063545981,0x14b14fa0a30ec744dde9f32d519c65ebaa749bfe991a32deea44b83a4e5c65bb], provider_key, data)
 print(res)
+
+# res = prove_transfer(prover, buyer_pub, provider_k, data)
+# print(res)
 
