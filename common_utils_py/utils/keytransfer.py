@@ -1,6 +1,8 @@
 
 from poseidon_constants import constants
 from mimc_constants import mimc_constants
+from ctypes import *
+import json
 
 F = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 
@@ -128,4 +130,62 @@ print(provider_pub)
 
 print(mulPointEscalar(buyer_pub, provider_k))
 print(mulPointEscalar(provider_pub, buyer_k))
+
+cdll.LoadLibrary("libkeytransfer.so")
+
+libkey = CDLL('libkeytransfer.so')
+
+libkey.make.restype = c_void_p
+libkey.fullprove.restype = c_char_p
+
+def make_prover(zkey, dat):
+    return libkey.make(zkey.encode('utf-8'), dat.encode('utf-8'))
+
+prover = make_prover("keytransfer.zkey", "keytransfer.dat")
+
+def prove(prover, input):
+    print(input)
+    with open('/tmp/input.json', 'w') as outfile:
+        json.dump(input, outfile)
+    res = libkey.fullprove(prover, b"/tmp/keytransfer.wtns", b"/tmp/input.json")
+    return res.decode()
+
+def split(data):
+    return [int(data[0:16].hex(), 16), int(data[16:32].hex(), 16)]
+
+def hash_key(data):
+    return hex(poseidon(split(data)))
+
+def prove_transfer(prover, buyerPub, providerPub, providerK, data):
+    orig = split(data)
+
+    k = mulPointEscalar(buyerPub, providerK)
+    cipher = mimc(orig[0], orig[1], k[0])
+    origHash = poseidon([orig[0], orig[1]])
+
+    snarkParams = {
+        'buyer_x': buyerPub[0],
+        'buyer_y': buyerPub[1],
+        'provider_x': providerPub[0],
+        'provider_y': providerPub[1],
+        'xL_in': orig[0],
+        'xR_in': orig[1],
+        'cipher_xL_in': cipher[0],
+        'cipher_xR_in': cipher[1],
+        'provider_k': providerK,
+        'hash_plain': origHash
+    }
+
+    res = {
+        'proof': prove(prover, snarkParams),
+        'hash': hash_key(data),
+        'cipher': [hex(cipher[0]), hex(cipher[1])]
+    }
+    return res
+
+data = b"123456789q01234567890q1234567890"
+
+res = prove_transfer(prover, buyer_pub, provider_pub, provider_k, data)
+
+print(res)
 
