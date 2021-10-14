@@ -51,6 +51,8 @@ jobs:
         sudo cp build/libkeytransfer.so /usr/local/lib
         sudo cp keytransfer.zkey keytransfer.dat /usr/local/share/keytransfer
         sudo ldconfig
+        ldd /usr/local/lib/libkeytransfer.so
+        ./build/capi_test
         cd ..
         rm -rf rapidsnark
 
