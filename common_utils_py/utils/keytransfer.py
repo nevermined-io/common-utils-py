@@ -130,7 +130,7 @@ def make_prover(zkey, dat):
 def prove(prover, input):
     with open('/tmp/input.json', 'w') as outfile:
         json.dump(input, outfile)
-    res = libkey.fullprove(prover, b"/tmp/keytransfer.wtns", b"/tmp/input.json")
+    res = libkey.fullprove(c_void_p(prover), b"/tmp/keytransfer.wtns", b"/tmp/input.json")
     return res.decode()
 
 def split(data):

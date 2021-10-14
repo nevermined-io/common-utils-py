@@ -22,7 +22,7 @@ def test_prover():
     provider_k = 234
     buyer_pub = keytransfer.mulPointEscalar(keytransfer.base8, buyer_k)
 
-    prover = keytransfer.make_prover("/usr/local/share/rapidsnark/keytransfer.zkey", "/usr/local/share/rapidsnark/keytransfer.dat")
+    prover = keytransfer.make_prover("/usr/local/share/keytransfer/keytransfer.zkey", "/usr/local/share/keytransfer/keytransfer.dat")
     res = keytransfer.prove_transfer(prover, buyer_pub, provider_k, data)
 
 #asset_plain = '0x23fefefefefefefefefeefefefefefefef2323abababababababab'
