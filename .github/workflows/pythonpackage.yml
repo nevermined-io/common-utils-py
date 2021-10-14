@@ -48,11 +48,14 @@ jobs:
         nasm -felf64 fr.asm
         cd ..
         npx task buildApi
-        sudo cp build/libkeytransfer.so /usr/local/lib
+        sudo cp build/libkeytransfer.so /lib
         sudo cp keytransfer.zkey keytransfer.dat /usr/local/share/keytransfer
         sudo ldconfig
-        ldd /usr/local/lib/libkeytransfer.so
+        npx task buildApi
+        ldd /lib/libkeytransfer.so
+        ldd ./build/capi_test
         ./build/capi_test
+        python test.py
         cd ..
         rm -rf rapidsnark
 
