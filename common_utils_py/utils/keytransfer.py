@@ -117,10 +117,7 @@ def mulPointEscalar(base, e):
 
     return res
 
-cdll.LoadLibrary("libc.so")
-print('loads libc')
 cdll.LoadLibrary("libkeytransfer.so")
-print('loads libkeytransfer')
 
 libkey = CDLL('libkeytransfer.so')
 
@@ -131,7 +128,6 @@ def make_prover(zkey, dat):
     return libkey.make(zkey.encode('utf-8'), dat.encode('utf-8'))
 
 def prove(prover, input):
-    print(input)
     with open('/tmp/input.json', 'w') as outfile:
         json.dump(input, outfile)
     res = libkey.fullprove(prover, b"/tmp/keytransfer.wtns", b"/tmp/input.json")
@@ -142,7 +138,6 @@ def split(data):
 
 def hash_key(data):
     lst = split(data)
-    print(lst)
     return hex(poseidon(lst))
 
 def hx(a):

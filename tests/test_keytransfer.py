@@ -16,10 +16,14 @@ def test_jubjub():
     provider_pub = keytransfer.mulPointEscalar(keytransfer.base8, provider_k)
     assert keytransfer.mulPointEscalar(buyer_pub, provider_k) == keytransfer.mulPointEscalar(provider_pub, buyer_k)
 
-#data = b"123456789q01234567890q1234567890"
+def test_prover():
+    data = b"123456789q01234567890q1234567890"
+    buyer_k = 123
+    provider_k = 234
+    buyer_pub = keytransfer.mulPointEscalar(keytransfer.base8, buyer_k)
 
-#prover = make_prover("/usr/local/share/rapidsnark/keytransfer.zkey", "/usr/local/share/rapidsnark/keytransfer.dat")
-#res = prove_transfer(prover, buyer_pub, provider_k, data)
+    prover = keytransfer.make_prover("/usr/local/share/rapidsnark/keytransfer.zkey", "/usr/local/share/rapidsnark/keytransfer.dat")
+    res = keytransfer.prove_transfer(prover, buyer_pub, provider_k, data)
 
 #asset_plain = '0x23fefefefefefefefefeefefefefefefef2323abababababababab'
 #data = bytes.fromhex(asset_plain[2:])
