@@ -117,7 +117,10 @@ def mulPointEscalar(base, e):
 
     return res
 
+cdll.LoadLibrary("libc.so")
+print('loads libc')
 cdll.LoadLibrary("libkeytransfer.so")
+print('loads libkeytransfer')
 
 libkey = CDLL('libkeytransfer.so')
 
