@@ -325,10 +325,10 @@ class ServiceFactory(object):
 
         try:
             param_map['_did'] = did_to_id(did)
-            param_map['_tokenAddress'] = attributes['main']['_tokenAddress']
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
             param_map['_numberNfts'] = attributes['main']['_numberNfts']
+            param_map['_tokenAddress'] = attributes['main']['_tokenAddress']
         except KeyError:
             pass
 
