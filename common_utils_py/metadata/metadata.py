@@ -133,6 +133,7 @@ class Metadata:
         """
         try:
             asset_did = ddo.did
+            
             response = self.requests_session.post(self.url, data=ddo.as_text(),
                                                   headers=self._headers)
         except AttributeError:

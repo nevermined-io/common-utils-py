@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7]
+        python-version: ['3.6', '3.7', '3.8', '3.9']
 
     steps:
     - uses: actions/checkout@v2
@@ -23,6 +23,19 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Set up node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - name: Install rapidsnark
+      run: |
+        git clone https://github.com/nevermined-io/rapidsnark
+        cd rapidsnark
+        git submodule update --init --recursive
+        sh ./scripts/install-linux.sh
+        cd ..
+        rm -rf rapidsnark
+
     - name: Start Nevermined
       run: |
         docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
