@@ -25,7 +25,8 @@ def sub(a,b):
     return (a-b + F) % F
 
 def div(a,b):
-    return mul(a, pow(b, F-1, F))
+    return mul(a, pow(b, F-2, F))
+#    return mul(a, pow(b, -1, F))
 
 def mul(a,b):
     return (a*b) % F
