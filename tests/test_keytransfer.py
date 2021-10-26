@@ -25,14 +25,3 @@ def test_prover():
     prover = keytransfer.make_prover("/usr/local/share/keytransfer/keytransfer.zkey", "/usr/local/share/keytransfer/keytransfer.dat")
     res = keytransfer.prove_transfer(prover, buyer_pub, provider_k, data)
 
-#asset_plain = '0x23fefefefefefefefefeefefefefefefef2323abababababababab'
-#data = bytes.fromhex(asset_plain[2:])
-#c = Web3.keccak(text="abc")
-#print('keccak::::::::::::::::::::::::::::')
-#provider_key=int(c.hex()[0:60], 16)
-#print(c.hex())
-#res = prove_transfer(prover, [0x0d7cdd240c2f5b0640839c49fbaaf016a8c5571b8f592e2b62ea939063545981,0x14b14fa0a30ec744dde9f32d519c65ebaa749bfe991a32deea44b83a4e5c65bb], provider_key, data)
-# print(res)
-
-# print(res)
-

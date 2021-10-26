@@ -2,7 +2,6 @@ from common_utils_py.utils.poseidon_constants import constants
 from common_utils_py.utils.mimc_constants import mimc_constants
 from ctypes import *
 import json
-from web3 import Web3
 
 F = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 
@@ -110,7 +109,6 @@ def mulPointEscalar(base, e):
     exp = base
 
     while rem != 0:
-        # print(res, rem, rem % 2)
         if rem % 2 == 1:
             res = addPoint(res, exp)
         exp = addPoint(exp, exp)
@@ -118,14 +116,18 @@ def mulPointEscalar(base, e):
 
     return res
 
-cdll.LoadLibrary("libkeytransfer.so")
+libkey = 0
 
-libkey = CDLL('libkeytransfer.so')
-
-libkey.make.restype = c_void_p
-libkey.fullprove.restype = c_char_p
+def init_prover():
+    global libkey
+    cdll.LoadLibrary("libkeytransfer.so")
+    libkey = CDLL('libkeytransfer.so')
+    libkey.make.restype = c_void_p
+    libkey.fullprove.restype = c_char_p
 
 def make_prover(zkey, dat):
+    if libkey == 0:
+        init_prover()
     return libkey.make(zkey.encode('utf-8'), dat.encode('utf-8'))
 
 def prove(prover, input):
