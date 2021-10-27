@@ -1,5 +1,6 @@
 from common_utils_py.oauth2.jwk_utils import account_to_jwk
 from authlib.oauth2.rfc7523.jwt_bearer import JWTBearerGrant
+from common_utils_py.utils import keytransfer
 
 BASE_AUD_URL = "/api/v1/gateway/services"
 
@@ -91,9 +92,10 @@ def generate_access_grant_token(account, service_agreement_id, did, uri="/access
 
     return assertion
 
-def generate_access_proof_grant_token(account, service_agreement_id, did, buyerPub, uri="/access-proof"):
+def generate_access_proof_grant_token(account, service_agreement_id, did, buyer_secret, uri="/access-proof"):
     # create jwt bearer grant
     jwk = account_to_jwk(account)
+    address_num = int(account.address, 16)
     assertion = NeverminedJWTBearerGrant.sign(
         jwk,
         issuer=account.address,
@@ -101,7 +103,8 @@ def generate_access_proof_grant_token(account, service_agreement_id, did, buyerP
         subject=service_agreement_id,
         claims={
             "did": did,
-            "buyer": buyerPub[0][2:] + buyerPub[1][2:]
+            "babysig": keytransfer.sign(buyer_secret, address_num),
+            "buyer": keytransfer.make_public(buyer_secret),
         },
         header={
             "alg": "ES256K"

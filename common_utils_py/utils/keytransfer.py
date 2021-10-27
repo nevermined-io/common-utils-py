@@ -125,7 +125,6 @@ def inCurve(P):
     y2 = square(P[1])
 
     if add(mul(A, x2), y2) != add(1, mul(mul(x2, y2), D)):
-        print('not in curve')
         return False
 
     return True
@@ -133,6 +132,12 @@ def inCurve(P):
 def make_key(provider_secret):
     c = Web3.keccak(text=provider_secret)
     return int(c.hex()[0:60], 16)
+
+def make_public(secret):
+    k = make_key(secret)
+    buyerPub = mulPointEscalar(base8, k)
+    res = hex(buyerPub[0])[2:].zfill(64) + hex(buyerPub[1])[2:].zfill(64)
+    return res
 
 def sign(provider_secret, msg):
     r = make_key(provider_secret + 'a')
