@@ -2,6 +2,7 @@ from common_utils_py.utils.poseidon_constants import constants
 from common_utils_py.utils.mimc_constants import mimc_constants
 from ctypes import *
 import json
+from web3 import Web3
 
 F = 21888242871839275222246405745257275088548364400416034343698204186575808495617
 
@@ -13,6 +14,9 @@ def C(a,b):
 
 def M(a,b,c):
     return int(constants['M'][a][b][c], 16)
+
+def square(a):
+    return (a ** 2) % F
 
 def pow5(a):
     return (a ** 5) % F
@@ -91,7 +95,7 @@ base8 = [
     16950150798460657717958625567821834550301663161624707787222815936182638968203,
 ]
 order = 21888242871839275222246405745257275088614511777268538073601725287587578984328
-subOrder = order / 8
+subOrder = order // 8
 A = 168700
 D = 168696
 
@@ -115,6 +119,55 @@ def mulPointEscalar(base, e):
         rem = rem // 2
 
     return res
+
+def inCurve(P):
+    x2 = square(P[0])
+    y2 = square(P[1])
+
+    if add(mul(A, x2), y2) != add(1, mul(mul(x2, y2), D)):
+        print('not in curve')
+        return False
+
+    return True
+
+def make_key(provider_secret):
+    c = Web3.keccak(text=provider_secret)
+    return int(c.hex()[0:60], 16)
+
+def sign(provider_secret, msg):
+    r = make_key(provider_secret + 'a')
+    r = r % subOrder
+    s = make_key(provider_secret)
+    R8 = mulPointEscalar(base8, r)
+    A = mulPointEscalar(base8, s)
+    hm = poseidon([R8[0], R8[1], A[0], A[1], msg % F])
+    S = (r + hm*s) % subOrder
+    return {
+        'R8': [hex(R8[0]), hex(R8[1])],
+        'S': hex(S),
+    }
+
+def verify(A, msg, sig):
+    sig_R8 = [int(sig['R8'][0], 16), int(sig['R8'][1], 16)]
+    sig_S = int(sig['S'], 16)
+    if not inCurve(sig_R8):
+        return False
+    if not inCurve(A):
+        return False
+    if sig_S >= subOrder:
+        return False
+
+    hm = poseidon([sig_R8[0], sig_R8[1], A[0], A[1], msg % F])
+
+    Pleft = mulPointEscalar(base8, sig_S*8)
+    Pright = mulPointEscalar(A, hm*8)
+    Pright = addPoint(mulPointEscalar(sig_R8, 8), Pright)
+
+    if Pleft[0] != Pright[0]:
+        return False
+    if Pleft[1] != Pright[1]:
+        return False
+    return True
 
 libkey = 0
 
