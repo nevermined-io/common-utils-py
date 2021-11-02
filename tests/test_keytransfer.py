@@ -25,3 +25,12 @@ def test_prover():
     prover = keytransfer.make_prover("/usr/local/share/keytransfer/keytransfer.zkey", "/usr/local/share/keytransfer/keytransfer.dat")
     res = keytransfer.prove_transfer(prover, buyer_pub, provider_k, data)
 
+def test_signature():
+    data = b"123456789q"
+    buyer_secret = "abc123"
+    buyer_k = keytransfer.make_key(buyer_secret)
+    dta_num = int(data.hex(), 16)
+    buyer_pub = keytransfer.mulPointEscalar(keytransfer.base8, buyer_k)
+    sig = keytransfer.sign(buyer_secret, dta_num)
+    assert keytransfer.verify(buyer_pub, dta_num, sig)
+
