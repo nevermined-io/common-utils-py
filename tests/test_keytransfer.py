@@ -1,4 +1,4 @@
-from web3 import Web3
+import pytest
 
 from common_utils_py.utils import keytransfer
 
@@ -16,6 +16,7 @@ def test_jubjub():
     provider_pub = keytransfer.mulPointEscalar(keytransfer.base8, provider_k)
     assert keytransfer.mulPointEscalar(buyer_pub, provider_k) == keytransfer.mulPointEscalar(provider_pub, buyer_k)
 
+@pytest.mark.skip(reason="See https://github.com/nevermined-io/common-utils-py/issues/40")
 def test_prover():
     data = b"123456789q01234567890q1234567890"
     buyer_k = 123
