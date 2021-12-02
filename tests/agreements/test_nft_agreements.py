@@ -103,9 +103,9 @@ def test_nft_sales_flow(setup_nft_sales_agreements_environment):
         keeper.escrow_payment_condition.address
     ) == (price + starting_balance), ''
 
-    assert keeper.did_registry.balance(publisher_acc.address, asset_id) >= number_nfts
+    assert keeper.nft_upgradeable.balance(publisher_acc.address, asset_id) >= number_nfts
 
-    assert keeper.did_registry.is_nft_approved_for_all(publisher_acc.address,
+    assert keeper.nft_upgradeable.is_approved_for_all(publisher_acc.address,
                                                        keeper.transfer_nft_condition.address) is True
 
     # Fulfill transfer did condition
