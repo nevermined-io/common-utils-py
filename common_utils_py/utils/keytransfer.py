@@ -178,8 +178,12 @@ libkey = 0
 
 def init_prover():
     global libkey
-    cdll.LoadLibrary("libkeytransfer.so")
-    libkey = CDLL('libkeytransfer.so')
+    libname = "libkeytransfer.so"
+    file = open("/proc/cpuinfo")
+    if not 'adx' in file:
+        libname = "libkeytransfer_noadx.so"
+    cdll.LoadLibrary(libname)
+    libkey = CDLL(libname)
     libkey.make.restype = c_void_p
     libkey.fullprove.restype = c_char_p
 
