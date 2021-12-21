@@ -4,9 +4,11 @@ Help to communicate with the metadata store.
 """
 import json
 import logging
+import copy
 
 from common_utils_py.metadata.exceptions import MetadataGenericError
 from common_utils_py.ddo.ddo import DDO
+from common_utils_py.ddo.service import Service
 from common_utils_py.http_requests.requests_session import get_requests_session
 
 logger = logging.getLogger('metadata')
@@ -133,7 +135,6 @@ class Metadata:
         """
         try:
             asset_did = ddo.did
-            
             response = self.requests_session.post(self.url, data=ddo.as_text(),
                                                   headers=self._headers)
         except AttributeError:
@@ -275,6 +276,43 @@ class Metadata:
         else:
             logger.info(self._parse_search_response(response.content))
             return False
+
+    def get_service_agreement(self, agreement_id):
+        """
+        Retrieve a service agreement for a given agreemend id.
+
+        :param agreement_id: Service agreement id string
+        :return: Service
+        """
+        response = self.requests_session.get(f'{self._base_url}/service/{agreement_id}')
+        if response.status_code == 404:
+            return None
+
+        if response.status_code == 500:
+            raise ValueError(response.content)
+
+        parsed_response = json.loads(response.content)
+        return Service.from_json(parsed_response)
+
+    def store_service_agreement(self, agreement_id, service):
+        """
+        Store a service agreement for a given agreemend id.
+
+        :param agreement_id: Service agreement id string
+        :param service: Service
+        :return: bool
+        """
+        service_json = service.as_dictionary()
+        service_json['agreementId'] = agreement_id
+        response = self.requests_session.post(
+            f'{self._base_url}/service',
+            data=json.dumps(service_json),
+            headers=self._headers
+        )
+
+        if response.status_code != 201:
+            raise ValueError(response.content)
+        return True
 
     @staticmethod
     def _parse_search_response(response):
