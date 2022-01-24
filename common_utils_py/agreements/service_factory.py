@@ -1,3 +1,5 @@
+import logging
+
 from common_utils_py.agreements.service_agreement import ServiceAgreement
 from common_utils_py.agreements.service_agreement_template import ServiceAgreementTemplate
 from common_utils_py.agreements.service_types import ServiceTypes, ServiceTypesIndices
@@ -5,6 +7,7 @@ from common_utils_py.agreements.utils import get_sla_template
 from common_utils_py.ddo.service import Service
 from common_utils_py.did import did_to_id
 
+logger = logging.getLogger(__name__)
 
 class ServiceDescriptor(object):
     """Tuples of length 2. The first item must be one of ServiceTypes and the second
@@ -327,10 +330,10 @@ class ServiceFactory(object):
             param_map['_did'] = did_to_id(did)
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
-            param_map['_numberNfts'] = attributes['main']['_numberNfts']
             param_map['_tokenAddress'] = attributes['main']['_tokenAddress']
-        except KeyError:
-            pass
+            param_map['_numberNfts'] = attributes['main']['_numberNfts']
+        except KeyError as e:
+            logger.error(f'Error mapping field {e}')
 
         sla_template_dict = get_sla_template(service_type)
         sla_template = ServiceAgreementTemplate(template_id, service_type,
