@@ -331,10 +331,8 @@ class ServiceAgreement(Service):
         amounts = self.get_amounts_int()
         receivers = self.get_receivers()
         lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address, token_address, amounts, receivers)
-        print('lock cond', [agreement_id, asset_id, keeper.escrow_payment_condition.address, token_address, amounts, receivers])
 
         if self.type == ServiceTypes.ASSET_ACCESS:
-            print('access cond', [agreement_id, asset_id, consumer_address, [keeper.access_condition.address]])
             access_cond_id = self.generate_access_condition_id(keeper, agreement_id, asset_id, consumer_address)
 
         elif self.type == ServiceTypes.ASSET_ACCESS_PROOF:
