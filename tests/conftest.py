@@ -115,10 +115,11 @@ def setup_agreements_environment():
     )
 
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.ASSET_ACCESS, ddo)
-    agreement_id = ServiceAgreement.create_new_agreement_id()
+    agreement_id_seed = ServiceAgreement.create_new_agreement_id()
     price = service_agreement.get_price()
-    (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id, asset_id, consumer_acc.address, keeper)
+    (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
+    print('published address', publisher_acc.address)
 
     return (
         keeper,
@@ -154,10 +155,11 @@ def setup_did_sales_agreements_environment():
     )
 
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.DID_SALES, ddo)
-    agreement_id = ServiceAgreement.create_new_agreement_id()
+    agreement_id_seed = generate_prefixed_id()
+
     price = service_agreement.get_price()
-    (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id, asset_id, consumer_acc.address, keeper)
+    (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     return (
         keeper,
@@ -197,16 +199,16 @@ def setup_nft_sales_agreements_environment():
     keeper.did_registry.mint(ddo.asset_id, 10, account=publisher_acc)
 
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_SALES, ddo)
-    agreement_id = ServiceAgreement.create_new_agreement_id()
+    agreement_id_seed = generate_prefixed_id()
     price = service_agreement.get_price()
-    (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id, asset_id, consumer_acc.address, keeper)
+    (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     nft_access_service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_ACCESS, ddo)
-    nft_access_agreement_id = ServiceAgreement.create_new_agreement_id()
+    nft_access_agreement_id_seed = ServiceAgreement.create_new_agreement_id()
 
-    (nft_access_cond_id, nft_holder_cond_id) = nft_access_service_agreement.generate_agreement_condition_ids(
-        nft_access_agreement_id, asset_id, consumer_acc.address, keeper)
+    (nft_access_agreement_id, nft_access_cond_id, nft_holder_cond_id) = nft_access_service_agreement.generate_agreement_condition_ids(
+        nft_access_agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     return (
         keeper,
