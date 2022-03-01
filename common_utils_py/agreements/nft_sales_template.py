@@ -158,6 +158,11 @@ NFT_SALES_TEMPLATE = {
             "value": ""
           },
           {
+            "name": "_returnAddress",
+            "type": "address[]",
+            "value": []
+          },
+          {
             "name": "_tokenAddress",
             "type": "address",
             "value": ""

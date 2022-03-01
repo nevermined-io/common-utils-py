@@ -333,6 +333,7 @@ class ServiceFactory(object):
             param_map['_did'] = did_to_id(did)
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
+            param_map['_returnAddress'] = attributes['main']['_returnAddress']
             param_map['_tokenAddress'] = attributes['main']['_tokenAddress']
             if service_type == ServiceTypes.NFT_ACCESS:
                 param_map['_numberNfts'] = attributes['main']['_numberNfts']
@@ -383,6 +384,7 @@ class ServiceFactory(object):
         try:
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
+            param_map['_returnAddress'] = attributes['main']['_returnAddress']
         except KeyError:
             pass
 
@@ -434,6 +436,7 @@ class ServiceFactory(object):
         try:
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
+            param_map['_returnAddress'] = attributes['main']['_returnAddress']
             param_map['_numberNfts'] = attributes['main']['_numberNfts']
             param_map['_nftHolder'] = attributes['main']['_nftHolder']
         except KeyError:

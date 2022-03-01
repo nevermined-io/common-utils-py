@@ -329,7 +329,7 @@ class ServiceAgreement(Service):
         """
         return generate_prefixed_id()
 
-    def generate_agreement_condition_ids(self, agreement_id_seed, asset_id, consumer_address, keeper, init_address, token_address=None):
+    def generate_agreement_condition_ids(self, agreement_id_seed, asset_id, consumer_address, keeper, init_address, return_address, token_address=None):
         """
         Generate the condition ids depending on the ServiceType
         :param agreement_id: id of the agreement, hex str
@@ -339,7 +339,6 @@ class ServiceAgreement(Service):
         :param token_address:
         :return:
         """
-        return_address = consumer_address
         agreement_id = keeper.agreement_manager.hash_id(agreement_id_seed, init_address)
         if token_address is None:
             token_address = keeper.token.address
@@ -398,6 +397,7 @@ class ServiceAgreement(Service):
             raise Exception(
                 'Error generating the condition ids, the service_agreement type is not valid.')
 
+        print((agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], access_cond_id[1]))
         escrow_cond_id = self.generate_escrow_condition_id(keeper, agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], access_cond_id[1])
         return (agreement_id_seed, agreement_id), access_cond_id, lock_cond_id, escrow_cond_id
 
