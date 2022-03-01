@@ -130,7 +130,7 @@ def test_nft_sales_flow(setup_nft_sales_agreements_environment):
 
     # Fulfill escrow_payment_condition
     tx_hash = keeper.escrow_payment_condition.fulfill(
-        agreement_id[1], asset_id, amounts, receivers, publisher_acc.address,
+        agreement_id[1], asset_id, amounts, receivers, consumer_acc.address,
         keeper.escrow_payment_condition.address, token_address, lock_cond_id[1],
         access_cond_id[1], publisher_acc
     )

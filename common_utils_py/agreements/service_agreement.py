@@ -329,7 +329,7 @@ class ServiceAgreement(Service):
         """
         return generate_prefixed_id()
 
-    def generate_agreement_condition_ids(self, agreement_id_seed, asset_id, consumer_address, keeper, publisher_address, token_address=None):
+    def generate_agreement_condition_ids(self, agreement_id_seed, asset_id, consumer_address, keeper, init_address, token_address=None):
         """
         Generate the condition ids depending on the ServiceType
         :param agreement_id: id of the agreement, hex str
@@ -339,7 +339,8 @@ class ServiceAgreement(Service):
         :param token_address:
         :return:
         """
-        agreement_id = keeper.agreement_manager.hash_id(agreement_id_seed, publisher_address)
+        return_address = consumer_address
+        agreement_id = keeper.agreement_manager.hash_id(agreement_id_seed, init_address)
         if token_address is None:
             token_address = keeper.token.address
 
@@ -360,16 +361,16 @@ class ServiceAgreement(Service):
             nft_receiver = self.get_nft_receiver()
             lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address, token_address, number_nfts, nft_receiver)
             access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
-            escrow_cond_id = self.generate_nft_escrow_condition_id(keeper, agreement_id, asset_id, publisher_address, keeper.escrow_payment_condition.address, number_nfts, nft_receiver, token_address, lock_cond_id[1], [access_cond_id[1], transfer_cond_id[1]])
+            escrow_cond_id = self.generate_nft_escrow_condition_id(keeper, agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, number_nfts, nft_receiver, token_address, lock_cond_id[1], [access_cond_id[1], transfer_cond_id[1]])
             return (agreement_id_seed, agreement_id), access_cond_id, lock_cond_id, escrow_cond_id
 
         if self.type == ServiceTypes.NFT_SALES_WITH_ACCESS:
             number_nfts = self.get_number_nfts()
             nft_receiver = self.get_nft_receiver()
             lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address, token_address, number_nfts, nft_receiver)
-            transfer_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_receiver, number_nfts, lock_cond_id[1])
+            transfer_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1])
             access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
-            escrow_cond_id = self.generate_escrow_condition_multi_id(keeper, agreement_id, asset_id, publisher_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [access_cond_id[1]])
+            escrow_cond_id = self.generate_escrow_condition_multi_id(keeper, agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [access_cond_id[1]])
             return (agreement_id_seed, agreement_id), access_cond_id, lock_cond_id, escrow_cond_id
 
         amounts = self.get_amounts_int()
@@ -397,7 +398,7 @@ class ServiceAgreement(Service):
             raise Exception(
                 'Error generating the condition ids, the service_agreement type is not valid.')
 
-        escrow_cond_id = self.generate_escrow_condition_id(keeper, agreement_id, asset_id, publisher_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], access_cond_id[1])
+        escrow_cond_id = self.generate_escrow_condition_id(keeper, agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], access_cond_id[1])
         return (agreement_id_seed, agreement_id), access_cond_id, lock_cond_id, escrow_cond_id
 
     def generate_nft_holder_condition_id(self, keeper, agreement_id, asset_id, holder_address, number_nfts):
@@ -456,12 +457,6 @@ class ServiceAgreement(Service):
             keeper.nft_lock_payment_condition.hash_values(asset_id, escrow_condition_address, token_address, amount, receiver).hex())
         return (_hash, add_0x_prefix(
             keeper.nft_lock_payment_condition.contract.functions.generateId(agreement_id, _hash).call().hex()))
-
-    def generate_transfer_nft_condition_id(self, keeper, agreement_id, asset_id, receiver, nft_amount, lock_cond_id):
-        _hash = add_0x_prefix(
-            keeper.transfer_nft_condition.hash_values(asset_id, receiver, nft_amount, lock_cond_id).hex())
-        return (_hash, add_0x_prefix(
-            keeper.transfer_nft_condition.contract.functions.generateId(agreement_id, _hash).call().hex()))
 
     def generate_escrow_condition_id(self, keeper, agreement_id, asset_id, return_address, escrow_condition_address, amounts, receivers,token_address, lock_cond_id, access_or_compute_id):
         _hash = add_0x_prefix(
