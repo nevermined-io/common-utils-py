@@ -189,6 +189,60 @@ NFT_SALES_WITH_ACCESS_TEMPLATE = {
             }
           }
         ]
+      },
+      {
+        "name": "access",
+        "timelock": 0,
+        "timeout": 0,
+        "contractName": "AccessProofCondition",
+        "functionName": "fulfill",
+        "parameters": [
+          {
+            "name": "_hash",
+            "type": "uint",
+            "value": ""
+          },
+          {
+            "name": "_grantee",
+            "type": "uint[2]",
+            "value": ""
+          },
+          {
+            "name": "_provider",
+            "type": "uint[2]",
+            "value": ""
+          },
+          {
+            "name": "_cipher",
+            "type": "uint[2]",
+            "value": ""
+          },
+          {
+            "name": "_proof",
+            "type": "bytes",
+            "value": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "Fulfilled",
+            "actorType": "publisher",
+            "handler": {
+              "moduleName": "access",
+              "functionName": "fulfillEscrowPaymentCondition",
+              "version": "0.1"
+            }
+          },
+          {
+            "name": "TimedOut",
+            "actorType": "consumer",
+            "handler": {
+              "moduleName": "access",
+              "functionName": "fulfillEscrowPaymentCondition",
+              "version": "0.1"
+            }
+          }
+        ]
       }
     ]
   }
