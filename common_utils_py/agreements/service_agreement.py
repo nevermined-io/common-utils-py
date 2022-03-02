@@ -91,7 +91,7 @@ class ServiceAgreement(Service):
         elif service_type == ServiceTypes.NFT_SALES_WITH_ACCESS:
             values['index'] = ServiceTypesIndices.DEFAULT_NFT_SALES_WITH_ACCESS_INDEX
             Service.__init__(self, service_endpoint,
-                             ServiceTypes.NFT_SALES_WITH_ACCESS_PROOF,
+                             ServiceTypes.NFT_SALES_WITH_ACCESS,
                              values, ServiceTypesIndices.DEFAULT_NFT_SALES_WITH_ACCESS_INDEX)
 
         else:
@@ -355,10 +355,13 @@ class ServiceAgreement(Service):
             access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
             return (agreement_id_seed, agreement_id), access_cond_id, nft_holder_cond_id
 
+        # TODO: not working
         if self.type == ServiceTypes.NFT_ACCESS_SWAP:
             number_nfts = self.get_number_nfts()
             nft_receiver = self.get_nft_receiver()
-            lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address, token_address, number_nfts, nft_receiver)
+            amounts = self.get_amounts_int()
+            receivers = self.get_receivers()
+            lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address,  token_address, amounts, receivers)
             access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
             escrow_cond_id = self.generate_nft_escrow_condition_id(keeper, agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, number_nfts, nft_receiver, token_address, lock_cond_id[1], [access_cond_id[1], transfer_cond_id[1]])
             return (agreement_id_seed, agreement_id), access_cond_id, lock_cond_id, escrow_cond_id
@@ -366,8 +369,11 @@ class ServiceAgreement(Service):
         if self.type == ServiceTypes.NFT_SALES_WITH_ACCESS:
             number_nfts = self.get_number_nfts()
             nft_receiver = self.get_nft_receiver()
-            lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address, token_address, number_nfts, nft_receiver)
-            transfer_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1])
+            amounts = self.get_amounts_int()
+            receivers = self.get_receivers()
+            nft_holder = self.get_nft_holder()
+            lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address,  token_address, amounts, receivers)
+            transfer_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, return_address, number_nfts, lock_cond_id[1])
             access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
             escrow_cond_id = self.generate_escrow_condition_multi_id(keeper, agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [access_cond_id[1]])
             return (agreement_id_seed, agreement_id), access_cond_id, lock_cond_id, escrow_cond_id
@@ -390,6 +396,7 @@ class ServiceAgreement(Service):
 
         elif self.type == ServiceTypes.NFT_SALES:
             number_nfts = self.get_number_nfts()
+            print("got number of nfts", number_nfts)
             nft_holder = self.get_nft_holder()
             access_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1])
 

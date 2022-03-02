@@ -10,7 +10,7 @@ class ServiceTypes:
     NFT_ACCESS = 'nft-access'
     NFT721_ACCESS = 'nft721-access'
     NFT_ACCESS_PROOF = 'nft-access-proof'
-    NFT_ACCESS_SWAP = 'nft-access-proof'
+    NFT_ACCESS_SWAP = 'nft-access-swap'
     NFT_SALES_WITH_ACCESS = 'nft-sales-with-access'
 
 class ServiceTypesIndices:
