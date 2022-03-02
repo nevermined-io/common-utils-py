@@ -375,7 +375,10 @@ class ServiceAgreement(Service):
             lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address,  token_address, amounts, receivers)
             transfer_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, return_address, number_nfts, lock_cond_id[1])
             access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
-            escrow_cond_id = self.generate_escrow_condition_multi_id(keeper, agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [access_cond_id[1]])
+            print('creating escrow multi', [
+                agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [transfer_cond_id[1], access_cond_id[1]]
+            ])
+            escrow_cond_id = self.generate_escrow_condition_multi_id(keeper, agreement_id, asset_id, return_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [transfer_cond_id[1], access_cond_id[1]])
             return (agreement_id_seed, agreement_id), transfer_cond_id, lock_cond_id, escrow_cond_id, access_cond_id
 
         amounts = self.get_amounts_int()
