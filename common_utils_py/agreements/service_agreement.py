@@ -351,7 +351,7 @@ class ServiceAgreement(Service):
 
         if self.type == ServiceTypes.NFT_ACCESS_PROOF:
             number_nfts = self.get_number_nfts()
-            nft_holder_cond_id = self.generate_nft_holder_condition_id(keeper, agreement_id, asset_id, consumer_address, number_nfts)
+            nft_holder_cond_id = self.generate_nft_holder_condition_id(keeper, agreement_id, asset_id, return_address, number_nfts)
             access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
             return (agreement_id_seed, agreement_id), access_cond_id, nft_holder_cond_id
 

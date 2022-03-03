@@ -135,6 +135,20 @@ class ServiceDescriptor(object):
             {'attributes': attributes, 'serviceEndpoint': service_endpoint}
         )
 
+    @staticmethod
+    def nft_access_proof_service_descriptor(attributes, service_endpoint):
+        """
+        NFT Access service descriptor.
+
+        :param attributes: attributes of the nft access service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service descriptor.
+        """
+        return (
+            ServiceTypes.NFT_ACCESS_PROOF,
+            {'attributes': attributes, 'serviceEndpoint': service_endpoint}
+        )
+
 
 class ServiceFactory(object):
     """Factory class to create Services."""
