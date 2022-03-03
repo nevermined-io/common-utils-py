@@ -23,6 +23,7 @@ class NeverminedJWTBearerGrant(JWTBearerGrant):
                     BASE_AUD_URL + '/access',
                     BASE_AUD_URL + '/access-proof',
                     BASE_AUD_URL + '/nft-access',
+                    BASE_AUD_URL + '/nft-access-proof',
                     BASE_AUD_URL + '/compute',
                     BASE_AUD_URL + '/download',
                     BASE_AUD_URL + '/execute'
