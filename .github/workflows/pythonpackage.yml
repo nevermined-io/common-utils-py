@@ -32,6 +32,7 @@ jobs:
       run: |
         git clone https://github.com/nevermined-io/rapidsnark
         cd rapidsnark
+        git checkout v0.0.1
         sh ./scripts/install-linux.sh
         cd ..
         rm -rf rapidsnark
@@ -44,7 +45,8 @@ jobs:
         rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
 
         # start nevermined
-        ./start_nevermined.sh --latest --no-marketplace --no-gateway --no-faucet --no-acl-contract --spree-embedded-contracts &
+        export KEEPER_VERSION=develop
+        ./start_nevermined.sh --no-marketplace --no-gateway --no-faucet --no-acl-contract --polygon &
 
         # extract contracts
         cd ..
