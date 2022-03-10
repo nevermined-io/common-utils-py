@@ -65,8 +65,6 @@ def test_did_sales_flow(setup_did_sales_agreements_environment):
     assert event, 'no event for AgreementCreated '
 
     # Verify condition types (condition contracts)
-    # agreement = keeper.agreement_manager.get_agreement(agreement_id)
-    # assert agreement.did == asset_id, ''
     cond_types = keeper.did_sales_template.get_condition_types()
     for i, cond_id in enumerate([lock_cond_id[1], access_cond_id[1], escrow_cond_id[1]]):
         cond = keeper.condition_manager.get_condition(cond_id)

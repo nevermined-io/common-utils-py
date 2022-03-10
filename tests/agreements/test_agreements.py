@@ -68,8 +68,6 @@ def test_access_template_flow(setup_agreements_environment):
     print(event)
 
     # Verify condition types (condition contracts)
-    # agreement = keeper.agreement_manager.get_agreement(agreement_id[1])
-    # assert agreement.did == asset_id, ''
     cond_types = keeper.access_template.get_condition_types()
     for i, cond_id in enumerate([access_cond_id, lock_cond_id, escrow_cond_id]):
         print(cond_id)
