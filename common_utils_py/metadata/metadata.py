@@ -304,6 +304,7 @@ class Metadata:
         """
         service_json = service.as_dictionary()
         service_json['agreementId'] = agreement_id
+        print(self._base_url, json.dumps(service_json))
         response = self.requests_session.post(
             f'{self._base_url}/service',
             data=json.dumps(service_json),
