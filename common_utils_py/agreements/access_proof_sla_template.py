@@ -153,6 +153,11 @@ ACCESS_PROOF_SLA_TEMPLATE = {
             "value": []
           },
           {
+            "name": "_returnAddress",
+            "type": "address[]",
+            "value": []
+          },
+          {
             "name": "_sender",
             "type": "address",
             "value": ""

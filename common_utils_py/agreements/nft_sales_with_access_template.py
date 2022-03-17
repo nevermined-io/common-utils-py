@@ -1,17 +1,17 @@
-DID_SALES_TEMPLATE = {
-  "type": "did-sales",
+NFT_SALES_WITH_ACCESS_TEMPLATE = {
+  "type": "nft-sales-with-access",
   "templateId": "",
-  "name": "didSalesAgreement",
-  "description": "This service agreement defines the flow for selling a DID between users",
+  "name": "nftSalesWithAccessAgreement",
+  "description": "This service agreement defines the flow for selling a NFT between users",
   "creator": "",
   "serviceAgreementTemplate": {
-    "contractName": "DIDSalesTemplate",
+    "contractName": "NFTSalesTemplate",
     "events": [
       {
         "name": "AgreementCreated",
         "actorType": "consumer",
         "handler": {
-          "moduleName": "didSalesTemplate",
+          "moduleName": "nftSalesTemplate",
           "functionName": "fulfillLockPaymentCondition",
           "version": "0.1"
         }
@@ -19,12 +19,12 @@ DID_SALES_TEMPLATE = {
     ],
     "fulfillmentOrder": [
       "lockPayment.fulfill",
-      "transferDID.fulfill",
+      "transferNFT.fulfill",
       "escrowPayment.fulfill"
     ],
     "conditionDependency": {
       "lockPayment": [],
-      "transferDID": [],
+      "transferNFT": [],
       "escrowPayment": [
         "lockPayment",
         "transferNFT"
@@ -70,17 +70,17 @@ DID_SALES_TEMPLATE = {
             "actorType": "publisher",
             "handler": {
               "moduleName": "lockPaymentCondition",
-              "functionName": "fulfillTransferDIDCondition",
+              "functionName": "fulfillTransferNFTCondition",
               "version": "0.1"
             }
           }
         ]
       },
       {
-        "name": "transferDID",
+        "name": "transferNFT",
         "timelock": 0,
         "timeout": 0,
-        "contractName": "TransferDIDCondition",
+        "contractName": "TransferNFTCondition",
         "functionName": "fulfill",
         "parameters": [
           {
@@ -92,6 +92,21 @@ DID_SALES_TEMPLATE = {
             "name": "_receiver",
             "type": "address",
             "value": ""
+          },
+          {
+            "name": "_numberNfts",
+            "type": "uint256",
+            "value": ""
+          },
+          {
+            "name": "_nftHolder",
+            "type": "address",
+            "value": ""
+          },
+          {
+            "name": "_conditionId",
+            "type": "bytes32",
+            "value": ""
           }
         ],
         "events": [
@@ -99,7 +114,7 @@ DID_SALES_TEMPLATE = {
             "name": "Fulfilled",
             "actorType": "publisher",
             "handler": {
-              "moduleName": "transferDID",
+              "moduleName": "transferNFT",
               "functionName": "fulfillEscrowPaymentCondition",
               "version": "0.1"
             }
@@ -138,14 +153,14 @@ DID_SALES_TEMPLATE = {
             "value": []
           },
           {
-            "name": "_returnAddress",
-            "type": "address[]",
-            "value": []
-          },
-          {
             "name": "_sender",
             "type": "address",
             "value": ""
+          },
+          {
+            "name": "_returnAddress",
+            "type": "address[]",
+            "value": []
           },
           {
             "name": "_tokenAddress",
@@ -170,6 +185,60 @@ DID_SALES_TEMPLATE = {
             "handler": {
               "moduleName": "escrowPaymentCondition",
               "functionName": "verifyRewardTokens",
+              "version": "0.1"
+            }
+          }
+        ]
+      },
+      {
+        "name": "access",
+        "timelock": 0,
+        "timeout": 0,
+        "contractName": "AccessProofCondition",
+        "functionName": "fulfill",
+        "parameters": [
+          {
+            "name": "_hash",
+            "type": "uint",
+            "value": ""
+          },
+          {
+            "name": "_grantee",
+            "type": "uint[2]",
+            "value": ""
+          },
+          {
+            "name": "_provider",
+            "type": "uint[2]",
+            "value": ""
+          },
+          {
+            "name": "_cipher",
+            "type": "uint[2]",
+            "value": ""
+          },
+          {
+            "name": "_proof",
+            "type": "bytes",
+            "value": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "Fulfilled",
+            "actorType": "publisher",
+            "handler": {
+              "moduleName": "access",
+              "functionName": "fulfillEscrowPaymentCondition",
+              "version": "0.1"
+            }
+          },
+          {
+            "name": "TimedOut",
+            "actorType": "consumer",
+            "handler": {
+              "moduleName": "access",
+              "functionName": "fulfillEscrowPaymentCondition",
               "version": "0.1"
             }
           }
