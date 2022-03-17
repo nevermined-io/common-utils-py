@@ -30,9 +30,8 @@ jobs:
         node-version: '14.x'
     - name: Install rapidsnark
       run: |
-        git clone https://github.com/nevermined-io/rapidsnark
+        git clone --branch v0.0.1 https://github.com/nevermined-io/rapidsnark
         cd rapidsnark
-        git checkout v0.0.1
         sh ./scripts/install-linux.sh
         cd ..
         rm -rf rapidsnark
