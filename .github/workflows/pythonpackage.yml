@@ -30,7 +30,7 @@ jobs:
         node-version: '14.x'
     - name: Install rapidsnark
       run: |
-        git clone --branch v0.0.1 https://github.com/nevermined-io/rapidsnark
+        git clone --branch v0.0.2 https://github.com/nevermined-io/rapidsnark
         cd rapidsnark
         sh ./scripts/install-linux.sh
         cd ..
@@ -46,7 +46,7 @@ jobs:
         # start nevermined
         export KEEPER_VERSION=develop
         export METADATA_VERSION=latest
-        ./start_nevermined.sh --no-marketplace --no-gateway --no-faucet --no-acl-contract --polygon &
+        ./start_nevermined.sh --no-marketplace --no-gateway --no-graph --no-faucet --no-acl-contract --polygon &
 
         # extract contracts
         cd ..
