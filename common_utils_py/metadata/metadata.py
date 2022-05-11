@@ -17,7 +17,7 @@ logger = logging.getLogger('metadata')
 class Metadata:
     """Metadata wrapper to call different endpoint of metadata component."""
 
-    def __init__(self, metadata_url):
+    def __init__(self, metadata_url, account):
         """
         The Metadata class is a wrapper on the Metadata Store, which has exposed a REST API.
 
@@ -35,7 +35,7 @@ class Metadata:
         logging.debug(f'Metadata Store API documentation at {metadata_url}/api/v1/docs')
         logging.debug(f'Metadata assets at {self._base_url}')
 
-        self.requests_session = get_requests_session()
+        self.requests_session = get_requests_session(metadata_url, account)
 
     @property
     def root_url(self):
@@ -135,7 +135,13 @@ class Metadata:
         """
         try:
             asset_did = ddo.did
-            response = self.requests_session.post(self.url, data=ddo.as_text(),
+
+            # add userid to payload - required for authorization
+            ddo = ddo.as_dictionary()
+            ddo['userId'] = self.requests_session.auth.userid
+            print(ddo)
+            print(ddo.keys())
+            response = self.requests_session.post(self.url, data=json.dumps(ddo),
                                                   headers=self._headers)
         except AttributeError:
             raise AttributeError('DDO invalid. Review that all the required parameters are filled.')
@@ -304,6 +310,7 @@ class Metadata:
         """
         service_json = service.as_dictionary()
         service_json['agreementId'] = agreement_id
+        service_json['userId'] = self.requests_session.auth.userid
         response = self.requests_session.post(
             f'{self._base_url}/service',
             data=json.dumps(service_json),

@@ -9,6 +9,8 @@ from ecies import decrypt, encrypt
 from eth_keys import keys
 from eth_utils import to_bytes, to_hex
 from web3.auto import w3
+from contracts_lib_py.wallet import Wallet
+from contracts_lib_py.utils import add_ethereum_prefix_and_hash_msg
 
 BLOCK_SIZE = 16
 pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
@@ -129,3 +131,9 @@ def encryption(public_key_hex, data):
 
 def decryption(private_key_hex, encrypted_data):
     return decrypt(private_key_hex, encrypted_data)
+
+
+def sign_message(signature_input, account):
+    wallet =  Wallet(w3, account.key_file, account.password, account.address)
+    signature = wallet.sign(add_ethereum_prefix_and_hash_msg(signature_input))
+    return signature.signature

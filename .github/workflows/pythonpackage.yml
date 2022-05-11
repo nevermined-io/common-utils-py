@@ -46,7 +46,7 @@ jobs:
         # start nevermined
         export KEEPER_VERSION=develop
         export METADATA_VERSION=latest
-        ./start_nevermined.sh --no-marketplace --no-gateway --no-graph --no-faucet --no-acl-contract --polygon &
+        ./start_nevermined.sh --no-marketplace --no-gateway --no-metadata --no-graph --no-faucet --no-acl-contract --polygon --marketplace-api &
 
         # extract contracts
         cd ..

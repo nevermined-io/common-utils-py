@@ -22,14 +22,14 @@ install_requirements = [
     'rsa==4.7',
     # secp256k1 support was added recently and the latest release does not included it yet
     # so for now we are going to used a fork
-    'nevermined-authlib==0.1.0'
+    'nevermined-authlib==0.1.0',
+    'contracts-lib-py==1.0.0-rc2'
 ]
 
 # Required to run setup.py:
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'contracts-lib-py==1.0.0-rc2',
     'web3==5.26.0',
     'coverage',
     'docker',

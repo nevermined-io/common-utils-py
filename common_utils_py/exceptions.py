@@ -39,3 +39,7 @@ class ServiceConsumeError(Exception):
 
 class InvalidAgreementTemplate(Exception):
     """ Error when agreement template is not valid or not approved"""
+
+
+class AuthError(Exception):
+    """Error when trying to login to the the marketplace api"""
