@@ -139,8 +139,6 @@ class Metadata:
             # add userid to payload - required for authorization
             ddo = ddo.as_dictionary()
             ddo['userId'] = self.requests_session.auth.userid
-            print(ddo)
-            print(ddo.keys())
             response = self.requests_session.post(self.url, data=json.dumps(ddo),
                                                   headers=self._headers)
         except AttributeError:
