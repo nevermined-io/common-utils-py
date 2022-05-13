@@ -80,7 +80,7 @@ class EthJwtAuth(requests.auth.AuthBase):
             self.login()
         return self._claim
 
-def get_requests_session(metadata_url, account):
+def get_requests_session(metadata_url=None, account=None, pool_connections=25, pool_maxsize=25, pool_block=True):
     """
     Set connection pool maxsize and block value to avoid `connection pool full` warnings.
 
@@ -89,10 +89,10 @@ def get_requests_session(metadata_url, account):
     session = requests.sessions.Session()
 
     if account is None:
-        logger.warn('Since no account was specified the only public metadata endpoints will be available.')
+        logger.warning('Since no account was specified the only public metadata endpoints will be available.')
     else:
         session.auth = EthJwtAuth(metadata_url, account)
 
-    session.mount('http://', HTTPAdapter(pool_connections=25, pool_maxsize=25, pool_block=True))
-    session.mount('https://', HTTPAdapter(pool_connections=25, pool_maxsize=25, pool_block=True))
+    session.mount('http://', HTTPAdapter(pool_connections, pool_maxsize, pool_block))
+    session.mount('https://', HTTPAdapter(pool_connections, pool_maxsize, pool_block))
     return session
