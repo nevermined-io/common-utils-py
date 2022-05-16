@@ -20,7 +20,7 @@ from common_utils_py.utils.utilities import generate_prefixed_id
 def get_metadata_url():
     if os.getenv('METADATA_URL'):
         return os.getenv('METADATA_URL')
-    return 'http://localhost:5000'
+    return 'http://localhost:3100'
 
 
 def get_keeper_url():
@@ -49,7 +49,7 @@ def consumer_account():
 
 @pytest.fixture
 def metadata_instance():
-    return MetadataProvider.get_metadata_provider(get_metadata_url())
+    return MetadataProvider.get_metadata_provider(get_metadata_url(), get_publisher_account())
 
 
 @pytest.fixture
