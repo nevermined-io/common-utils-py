@@ -23,7 +23,7 @@ install_requirements = [
     # secp256k1 support was added recently and the latest release does not included it yet
     # so for now we are going to used a fork
     'nevermined-authlib==0.1.0',
-    'contracts-lib-py==1.0.0-rc2'
+    'contracts-lib-py==1.0.0-rc3'
 ]
 
 # Required to run setup.py:
@@ -85,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/nevermined-io/common-utils-py',
-    version='1.0.0-rc3',
+    version='1.0.0-rc4',
     zip_safe=False,
 )
