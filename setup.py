@@ -16,14 +16,14 @@ with open('CHANGELOG.md') as history_file:
 # Installed by pip install common-utils-py
 # or pip install -e .
 install_requirements = [
+    'contracts-lib-py==1.0.0-rc5',
     'requests==2.21.0',
     'eciespy==0.3.5',
     'eth-keys==0.3.3',
     'rsa==4.7',
     # secp256k1 support was added recently and the latest release does not included it yet
     # so for now we are going to used a fork
-    'nevermined-authlib==0.1.0',
-    'contracts-lib-py==1.0.0-rc3'
+    'nevermined-authlib==0.1.0'
 ]
 
 # Required to run setup.py:
@@ -85,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/nevermined-io/common-utils-py',
-    version='1.0.0-rc4',
+    version='1.0.0-rc5',
     zip_safe=False,
 )
