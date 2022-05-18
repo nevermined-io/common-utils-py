@@ -32,6 +32,8 @@ def test_nft_sales_flow(setup_nft_sales_agreements_environment):
     amounts = service_agreement.get_amounts_int()
     receivers = service_agreement.get_receivers()
     number_nfts = service_agreement.get_number_nfts()
+    nft_contract_address = service_agreement.get_nft_contract_address()
+    nft_transfer = service_agreement.get_nft_transfer_or_mint()
     token_address = keeper.token.address
 
     receiver_0_starting_balance = keeper.token.get_token_balance(
@@ -113,6 +115,8 @@ def test_nft_sales_flow(setup_nft_sales_agreements_environment):
         consumer_acc.address,
         number_nfts,
         lock_cond_id[1],
+        nft_contract_address,
+        nft_transfer,
         publisher_acc
     )
     keeper.transfer_nft_condition.get_tx_receipt(tx_hash)

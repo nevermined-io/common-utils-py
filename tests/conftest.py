@@ -118,7 +118,7 @@ def setup_agreements_environment():
     agreement_id_seed = ServiceAgreement.create_new_agreement_id()
     price = service_agreement.get_price()
     (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address, consumer_acc.address)
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
     print('published address', publisher_acc.address)
 
     return (
@@ -159,7 +159,7 @@ def setup_did_sales_agreements_environment():
 
     price = service_agreement.get_price()
     (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address, consumer_acc.address)
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     return (
         keeper,
@@ -202,13 +202,13 @@ def setup_nft_sales_agreements_environment():
     agreement_id_seed = generate_prefixed_id()
     price = service_agreement.get_price()
     (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address, consumer_acc.address)
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     nft_access_service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_ACCESS, ddo)
     nft_access_agreement_id_seed = ServiceAgreement.create_new_agreement_id()
 
     (nft_access_agreement_id, nft_access_cond_id, nft_holder_cond_id) = nft_access_service_agreement.generate_agreement_condition_ids(
-        nft_access_agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address, consumer_acc.address)
+        nft_access_agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     return (
         keeper,
