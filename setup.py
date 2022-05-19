@@ -85,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/nevermined-io/common-utils-py',
-    version='1.0.0-rc5',
+    version='1.0.0-rc6',
     zip_safe=False,
 )
