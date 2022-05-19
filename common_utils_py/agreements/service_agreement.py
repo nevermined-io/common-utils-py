@@ -356,7 +356,7 @@ class ServiceAgreement(Service):
         """
         return generate_prefixed_id()
 
-    def generate_agreement_condition_ids(self, agreement_id_seed, asset_id, consumer_address, keeper, creator_address, token_address=None):
+    def generate_agreement_condition_ids(self, agreement_id_seed, asset_id, consumer_address, keeper, init_agreement_address=None, token_address=None, babyjub_pk=None):
         """
         Generate the condition ids depending on the ServiceType
         :param agreement_id_seed: seed id of the agreement, hex str
@@ -367,7 +367,9 @@ class ServiceAgreement(Service):
         :param token_address: token address to use in the transactions (ERC-20 or native), hex str
         :return: condition ids
         """
-        agreement_id = keeper.agreement_manager.hash_id(agreement_id_seed, creator_address)
+        if init_agreement_address is None:
+            init_agreement_address = consumer_address
+        agreement_id = keeper.agreement_manager.hash_id(agreement_id_seed, init_agreement_address)
         if token_address is None:
             token_address = keeper.token.address
 
@@ -380,7 +382,7 @@ class ServiceAgreement(Service):
         if self.type == ServiceTypes.NFT_ACCESS_PROOF:
             number_nfts = self.get_number_nfts()
             nft_holder_cond_id = self.generate_nft_holder_condition_id(keeper, agreement_id, asset_id, consumer_address, number_nfts)
-            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
+            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, babyjub_pk)
             return (agreement_id_seed, agreement_id), access_cond_id, nft_holder_cond_id
 
         # TODO: not working
@@ -390,33 +392,31 @@ class ServiceAgreement(Service):
             amounts = self.get_amounts_int()
             receivers = self.get_receivers()
             lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address,  token_address, amounts, receivers)
-            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
+            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, babyjub_pk)
             escrow_cond_id = self.generate_nft_escrow_condition_id(keeper, agreement_id, asset_id, consumer_address, keeper.escrow_payment_condition.address, number_nfts, nft_receiver, token_address, lock_cond_id[1], [access_cond_id[1], transfer_cond_id[1]])
             return (agreement_id_seed, agreement_id), access_cond_id, lock_cond_id, escrow_cond_id
-
-        if self.type == ServiceTypes.NFT_SALES_WITH_ACCESS:
-            number_nfts = self.get_number_nfts()
-            nft_receiver = self.get_nft_receiver()
-            amounts = self.get_amounts_int()
-            receivers = self.get_receivers()
-            nft_holder = self.get_nft_holder()
-            nft_contract_address = self.get_nft_contract_address()
-            nft_transfer = self.get_nft_transfer_or_mint()
-            lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address,  token_address, amounts, receivers)
-            transfer_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1], nft_contract_address, nft_transfer)
-            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
-            escrow_cond_id = self.generate_escrow_condition_multi_id(keeper, agreement_id, asset_id, consumer_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [transfer_cond_id[1], access_cond_id[1]])
-            return (agreement_id_seed, agreement_id), transfer_cond_id, lock_cond_id, escrow_cond_id, access_cond_id
 
         amounts = self.get_amounts_int()
         receivers = self.get_receivers()
         lock_cond_id = self.generate_lock_condition_id(keeper, agreement_id, asset_id, keeper.escrow_payment_condition.address, token_address, amounts, receivers)
 
+        if self.type == ServiceTypes.NFT_SALES_WITH_ACCESS:
+            number_nfts = self.get_number_nfts()
+            nft_receiver = self.get_nft_receiver()
+            nft_holder = self.get_nft_holder()
+            nft_contract_address = self.get_nft_contract_address()
+            nft_transfer = self.get_nft_transfer_or_mint()
+
+            transfer_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1], nft_contract_address, nft_transfer)
+            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, babyjub_pk)
+            escrow_cond_id = self.generate_escrow_condition_multi_id(keeper, agreement_id, asset_id, consumer_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [transfer_cond_id[1], access_cond_id[1]])
+            return (agreement_id_seed, agreement_id), transfer_cond_id, lock_cond_id, escrow_cond_id, access_cond_id
+
         if self.type == ServiceTypes.ASSET_ACCESS:
             access_cond_id = self.generate_access_condition_id(keeper, agreement_id, asset_id, consumer_address)
 
         elif self.type == ServiceTypes.ASSET_ACCESS_PROOF:
-            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, consumer_address)
+            access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, babyjub_pk)
 
         elif self.type == ServiceTypes.CLOUD_COMPUTE:
             access_cond_id = self.generate_compute_condition_id(keeper, agreement_id, asset_id, consumer_address)
@@ -428,8 +428,8 @@ class ServiceAgreement(Service):
             number_nfts = self.get_number_nfts()
             nft_holder = self.get_nft_holder()
             nft_contract_address = self.get_nft_contract_address()
-            transfer_nft = self.get_nft_transfer_or_mint()
-            access_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1], nft_contract_address, transfer_nft)
+            nft_transfer = self.get_nft_transfer_or_mint()
+            access_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1], nft_contract_address, nft_transfer)
 
         else:
             raise Exception(
