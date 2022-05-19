@@ -343,6 +343,12 @@ class ServiceAgreement(Service):
         or similar)
         :return:
         """
+        print('template_id:', template_id)
+        print('values_hash_list:', values_hash_list)
+        print('timeLocks:', timelocks)
+        print('timeouts:', timeouts)
+        print('agreement_id:', agreement_id)
+        print('hash_function:', hash_function)
         return hash_function(
             ['address', 'bytes32[]', 'uint256[]', 'uint256[]', 'bytes32'],
             [template_id, values_hash_list, timelocks, timeouts, agreement_id]
@@ -513,20 +519,32 @@ class ServiceAgreement(Service):
             keeper.nft_escrow_payment_condition.contract.functions.generateId(agreement_id, _hash).call().hex()))
 
     def get_service_agreement_hash(
-            self, agreement_id, asset_id, consumer_address, publisher_address, keeper):
+            self, agreement_id_seed, asset_id, consumer_address, publisher_address, keeper):
         """Return the hash of the service agreement values to be signed by a consumer.
 
-        :param agreement_id:id of the agreement, hex str
+        :param agreement_id_seed: id of the agreement, hex str
         :param asset_id:
         :param consumer_address: ethereum account address of consumer, hex str
         :param publisher_address: ethereum account address of publisher, hex str
         :param keeper:
         :return:
         """
+        print('agreement_id_seed:', agreement_id_seed)
+        print('asset_id', asset_id)
+        print('consumer_address', consumer_address)
+        print('publisher_address', publisher_address)
+
+        ((agreement_id_seed, agreement_id), *conditions) = self.generate_agreement_condition_ids(
+                agreement_id_seed, asset_id, consumer_address, keeper, publisher_address)
+        condition_ids = [c[1] for c in conditions]
+        print()
+        print('conditions', conditions)
+        # print('conditions2', conditions2)
+        # print('agreement_id', agreement_id)
+
         agreement_hash = ServiceAgreement.generate_service_agreement_hash(
             self.template_id,
-            self.generate_agreement_condition_ids(
-                agreement_id, asset_id, consumer_address, keeper, publisher_address),
+            condition_ids,
             self.conditions_timelocks,
             self.conditions_timeouts,
             agreement_id,
