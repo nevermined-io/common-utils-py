@@ -115,7 +115,7 @@ def did_to_id_bytes(did):
             if not did_result:
                 raise ValueError(f'{did} is not a valid did')
             if not did_result['id']:
-                raise ValueError(f'{did} is not a valid ocean did')
+                raise ValueError(f'{did} is not a valid nevermined did')
             id_bytes = Web3.toBytes(hexstr=did_result['id'])
     elif isinstance(did, bytes):
         id_bytes = did

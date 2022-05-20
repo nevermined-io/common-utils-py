@@ -189,7 +189,7 @@ def setup_nft_sales_agreements_environment():
     keeper.did_registry.register_mintable_did(
         did_seed,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
-        url='http://172.17.0.1:5000',
+        url='http://172.17.0.1:3100',
         cap=10,
         royalties=10,
         account=publisher_acc,

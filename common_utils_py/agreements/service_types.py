@@ -1,5 +1,5 @@
 class ServiceTypes:
-    """Types of Service allowed in ocean protocol DDO services."""
+    """Types of Service allowed in Nevermined DDO services."""
     AUTHORIZATION = 'authorization'
     METADATA = 'metadata'
     ASSET_ACCESS = 'access'
