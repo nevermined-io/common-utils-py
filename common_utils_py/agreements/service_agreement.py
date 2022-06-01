@@ -513,7 +513,7 @@ class ServiceAgreement(Service):
             keeper.nft_escrow_payment_condition.contract.functions.generateId(agreement_id, _hash).call().hex()))
 
     def get_service_agreement_hash(
-            self, agreement_id, asset_id, consumer_address, publisher_address, keeper):
+            self, agreement_id, asset_id, consumer_address, publisher_address, keeper, babyjub_pk=None):
         """Return the hash of the service agreement values to be signed by a consumer.
 
         :param agreement_id:id of the agreement, hex str
@@ -523,10 +523,12 @@ class ServiceAgreement(Service):
         :param keeper:
         :return:
         """
+        ((_, _), *conditions) = self.generate_agreement_condition_ids(
+                agreement_id, asset_id, consumer_address, keeper, publisher_address, babyjub_pk=babyjub_pk)
+        condition_ids = [c[0] for c in conditions]
         agreement_hash = ServiceAgreement.generate_service_agreement_hash(
             self.template_id,
-            self.generate_agreement_condition_ids(
-                agreement_id, asset_id, consumer_address, keeper, publisher_address),
+            condition_ids,
             self.conditions_timelocks,
             self.conditions_timeouts,
             agreement_id,
