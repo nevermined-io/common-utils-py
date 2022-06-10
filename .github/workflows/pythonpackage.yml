@@ -5,64 +5,62 @@ name: Build and Test
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [master, develop]
   pull_request:
-    branches: [ master, develop ]
+    branches: [master, develop]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.7', '3.8', '3.9']
+        python-version: ["3.7", "3.8", "3.9"]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Set up node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Install rapidsnark
-      run: |
-        git clone --branch v0.0.2 https://github.com/nevermined-io/rapidsnark
-        cd rapidsnark
-        sh ./scripts/install-linux.sh
-        cd ..
-        rm -rf rapidsnark
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+      - name: Install rapidsnark
+        run: |
+          git clone --branch v0.0.2 https://github.com/nevermined-io/rapidsnark
+          cd rapidsnark
+          sh ./scripts/install-linux.sh
+          cd ..
+          rm -rf rapidsnark
 
-    - name: Start Nevermined
-      run: |
-        docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
-        git clone https://github.com/nevermined-io/tools nevermined-tools
-        cd nevermined-tools
-        rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
+      - name: Start Nevermined
+        run: |
+          docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
+          git clone https://github.com/nevermined-io/tools nevermined-tools
+          cd nevermined-tools
+          rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
 
-        # start nevermined
-        export KEEPER_VERSION=develop
-        export METADATA_VERSION=latest
-        ./start_nevermined.sh --no-marketplace --no-gateway --no-metadata --no-graph --no-faucet --no-acl-contract --polygon --marketplace-api &
+          # start nevermined
+          export KEEPER_VERSION=latest
+          ./start_nevermined.sh --no-marketplace --no-gateway --no-metadata --no-graph --no-faucet --no-acl-contract --polygon --marketplace-api &
 
-        # extract contracts
-        cd ..
-        ./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
+          # extract contracts
+          cd ..
+          ./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
 
-    - name: Install python package
-      run: |
-        pip install pip==20.2.4
-        pip install -r requirements_dev.txt
+      - name: Install python package
+        run: |
+          pip install pip==20.2.4
+          pip install -r requirements_dev.txt
 
-    - name: Test with pytest
-      run: |
-        export PARITY_ADDRESS=0x00bd138abd70e2f00903268f3db08f2d25677c9e
-        export PARITY_PASSWORD=node0
-        export PARITY_KEYFILE=tests/resources/data/publisher_key_file.json
-        export PARITY_ADDRESS1=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
-        export PARITY_PASSWORD1=secret
-        export PARITY_KEYFILE1=tests/resources/data/consumer_key_file.json
-        pytest -v
+      - name: Test with pytest
+        run: |
+          export PARITY_ADDRESS=0x00bd138abd70e2f00903268f3db08f2d25677c9e
+          export PARITY_PASSWORD=node0
+          export PARITY_KEYFILE=tests/resources/data/publisher_key_file.json
+          export PARITY_ADDRESS1=0x068ed00cf0441e4829d9784fcbe7b9e26d4bd8d0
+          export PARITY_PASSWORD1=secret
+          export PARITY_KEYFILE1=tests/resources/data/consumer_key_file.json
+          pytest -v
