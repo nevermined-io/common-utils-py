@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "14.x"
+          token: ${{ secrets.API_TOKEN_GITHUB }}
 
       - name: Update CHANGELOG.md
         id: changelog
