@@ -19,15 +19,15 @@ class DIDResolver:
         """
         Resolve a DID to an URL/DDO or later an internal/external DID.
 
-        :param did: 32 byte value or DID string to resolver, this is part of the ocean
-            DID did:nv:<32 byte value>
+        :param did: 32 byte value or DID string to resolver, this is part of the nevermined
+            DID did:nvm:<32 byte value>
         :return string: URL or DDO of the resolved DID
         :return None: if the DID cannot be resolved
         :raises ValueError: if did is invalid
         :raises TypeError: if did has invalid format
         :raises TypeError: on non 32byte value as the DID
         :raises TypeError: on any of the resolved values are not string/DID bytes.
-        :raises OceanDIDNotFound: if no DID can be found to resolve.
+        :raises Exception: if no DID can be found to resolve.
         """
 
         did_bytes = did_to_id_bytes(did)

@@ -215,6 +215,10 @@ class DDO:
                     service = ServiceAgreement.from_service_dict(value)
                 elif value['type'] == ServiceTypes.CLOUD_COMPUTE:
                     service = ServiceAgreement.from_service_dict(value)
+                elif value['type'] == ServiceTypes.NFT_SALES_WITH_ACCESS:
+                    service = ServiceAgreement.from_service_dict(value)
+                elif value['type'] == ServiceTypes.NFT_ACCESS_PROOF:
+                    service = ServiceAgreement.from_service_dict(value)
                 elif value['type'] == ServiceTypes.NFT_SALES:
                     service = ServiceAgreement.from_service_dict(value)
                 else:

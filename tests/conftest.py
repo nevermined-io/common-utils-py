@@ -20,7 +20,7 @@ from common_utils_py.utils.utilities import generate_prefixed_id
 def get_metadata_url():
     if os.getenv('METADATA_URL'):
         return os.getenv('METADATA_URL')
-    return 'http://localhost:5000'
+    return 'http://localhost:3100'
 
 
 def get_keeper_url():
@@ -49,7 +49,7 @@ def consumer_account():
 
 @pytest.fixture
 def metadata_instance():
-    return MetadataProvider.get_metadata_provider(get_metadata_url())
+    return MetadataProvider.get_metadata_provider(get_metadata_url(), get_publisher_account())
 
 
 @pytest.fixture
@@ -69,7 +69,7 @@ def metadata():
 
 @pytest.fixture
 def json_service():
-    return {"type":"nft-sales","index":6,"serviceEndpoint":"https://gateway.rinkeby.nevermined.rocks/api/v1/gateway/services/nft","templateId":"0x24edffc52926739E8403E451b791378349f38818","attributes":{"main":{"name":"nftSalesAgreement","creator":"0xD0064bD1a8DD5a3F775A5432f833EaC9f21CcA80","datePublished":"2021-11-23T10:27:07Z","timeout":86400},"additionalInformation":{"description":""},"serviceAgreementTemplate":{"contractName":"NFTSalesTemplate","events":[{"name":"AgreementCreated","actorType":"consumer","handler":{"moduleName":"nftSalesTemplate","functionName":"fulfillLockPaymentCondition","version":"0.1"}}],"fulfillmentOrder":["lockPayment.fulfill","transferNFT.fulfill","escrowPayment.fulfill"],"conditionDependency":{"lockPayment":[],"transferNFT":[],"escrowPayment":["lockPayment","transferNFT"]},"conditions":[{"name":"lockPayment","timelock":0,"timeout":0,"contractName":"LockPaymentCondition","functionName":"fulfill","parameters":[{"name":"_did","type":"bytes32","value":"688190baee42efb665fb45799135f1511256839e84ccfa7b48616839c49fd427"},{"name":"_rewardAddress","type":"address","value":"0xD0064bD1a8DD5a3F775A5432f833EaC9f21CcA80"},{"name":"_tokenAddress","type":"address","value":"0x937Cc2ec24871eA547F79BE8b47cd88C0958Cc4D"},{"name":"_amounts","type":"uint256[]","value":["20"]},{"name":"_receivers","type":"address[]","value":["0xD0064bD1a8DD5a3F775A5432f833EaC9f21CcA80"]}]}]}}}
+    return {"type":"nft-sales","index":6,"serviceEndpoint":"https://gateway.rinkeby.nevermined.rocks/api/v1/gateway/services/nft-transfer","templateId":"0x24edffc52926739E8403E451b791378349f38818","attributes":{"main":{"name":"nftSalesAgreement","creator":"0xD0064bD1a8DD5a3F775A5432f833EaC9f21CcA80","datePublished":"2021-11-23T10:27:07Z","timeout":86400},"additionalInformation":{"description":""},"serviceAgreementTemplate":{"contractName":"NFTSalesTemplate","events":[{"name":"AgreementCreated","actorType":"consumer","handler":{"moduleName":"nftSalesTemplate","functionName":"fulfillLockPaymentCondition","version":"0.1"}}],"fulfillmentOrder":["lockPayment.fulfill","transferNFT.fulfill","escrowPayment.fulfill"],"conditionDependency":{"lockPayment":[],"transferNFT":[],"escrowPayment":["lockPayment","transferNFT"]},"conditions":[{"name":"lockPayment","timelock":0,"timeout":0,"contractName":"LockPaymentCondition","functionName":"fulfill","parameters":[{"name":"_did","type":"bytes32","value":"688190baee42efb665fb45799135f1511256839e84ccfa7b48616839c49fd427"},{"name":"_rewardAddress","type":"address","value":"0xD0064bD1a8DD5a3F775A5432f833EaC9f21CcA80"},{"name":"_tokenAddress","type":"address","value":"0x937Cc2ec24871eA547F79BE8b47cd88C0958Cc4D"},{"name":"_amounts","type":"uint256[]","value":["20"]},{"name":"_receivers","type":"address[]","value":["0xD0064bD1a8DD5a3F775A5432f833EaC9f21CcA80"]}]}]}}}
 
 
 @pytest.fixture
@@ -115,10 +115,11 @@ def setup_agreements_environment():
     )
 
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.ASSET_ACCESS, ddo)
-    agreement_id = ServiceAgreement.create_new_agreement_id()
+    agreement_id_seed = ServiceAgreement.create_new_agreement_id()
     price = service_agreement.get_price()
-    (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id, asset_id, consumer_acc.address, keeper)
+    (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
+    print('published address', publisher_acc.address)
 
     return (
         keeper,
@@ -154,10 +155,11 @@ def setup_did_sales_agreements_environment():
     )
 
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.DID_SALES, ddo)
-    agreement_id = ServiceAgreement.create_new_agreement_id()
+    agreement_id_seed = generate_prefixed_id()
+
     price = service_agreement.get_price()
-    (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id, asset_id, consumer_acc.address, keeper)
+    (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     return (
         keeper,
@@ -187,7 +189,7 @@ def setup_nft_sales_agreements_environment():
     keeper.did_registry.register_mintable_did(
         did_seed,
         checksum=Web3Provider.get_web3().toBytes(hexstr=ddo.asset_id),
-        url='http://172.17.0.1:5000',
+        url='http://172.17.0.1:3100',
         cap=10,
         royalties=10,
         account=publisher_acc,
@@ -197,16 +199,16 @@ def setup_nft_sales_agreements_environment():
     keeper.did_registry.mint(ddo.asset_id, 10, account=publisher_acc)
 
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_SALES, ddo)
-    agreement_id = ServiceAgreement.create_new_agreement_id()
+    agreement_id_seed = generate_prefixed_id()
     price = service_agreement.get_price()
-    (access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
-        agreement_id, asset_id, consumer_acc.address, keeper)
+    (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
+        agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     nft_access_service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_ACCESS, ddo)
-    nft_access_agreement_id = ServiceAgreement.create_new_agreement_id()
+    nft_access_agreement_id_seed = ServiceAgreement.create_new_agreement_id()
 
-    (nft_access_cond_id, nft_holder_cond_id) = nft_access_service_agreement.generate_agreement_condition_ids(
-        nft_access_agreement_id, asset_id, consumer_acc.address, keeper)
+    (nft_access_agreement_id, nft_access_cond_id, nft_holder_cond_id) = nft_access_service_agreement.generate_agreement_condition_ids(
+        nft_access_agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     return (
         keeper,

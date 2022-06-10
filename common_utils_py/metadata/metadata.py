@@ -17,11 +17,15 @@ logger = logging.getLogger('metadata')
 class Metadata:
     """Metadata wrapper to call different endpoint of metadata component."""
 
-    def __init__(self, metadata_url):
+    def __init__(self, metadata_url, account, pool_connections=25, pool_maxsize=25, pool_block=True):
         """
         The Metadata class is a wrapper on the Metadata Store, which has exposed a REST API.
 
         :param metadata_url: Url of the metadata instance.
+        :param account: The account to use for the authenticated requests.
+        :param pool_connections: The number of urllib3 connection pools to cache.
+        :param pool_maxsize: The maximum number of connections to save in the pool.
+        :param pool_block: Whether the connection pool should block for connections.
         """
         assert metadata_url, f'Invalid url "{metadata_url}"'
         # :HACK:
@@ -35,7 +39,8 @@ class Metadata:
         logging.debug(f'Metadata Store API documentation at {metadata_url}/api/v1/docs')
         logging.debug(f'Metadata assets at {self._base_url}')
 
-        self.requests_session = get_requests_session()
+        self.requests_session = get_requests_session(
+            metadata_url, account, pool_connections, pool_maxsize, pool_block)
 
     @property
     def root_url(self):
@@ -60,23 +65,14 @@ class Metadata:
 
         :return: List of DID string
         """
-        response = self.requests_session.get(self._base_url).content
-        if not response:
-            return {}
-
-        try:
-            asset_list = json.loads(response)
-        except TypeError:
-            asset_list = None
-        except ValueError:
-            raise ValueError(response.decode('UTF-8'))
-
-        if not asset_list:
+        response = self.requests_session.get(self._base_url)
+        if response.status_code == 404:
             return []
 
-        if 'ids' in asset_list:
-            return asset_list['ids']
-        return []
+        if not response.ok:
+            raise ValueError(response.content.decode('UTF-8'))
+
+        return response.json()
 
     def get_asset_ddo(self, did):
         """
@@ -85,15 +81,15 @@ class Metadata:
         :param did: Asset DID string
         :return: DDO instance
         """
-        response = self.requests_session.get(f'{self.url}/{did}').content
-        if not response:
+        response = self.requests_session.get(f'{self.url}/{did}')
+        if response.status_code == 404:
             return {}
         try:
-            parsed_response = json.loads(response)
+            parsed_response = json.loads(response.content)
         except TypeError:
             parsed_response = None
         except ValueError:
-            raise ValueError(response.decode('UTF-8'))
+            raise ValueError(response.content.decode('UTF-8'))
         if parsed_response is None:
             return {}
         return DDO(dictionary=parsed_response)
@@ -105,18 +101,18 @@ class Metadata:
         :param did: Asset DID string
         :return: metadata key of the DDO instance
         """
-        response = self.requests_session.get(f'{self._base_url}/metadata/{did}').content
-        if not response:
+        response = self.requests_session.get(f'{self._base_url}/metadata/{did}')
+        if response.status_code == 404:
             return {}
         try:
-            parsed_response = json.loads(response)
+            parsed_response = json.loads(response.content)
         except TypeError:
             parsed_response = None
         except ValueError:
-            raise ValueError(response.decode('UTF-8'))
+            raise ValueError(response.content.decode('UTF-8'))
         if parsed_response is None:
             return {}
-        return parsed_response['attributes']
+        return parsed_response
 
     def list_assets_ddo(self):
         """
@@ -124,7 +120,11 @@ class Metadata:
 
         :return: List of DDO instance
         """
-        return json.loads(self.requests_session.get(self.url).content)
+        response = self.requests_session.get(self.url)
+        if not response.ok:
+            raise ValueError(response.content.decode('UTF-8'))
+
+        return response.json()['results']
 
     def publish_asset_ddo(self, ddo):
         """
@@ -135,11 +135,15 @@ class Metadata:
         """
         try:
             asset_did = ddo.did
-            response = self.requests_session.post(self.url, data=ddo.as_text(),
+
+            # add userid to payload - required for authorization
+            ddo = ddo.as_dictionary()
+            ddo['userId'] = self.requests_session.auth.userid
+            response = self.requests_session.post(self.url, data=json.dumps(ddo),
                                                   headers=self._headers)
         except AttributeError:
             raise AttributeError('DDO invalid. Review that all the required parameters are filled.')
-        if response.status_code == 500:
+        if response.status_code == 409:
             raise ValueError(
                 f'This Asset ID already exists! \n\tHTTP Error message: \n\t\t{response.text}')
         elif response.status_code != 201:
@@ -160,7 +164,12 @@ class Metadata:
         :param ddo: DDO instance
         :return: API response (depends on implementation)
         """
-        response = self.requests_session.put(f'{self.url}/{did}', data=ddo.as_text(),
+
+        # add userid to payload - required for authorization
+        ddo = ddo.as_dictionary()
+        ddo['userId'] = self.requests_session.auth.userid
+
+        response = self.requests_session.put(f'{self.url}/{did}', data=json.dumps(ddo),
                                              headers=self._headers)
         if response.status_code == 200 or response.status_code == 201:
             return json.loads(response.content)
@@ -220,7 +229,7 @@ class Metadata:
         :return: List of DDO instance
         """
         assert page >= 1, f'Invalid page value {page}. Required page >= 1.'
-        search_query['sort'] = sort
+        search_query['sort'] = sort or {}
         search_query['offset'] = offset
         search_query['page'] = page
         response = self.requests_session.post(
@@ -228,7 +237,7 @@ class Metadata:
             data=json.dumps(search_query),
             headers=self._headers
         )
-        if response.status_code == 200:
+        if response.status_code == 201:
             return self._parse_search_response(response.content)
         else:
             raise Exception(f'Unable to search for DDO: {response.content}')
@@ -304,6 +313,7 @@ class Metadata:
         """
         service_json = service.as_dictionary()
         service_json['agreementId'] = agreement_id
+        service_json['userId'] = self.requests_session.auth.userid
         response = self.requests_session.post(
             f'{self._base_url}/service',
             data=json.dumps(service_json),

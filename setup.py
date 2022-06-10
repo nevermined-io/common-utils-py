@@ -16,6 +16,7 @@ with open('CHANGELOG.md') as history_file:
 # Installed by pip install common-utils-py
 # or pip install -e .
 install_requirements = [
+    'contracts-lib-py==1.0.0',
     'requests==2.21.0',
     'eciespy==0.3.5',
     'eth-keys==0.3.3',
@@ -29,7 +30,6 @@ install_requirements = [
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = [
-    'contracts-lib-py==0.11.0',
     'web3==5.26.0',
     'coverage',
     'docker',
@@ -85,6 +85,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/nevermined-io/common-utils-py',
-    version='0.10.0',
+    version='1.0.0',
     zip_safe=False,
 )
