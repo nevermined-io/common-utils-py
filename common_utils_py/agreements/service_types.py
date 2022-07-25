@@ -9,6 +9,7 @@ class ServiceTypes:
     NFT_SALES = 'nft-sales'
     NFT_ACCESS = 'nft-access'
     NFT721_ACCESS = 'nft721-access'
+    NFT721_SALES = 'nft721-sales'
     NFT_ACCESS_PROOF = 'nft-access-proof'
     NFT_ACCESS_SWAP = 'nft-access-swap'
     NFT_SALES_WITH_ACCESS = 'nft-sales-with-access'
@@ -27,6 +28,7 @@ class ServiceTypesIndices:
     DEFAULT_NFT_ACCESS_PROOF_INDEX = 11
     DEFAULT_NFT_ACCESS_SWAP_INDEX = 12
     DEFAULT_NFT_SALES_WITH_ACCESS_INDEX = 13
+    DEFAULT_NFT721_SALES_INDEX = 14
 
 class ServiceAuthorizationTypes:
     SECRET_STORE = 'SecretStore'
