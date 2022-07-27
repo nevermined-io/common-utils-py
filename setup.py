@@ -16,7 +16,7 @@ with open('CHANGELOG.md') as history_file:
 # Installed by pip install common-utils-py
 # or pip install -e .
 install_requirements = [
-    'contracts-lib-py==1.0.2',
+    'contracts-lib-py==1.0.3',
     'requests==2.21.0',
     'eciespy==0.3.5',
     'eth-keys==0.3.3',
