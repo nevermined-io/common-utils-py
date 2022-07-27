@@ -458,17 +458,7 @@ class ServiceAgreement(Service):
             nft_contract_address = self.get_nft_contract_address()
             nft_transfer = self.get_nft_transfer_or_mint()
 
-            print('>>> agreement_id = {}'.format(agreement_id))
-            print('>>> asset_id = {}'.format(asset_id))
-            print('>>> nft_holder_address = {}'.format(nft_holder))
-            print('>>> nft_receiver_address = {}'.format(consumer_address))
-            print('>>> nft_amount = {}'.format(number_nfts))
-            print('>>> lock_payment_condition_id = {}'.format(lock_cond_id))
-            print('>>> nft_transfer = {}'.format(nft_transfer))
-            print('>>> nft_contract_address = {}'.format(nft_contract_address))
-            print('>>> duration = {}'.format(self.get_duration()))
             access_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1], nft_contract_address, nft_transfer)
-            print('>>> access_cond_id = {}'.format(access_cond_id))
         else:
             raise Exception(
                 'Error generating the condition ids, the service_agreement type is not valid.')
