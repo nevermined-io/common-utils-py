@@ -94,7 +94,7 @@ class ServiceDescriptor(object):
         )
 
     @staticmethod
-    def nft_sales_service_descriptor(attributes, service_endpoint):
+    def nft_sales_service_descriptor(attributes, service_endpoint, is_1155=True):
         """
         NFT Sales service descriptor.
 
@@ -102,11 +102,16 @@ class ServiceDescriptor(object):
         :param service_endpoint: identifier of the service inside the asset DDO, str
         :return: Service descriptor.
         """
+        if is_1155:
+            return (
+                ServiceTypes.NFT_SALES,
+                {'attributes': attributes, 'serviceEndpoint': service_endpoint}
+            )
         return (
-            ServiceTypes.NFT_SALES,
+            ServiceTypes.NFT721_SALES,
             {'attributes': attributes, 'serviceEndpoint': service_endpoint}
         )
-
+    
     @staticmethod
     def nft_sales_with_access_service_descriptor(attributes, service_endpoint):
         """
@@ -122,7 +127,7 @@ class ServiceDescriptor(object):
         )
 
     @staticmethod
-    def nft_access_service_descriptor(attributes, service_endpoint):
+    def nft_access_service_descriptor(attributes, service_endpoint, is_1155=True):
         """
         NFT Access service descriptor.
 
@@ -130,8 +135,13 @@ class ServiceDescriptor(object):
         :param service_endpoint: identifier of the service inside the asset DDO, str
         :return: Service descriptor.
         """
+        if is_1155:
+            return (
+                ServiceTypes.NFT_ACCESS,
+                {'attributes': attributes, 'serviceEndpoint': service_endpoint}
+            )
         return (
-            ServiceTypes.NFT_ACCESS,
+            ServiceTypes.NFT721_ACCESS,
             {'attributes': attributes, 'serviceEndpoint': service_endpoint}
         )
 
@@ -219,8 +229,18 @@ class ServiceFactory(object):
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
+        elif service_type == ServiceTypes.NFT721_SALES:
+            return ServiceFactory.build_nft721_sales_service(
+                kwargs['attributes'],
+                kwargs['serviceEndpoint']
+            )
         elif service_type == ServiceTypes.NFT_ACCESS:
             return ServiceFactory.build_nft_access_service(
+                kwargs['attributes'],
+                kwargs['serviceEndpoint']
+            )
+        elif service_type == ServiceTypes.NFT721_ACCESS:
+            return ServiceFactory.build_nft721_access_service(
                 kwargs['attributes'],
                 kwargs['serviceEndpoint']
             )
@@ -366,6 +386,34 @@ class ServiceFactory(object):
                        values={'attributes': attributes},
                        index=ServiceTypesIndices.DEFAULT_NFT_ACCESS_INDEX)
 
+
+    @staticmethod
+    def build_nft721_sales_service(attributes, service_endpoint):
+        """
+        Build a nft 721 sales service.
+
+        :param attributes: attributes of nft sales service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service
+        """
+        return Service(service_endpoint, ServiceTypes.NFT721_SALES,
+                       values={'attributes': attributes},
+                       index=ServiceTypesIndices.DEFAULT_NFT721_SALES_INDEX)
+
+    @staticmethod
+    def build_nft721_access_service(attributes, service_endpoint):
+        """
+        Build a nft 721 access service.
+
+        :param attributes: attributes of nft sales service, dict
+        :param service_endpoint: identifier of the service inside the asset DDO, str
+        :return: Service
+        """
+        return Service(service_endpoint, ServiceTypes.NFT721_ACCESS,
+                       values={'attributes': attributes},
+                       index=ServiceTypesIndices.DEFAULT_NFT721_ACCESS_INDEX)
+
+
     @staticmethod
     def complete_access_service(did, service_endpoint, attributes, template_id,
                                 reward_contract_address=None, service_type=ServiceTypes.ASSET_ACCESS):
@@ -392,10 +440,10 @@ class ServiceFactory(object):
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
             param_map['_tokenAddress'] = attributes['main']['_tokenAddress']
-            if service_type == ServiceTypes.NFT_ACCESS:
+            if service_type == ServiceTypes.NFT_ACCESS or \
+                service_type == ServiceTypes.NFT721_ACCESS or service_type == ServiceTypes.NFT_ACCESS_PROOF:
                 param_map['_numberNfts'] = attributes['main']['_numberNfts']
-            if service_type == ServiceTypes.NFT_ACCESS_PROOF:
-                param_map['_numberNfts'] = attributes['main']['_numberNfts']
+                param_map['_contractAddress'] = attributes['main']['_contractAddress']
         except KeyError as e:
             logger.error(f'Error mapping field {e}')
 
@@ -489,14 +537,16 @@ class ServiceFactory(object):
         if reward_contract_address is not None:
             param_map ['_rewardAddress'] = reward_contract_address
         
-        print("here")
-        print(attributes['main'])
+        # print(attributes['main'])
 
         try:
             param_map['_amounts'] = attributes['main']['_amounts']
             param_map['_receivers'] = attributes['main']['_receivers']
-            param_map['_numberNfts'] = attributes['main']['_numberNfts']
             param_map['_nftHolder'] = attributes['main']['_nftHolder']
+            param_map['_numberNfts'] = attributes['main']['_numberNfts']
+            param_map['_contractAddress'] = attributes['main']['_contractAddress']
+            param_map['_nftTransfer'] = attributes['main']['_nftTransfer']
+            param_map['_duration'] = attributes['main']['_duration']
         except KeyError:
             pass
 

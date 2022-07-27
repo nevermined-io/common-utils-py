@@ -15,7 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9"]
+        python-version: [3.7]
+        network: ["--spree-embedded-contracts", "--polygon"]
 
     steps:
       - uses: actions/checkout@v2
@@ -34,7 +35,9 @@ jobs:
           sh ./scripts/install-linux.sh
           cd ..
           rm -rf rapidsnark
-
+      - name: Reclaim some disk space
+        run: |
+          docker system prune --all --volumes -f
       - name: Start Nevermined
         run: |
           docker login -u ${{ secrets.NEVERMINED_DOCKER_USERNAME }} -p ${{ secrets.NEVERMINED_DOCKER_TOKEN}}
@@ -43,12 +46,11 @@ jobs:
           rm -rf "${HOME}/.nevermined/nevermined-contracts/artifacts"
 
           # start nevermined
-          export KEEPER_VERSION=latest
-          ./start_nevermined.sh --no-marketplace --no-gateway --no-metadata --no-graph --no-faucet --no-acl-contract --polygon --marketplace-api &
-
+          export KEEPER_VERSION=latest          
+          ./start_nevermined.sh --latest --no-gateway --no-graph  ${{ matrix.network }} &
           # extract contracts
           cd ..
-          ./scripts/wait_for_migration_and_extract_keeper_artifacts.sh
+          ./scripts/wait-nevermined.sh
 
       - name: Install python package
         run: |

@@ -201,10 +201,12 @@ def setup_nft_sales_agreements_environment():
     service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_SALES, ddo)
     agreement_id_seed = generate_prefixed_id()
     price = service_agreement.get_price()
+    nft_contract_address = keeper.did_registry.get_erc1155_address()
     (agreement_id, access_cond_id, lock_cond_id, escrow_cond_id) = service_agreement.generate_agreement_condition_ids(
         agreement_id_seed, asset_id, consumer_acc.address, keeper, publisher_acc.address)
 
     nft_access_service_agreement = ServiceAgreement.from_ddo(ServiceTypes.NFT_ACCESS, ddo)
+#    nft_access_service_agreement['main']['_contractAddress'] = nft_contract_address
     nft_access_agreement_id_seed = ServiceAgreement.create_new_agreement_id()
 
     (nft_access_agreement_id, nft_access_cond_id, nft_holder_cond_id) = nft_access_service_agreement.generate_agreement_condition_ids(
