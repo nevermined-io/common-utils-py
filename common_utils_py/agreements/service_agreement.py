@@ -173,10 +173,13 @@ class ServiceAgreement(Service):
 
         :return Int
         """
-        duration = int(self.get_param_value_by_name('_duration'))
-        if duration > 0:
-            return duration
-        else:
+        try:
+            duration = int(self.get_param_value_by_name('_duration'))
+            if duration > 0:
+                return duration
+            else:
+                return 0
+        except:
             return 0
 
     def get_amounts(self):
@@ -427,10 +430,12 @@ class ServiceAgreement(Service):
             number_nfts = self.get_number_nfts()
             nft_receiver = self.get_nft_receiver()
             nft_holder = self.get_nft_holder()
-            nft_contract_address = self.get_nft_contract_address()
+            nft_contract_address = self.get_nft_contract_address()            
             nft_transfer = self.get_nft_transfer_or_mint()
+            duration = self.get_duration()
 
             transfer_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1], nft_contract_address, nft_transfer)
+
             access_cond_id = self.generate_access_proof_condition_id(keeper, agreement_id, asset_id, babyjub_pk)
             escrow_cond_id = self.generate_escrow_condition_multi_id(keeper, agreement_id, asset_id, consumer_address, keeper.escrow_payment_condition.address, amounts, receivers, token_address, lock_cond_id[1], [transfer_cond_id[1], access_cond_id[1]])
             return (agreement_id_seed, agreement_id), transfer_cond_id, lock_cond_id, escrow_cond_id, access_cond_id
@@ -458,12 +463,12 @@ class ServiceAgreement(Service):
             print('>>> nft_holder_address = {}'.format(nft_holder))
             print('>>> nft_receiver_address = {}'.format(consumer_address))
             print('>>> nft_amount = {}'.format(number_nfts))
-            print('>>> nft_contract_address = {}'.format(nft_contract_address))
-            print('>>> lock_payment_condition_id = {}'.format(lock_cond_id))            
+            print('>>> lock_payment_condition_id = {}'.format(lock_cond_id))
             print('>>> nft_transfer = {}'.format(nft_transfer))
-
+            print('>>> nft_contract_address = {}'.format(nft_contract_address))
+            print('>>> duration = {}'.format(self.get_duration()))
             access_cond_id = self.generate_transfer_nft_condition_id(keeper, agreement_id, asset_id, nft_holder, consumer_address, number_nfts, lock_cond_id[1], nft_contract_address, nft_transfer)
-
+            print('>>> access_cond_id = {}'.format(access_cond_id))
         else:
             raise Exception(
                 'Error generating the condition ids, the service_agreement type is not valid.')
@@ -511,15 +516,15 @@ class ServiceAgreement(Service):
 
     def generate_transfer_nft_condition_id(self, keeper, agreement_id, asset_id, nft_holder, receiver_address, number_nfts, lock_cond_id, nft_contract_address, transfer_nft):
         if self.type == ServiceTypes.NFT_SALES:
-            _hash = add_0x_prefix(
-                keeper.transfer_nft_condition.hash_values(asset_id, nft_holder, receiver_address, number_nfts, lock_cond_id, nft_contract_address, transfer_nft).hex())
-            return (_hash, add_0x_prefix(
-                keeper.transfer_nft_condition.contract.functions.generateId(agreement_id, _hash).call().hex()))
+            transfer_condition = keeper.transfer_nft_condition 
         else:
-            _hash = add_0x_prefix(
-                keeper.transfer_nft721_condition.hash_values(asset_id, nft_holder, receiver_address, number_nfts, lock_cond_id, nft_contract_address, transfer_nft).hex())
-            return (_hash, add_0x_prefix(
-                keeper.transfer_nft721_condition.contract.functions.generateId(agreement_id, _hash).call().hex()))
+            transfer_condition = keeper.transfer_nft721_condition
+            
+        _hash = add_0x_prefix(
+            transfer_condition.hash_values(asset_id, nft_holder, receiver_address, number_nfts, lock_cond_id, nft_contract_address, transfer_nft).hex())
+        return (_hash, add_0x_prefix(
+            transfer_condition.contract.functions.generateId(agreement_id, _hash).call().hex()))
+
 
     def generate_lock_condition_id(self, keeper, agreement_id, asset_id, escrow_condition_address, token_address, amounts, receivers):
         _hash = add_0x_prefix(
