@@ -505,7 +505,7 @@ class ServiceAgreement(Service):
             keeper.transfer_did_condition.contract.functions.generateId(agreement_id, _hash).call().hex()))
 
     def generate_transfer_nft_condition_id(self, keeper, agreement_id, asset_id, nft_holder, receiver_address, number_nfts, lock_cond_id, nft_contract_address, transfer_nft):
-        if self.type == ServiceTypes.NFT_SALES:
+        if self.type == ServiceTypes.NFT_SALES or self.type == ServiceTypes.NFT_SALES_WITH_ACCESS:
             transfer_condition = keeper.transfer_nft_condition 
         else:
             transfer_condition = keeper.transfer_nft721_condition
