@@ -17,7 +17,7 @@ with open('CHANGELOG.md') as history_file:
 # or pip install -e .
 install_requirements = [
     'contracts-lib-py==1.0.4',
-    'requests==2.21.0',
+    'requests==2.31.0',
     'eciespy==0.3.5',
     'eth-keys==0.3.3',
     'rsa==4.7',
